@@ -1,0 +1,48 @@
+
+<div class="gameWrapper" [ngSwitch]="state">
+  <h1 class="alignCenter">Game Server</h1>
+  <md-progress-bar *ngSwitchCase="states.Loading" mode="indeterminate" ngClass="loading"></md-progress-bar>
+  <span *ngSwitchCase="states.Finished" class="alignCenter serverStatus" [ngClass]="{ 'online': gameData, 'offline': !gameData }">
+    {{ gameData ? 'Online' : 'Offline' }}
+  </span>
+  <span *ngSwitchCase="states.TimedOut" class="alignCenter serverStatus">Request timed out.</span>
+  <div class="gameData" *ngSwitchCase="states.Finished">
+    <span class="numOnline alignCenter" [ngSwitch]="(gameData && gameData.raw) ? true : false">
+      Players connected:
+      <span *ngSwitchCase="true">
+        {{ gameData.maxplayers - gameData.raw.rules.NUMOPENPUBCONN }}
+      </span>
+      <span *ngSwitchCase="false">N/A</span>
+    </span>
+    <div class="flexParent">
+      <div class="flex">
+        <h2>Server Information</h2>
+        <table class="gameDataTable">
+          <tr><th>Header</th><th>Value</th></tr>
+          <tr><td>Name</td><td class="alignRight">{{ gameData.name }}</td></tr>
+          <tr><td>Map</td><td class="alignRight">{{ gameData.map }}</td></tr>
+          <tr><td>Max Players</td><td class="alignRight">{{ gameData.maxplayers }}</td></tr>
+          <tr><td>Password protected</td><td class="alignRight">{{ gameData.password }}</td></tr>
+          <tr *ngIf="gameData.raw"><td>Build</td><td class="alignRight">
+            {{ gameData.raw.rules.BuildId_s }}.{{ gameData.raw.rules.MINORBUILDID_s }}</td></tr>
+          <tr *ngIf="gameData.raw"><td>Ingame time</td><td class="alignRight">
+            {{ gameData.raw.rules.DayTime_s }}</td></tr>
+        </table>
+      </div>
+      <div class="flex">
+        <h2>Player Information</h2>
+        <table class="playerDataTable">
+          <tr>
+            <th>Player Steam Name</th>
+            <th>Time since last login</th>
+          </tr>
+          <tr *ngFor="let player of gameData.players">
+            <td>{{ player.name }}</td>
+            <td class="alignRight">{{ player.time | number:'1.2-2' }}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <span class="footer alignCenter">Last update: {{ lastUpdate | date:'HH:mm:ss'}}</span>
+  </div>
+</div>

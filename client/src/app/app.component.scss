@@ -1,0 +1,42 @@
+@import '~@angular/material/theming';
+@import 'theme.colours.scss';
+@include mat-core();
+
+
+
+// COLOUR, defaultShade, lighterShade, darkerShade
+$primary: ($md-red, 900, 300, 900);
+$accent: ($md-black, 600, 100, 700);
+$warn: $mat-red-warn; // imported from theme.colours.
+
+
+
+// SET THE THEME IN viten.themes.scss! DO NOT MODIFY THE CODE BELOW
+$app-primary: mat-palette(nth($primary, 1), nth($primary, 2), nth($primary, 3), nth($primary, 4));
+$app-accent:  mat-palette(nth($accent, 1), nth($accent, 2), nth($accent, 3), nth($accent, 4));
+$app-warn:    mat-palette($warn);
+$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+
+@include angular-material-theme($app-theme);
+
+html {
+  background: #eee;
+}
+
+body, html {
+  padding: 0;
+  margin: 0;
+  font-family: Roboto,"Helvetica Neue",sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+}
+
+a,
+a:active,
+a:visited,
+a:focus,
+a:hover {
+  text-decoration: none;
+  color: inherit;
+}

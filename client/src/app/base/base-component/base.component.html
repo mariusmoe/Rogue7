@@ -1,0 +1,14 @@
+<div class="wrapper">
+  <md-toolbar color="primary" ngClass="topHeader">
+    <a routerLink="/">Sotingane</a>
+  </md-toolbar>
+  <md-nav-list>
+    <a md-list-item *ngFor="let navEntry of nav"
+      routerLink="{{navEntry.url}}"
+      ngClass="navItem"
+      routerLinkActive="active">{{ navEntry.name }}</a>
+  </md-nav-list>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

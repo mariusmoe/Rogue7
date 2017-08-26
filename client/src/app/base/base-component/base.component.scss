@@ -1,0 +1,16 @@
+.wrapper {
+  max-width: 1200px;
+  min-width: 1200px;
+  margin: 0 auto;
+}
+.content {
+  padding: 10px;
+  background: #ddd;
+}
+
+a.mat-list-item.navItem {
+  display: inline-block;
+  &.active {
+    background: #ddd;
+  }
+}
