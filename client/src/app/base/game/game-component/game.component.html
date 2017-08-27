@@ -39,14 +39,17 @@
           <tr *ngFor="let player of gameData.players">
             <td>{{ player.name }}</td>
             <td class="alignRight">
-              <span mdTooltip="{{ player.timeDate | amTimeAgo }}" mdTooltipPosition="above">
-                {{ player.timeDate | date:'dd. MMM - HH:mm' }}
+              <span mdTooltip="{{ player.timeDate | dfnsDistanceInWordsToNow }} ago" mdTooltipPosition="above">
+                {{ player.timeDate | date:'dd. MMM, HH:mm' }}
               </span>
             </td>
           </tr>
         </table>
       </div>
     </div>
-    <span class="footer alignCenter">Last update: {{ lastUpdate | date:'HH:mm:ss'}}</span>
+    <span class="footer alignCenter" mdTooltip="{{ lastUpdate | dfnsDistanceInWordsToNow }} ago"
+      mdTooltipPosition="above">
+      Last update: {{ lastUpdate | date:'HH:mm:ss'}}
+    </span>
   </div>
 </div>

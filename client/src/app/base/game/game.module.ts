@@ -5,7 +5,7 @@ import { GameRoutingModule } from './game.routing-module';
 
 // Modules
 import { SharedModule } from './../../shared.module';
-import { MomentModule } from 'angular2-moment';
+import { DateFnsModule } from 'ngx-date-fns';
 
 // Components
 import { GameComponent } from './game-component/game.component';
@@ -16,12 +16,12 @@ import { GameService } from '../../_services/game.service';
 
 @NgModule({
   declarations: [
-    GameComponent
+    GameComponent,
   ],
   imports: [
     GameRoutingModule,
     SharedModule,
-    MomentModule,
+    DateFnsModule,
   ],
   entryComponents: [
 
