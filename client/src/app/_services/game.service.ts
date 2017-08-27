@@ -24,7 +24,7 @@ export class GameService {
     private router: Router ) {
   }
 
-  queryGameServer(): Observable<{ message: string; serverState: GameDig; timedOut?: boolean}> {
+  queryGameServer(): Observable<{ message: string; serverState?: GameDig; timedOut?: boolean}> {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const options = new RequestOptions({ headers: headers });
@@ -35,10 +35,16 @@ export class GameService {
         },
         error => {
           console.error(error.text());
-          return false;
+          return Observable.of({
+            message: error.text(),
+            timedOut: true
+          });
         }
       ).catch(e => {
-        return Observable.of({ timedOut: true });
+        return Observable.of({
+          message: 'Request timed out',
+          timedOut: true
+        });
       });
   }
 }

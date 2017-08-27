@@ -35,8 +35,9 @@ export class AuthGuard implements CanActivate {
       const alarmTime = this.getAlarmtime();
       if (alarmTime.getTime() < (new Date().getTime() * 1000)) {
         // check if JWT can be renewed
-        this.authenticationService.getNewJWT()
+        const sub = this.authenticationService.getNewJWT()
             .subscribe(result => {
+              sub.unsubscribe();
               if (result === true) {
                 return true;
               } else {
