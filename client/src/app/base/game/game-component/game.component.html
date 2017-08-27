@@ -34,11 +34,13 @@
         <table class="playerDataTable">
           <tr>
             <th>Player Steam Name</th>
-            <th>Time since last login</th>
+            <th>Last login date</th>
           </tr>
           <tr *ngFor="let player of gameData.players">
             <td>{{ player.name }}</td>
-            <td class="alignRight">{{ player.time | number:'1.2-2' }}</td>
+            <td class="alignRight" mdTooltip="{{ player.timeDate | amTimeAgo }}" mdTooltipPosition="above">
+              {{ player.timeDate | date:'dd. MMM - HH:mm' }}
+            </td>
           </tr>
         </table>
       </div>

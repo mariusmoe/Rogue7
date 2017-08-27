@@ -5,6 +5,7 @@ import { GameRoutingModule } from './game.routing-module';
 
 // Modules
 import { SharedModule } from './../../shared.module';
+import { MomentModule } from 'angular2-moment';
 
 // Components
 import { GameComponent } from './game-component/game.component';
@@ -20,6 +21,7 @@ import { GameService } from '../../_services/game.service';
   imports: [
     GameRoutingModule,
     SharedModule,
+    MomentModule,
   ],
   entryComponents: [
 

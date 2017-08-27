@@ -5,6 +5,8 @@ import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 
 
+import { GameDig } from './../_models/gamedig';
+
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -22,7 +24,7 @@ export class GameService {
     private router: Router ) {
   }
 
-  queryGameServer(): Observable<any> {
+  queryGameServer(): Observable<{ message: string; serverState: GameDig; timedOut?: boolean}> {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const options = new RequestOptions({ headers: headers });

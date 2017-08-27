@@ -8,6 +8,8 @@ import { Subscription } from 'rxjs/Subscription';
 // import 'rxjs/add/operator/filter';
 import { interval } from 'rxjs/Observable/interval';
 
+import { GameDig } from './../../../_models/gamedig';
+
 enum States {
   Loading,
   Finished,
@@ -27,7 +29,7 @@ export class GameComponent implements OnInit, OnDestroy {
   public states = States;
   public state: States;
 
-  public gameData;
+  public gameData: GameDig;
   public lastUpdate: Date;
 
   constructor(
@@ -51,6 +53,13 @@ export class GameComponent implements OnInit, OnDestroy {
       this.gameData = response.serverState;
       this.state = response.timedOut ? States.TimedOut : States.Finished;
       this.lastUpdate = new Date();
+
+      if (this.state === this.states.Finished) {
+        const now = new Date().valueOf();
+        for (const player of this.gameData.players) {
+          player.timeDate = new Date(now - player.time * 1000);
+        }
+      }
       console.log(response);
       sub.unsubscribe();
     });
