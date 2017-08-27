@@ -32,8 +32,6 @@ describe('GameComponent', () => {
           'message': 'Request timed out',
           'timedOut': true,
         });
-        console.log(obs);
-        fixture.detectChanges();
         return obs;
       }
     };
