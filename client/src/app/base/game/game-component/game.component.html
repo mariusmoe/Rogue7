@@ -38,8 +38,10 @@
           </tr>
           <tr *ngFor="let player of gameData.players">
             <td>{{ player.name }}</td>
-            <td class="alignRight" mdTooltip="{{ player.timeDate | amTimeAgo }}" mdTooltipPosition="above">
-              {{ player.timeDate | date:'dd. MMM - HH:mm' }}
+            <td class="alignRight">
+              <span mdTooltip="{{ player.timeDate | amTimeAgo }}" mdTooltipPosition="above">
+                {{ player.timeDate | date:'dd. MMM - HH:mm' }}
+              </span>
             </td>
           </tr>
         </table>
