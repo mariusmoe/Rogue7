@@ -14,3 +14,6 @@ export const environment = {
     queryGameServer: 'http://localhost:2000/api/game/query',
   }
 };
+
+// reflect only required in dev mode.
+import 'core-js/es7/reflect';
