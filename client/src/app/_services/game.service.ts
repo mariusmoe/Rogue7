@@ -28,7 +28,7 @@ export class GameService {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const options = new RequestOptions({ headers: headers });
-    return this.http.get(environment.URL.queryGameServer, options).timeout(4000)
+    return this.http.get(environment.URL.queryGameServer, options).timeout(5000)
       .map(
         response => {
           return response.json();
