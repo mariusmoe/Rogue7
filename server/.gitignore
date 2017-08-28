@@ -49,3 +49,6 @@ dist/
 
 # Do not upload test images to github
 uploads/
+
+# package-lock
+package-lock.json
