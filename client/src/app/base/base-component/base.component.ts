@@ -10,7 +10,8 @@ export class BaseComponent {
 
     constructor() {
       this.nav = [
-        { 'name': 'Game Server', 'url': '/game' },
+        { 'name': 'DNL Server', 'url': '/game' },
+        // { 'name': 'bob', 'url': '/bob' },
       ];
     }
 }

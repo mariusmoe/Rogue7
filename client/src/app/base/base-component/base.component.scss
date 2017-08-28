@@ -1,6 +1,6 @@
 .wrapper {
   max-width: 1200px;
-  min-width: 1200px;
+  // min-width: 1200px;
   margin: 0 auto;
 }
 .content {
@@ -8,8 +8,17 @@
   background: #ddd;
 }
 
+.navBar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 a.mat-list-item.navItem {
-  display: inline-block;
+  // display: inline-block;
+  flex: 1 1;
+  min-width: 200px;
+  text-align: center;
   &.active {
     background: #ddd;
   }
