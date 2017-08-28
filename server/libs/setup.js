@@ -4,9 +4,17 @@ const bodyParser = require('body-parser'),
       logger = require('morgan'),
       config = require('config'),
       helmet = require('helmet'),
-      methodOverride = require('method-override');
+      methodOverride = require('method-override'),
+      compression = require('compression');
 
 module.exports = app => {
+  // Compress / gzip outgoing
+  app.use(compression({filter: (req, res) => {
+    // don't compress responses with this request header
+    if (req.headers['x-no-compression']) { return false; }
+    // fallback to standard filter function
+    return compression.filter(req, res)
+  }}));
 
   // Pretty print
   app.set("json spaces", 4);
