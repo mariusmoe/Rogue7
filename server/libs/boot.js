@@ -8,7 +8,7 @@ const mongoose = require('mongoose'),
 module.exports = app => {
 // optional callback that gets fired when initial connection completed
 const uri = config.database;
-mongoose.connect(uri, (error) => {
+mongoose.connect(uri, { useMongoClient: true }, (error) => {
   // if error is true, the problem is often with mongoDB not connection
   if (error){
     console.log("ERROR can't connect to mongoDB. Did you forgot to run mongod?");
