@@ -7,7 +7,7 @@ import { AuthGuard } from './_guards/auth.guard';
 
 const appRoutes: Routes = [
   // { path: 'login', component: LoginComponent },
-  { path: '', loadChildren: 'app/base/base.module#BaseModule' },
+  { path: '', loadChildren: 'app/base-module/base.module#BaseModule' },
   // { path: '', loadChildren: 'app/HomeModule/home.module#HomeModule', pathMatch: 'full' },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

@@ -1,0 +1,85 @@
+
+<div class="gameWrapper" [ngSwitch]="state">
+  <h1 class="alignCenter">Dark and Light Server</h1>
+
+
+  <!-- CASE: LOADING -->
+  <div *ngSwitchCase="states.Loading">
+    <md-progress-bar mode="indeterminate" ngClass="loading"></md-progress-bar>
+  </div>
+
+  <!-- CASE: TIMEDOUT -->
+  <div *ngSwitchCase="states.TimedOut">
+    <span class="alignCenter serverStatus">
+      Request timed out.
+    </span>
+  </div>
+
+  <!-- CASE: ERROR -->
+  <div *ngSwitchCase="states.Error">
+      <span class="alignCenter serverStatus offline">Offline</span>
+      <span class="alignCenter">Could not establish a connection with the server.</span>
+  </div>
+
+
+  <!-- CASE: SUCCESS -->
+  <div *ngSwitchCase="states.Success">
+    <span class="alignCenter serverStatus online">Online</span>
+
+    <div class="gameData">
+      <!-- Players connected text -->
+      <span class="numOnline alignCenter" [ngSwitch]="(gameData && gameData.raw) ? true : false">
+        Players connected:
+        <span *ngSwitchCase="true">
+          {{ gameData.maxplayers - gameData.raw.rules.NUMOPENPUBCONN }}
+        </span>
+        <span *ngSwitchCase="false">N/A</span>
+      </span>
+
+      <!-- Server info & player info table parent -->
+      <div class="flexParent">
+
+        <!-- Server info -->
+        <div class="flex">
+          <h2>Server Information</h2>
+          <table class="gameDataTable">
+            <tr><th>Header</th><th>Value</th></tr>
+            <tr><td>Name</td><td class="alignRight">{{ gameData.name.substring(0,gameData.name.indexOf(' ')) }}</td></tr>
+            <tr><td>Map</td><td class="alignRight">{{ gameData.map }}</td></tr>
+            <tr><td>Max Players</td><td class="alignRight">{{ gameData.maxplayers }}</td></tr>
+            <tr><td>Password protected</td><td class="alignRight">{{ gameData.password }}</td></tr>
+            <tr *ngIf="gameData.raw"><td>Build</td><td class="alignRight">
+              {{ gameData.raw.rules.BuildId_s }}.{{ gameData.raw.rules.MINORBUILDID_s }}</td></tr>
+            <tr *ngIf="gameData.raw"><td>Ingame time</td><td class="alignRight">
+              {{ gameData.raw.rules.DayTime_s }}</td></tr>
+          </table>
+        </div>
+
+        <!-- player info -->
+        <div class="flex">
+          <h2>Player Information</h2>
+          <table class="playerDataTable">
+            <tr>
+              <th>Player Steam Name</th>
+              <th>Last login date</th>
+            </tr>
+            <tr *ngFor="let player of gameData.players">
+              <td>{{ player.name }}</td>
+              <td class="alignRight">
+                <span mdTooltip="{{ player.timeDate | dfnsDistanceInWordsToNow }} ago" mdTooltipPosition="above">
+                  {{ player.timeDate | date:'dd. MMM, HH:mm' }}
+                </span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <span class="footer alignCenter" mdTooltip="{{ lastUpdate | dfnsDistanceInWordsToNow }} ago"
+        mdTooltipPosition="above">
+        Last update: {{ lastUpdate | date:'HH:mm:ss'}}
+      </span>
+    </div>
+  </div>
+</div>

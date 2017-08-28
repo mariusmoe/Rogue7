@@ -1,43 +1,38 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { MdSnackBar } from '@angular/material';
+// import { MdSnackBar } from '@angular/material';
 
-import { GameService } from './../../../_services/game.service';
+import { DNLService } from './../../../_services/dnl.service';
 
 import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import { interval } from 'rxjs/Observable/interval';
 import 'rxjs/add/operator/takeUntil';
 
-import { GameDig } from './../../../_models/gamedig';
+import { GameDig, GameDigStates } from './../../../_models/gamedig';
 
-enum States {
-  Loading,
-  Finished,
-  TimedOut,
-}
+
 
 
 @Component({
-  selector: 'app-game-component',
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.scss'],
+  selector: 'app-dnlserver-component',
+  templateUrl: './dnlserver.component.html',
+  styleUrls: ['./dnlserver.component.scss'],
 })
-export class GameComponent implements OnInit, OnDestroy {
+export class DNLServerComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
-
-  public states = States;
-  public state: States;
+  public state: GameDigStates;
+  public states = GameDigStates;
 
   public gameData: GameDig;
   public lastUpdate: Date;
 
   constructor(
     private router: Router,
-    public snackBar: MdSnackBar,
-    private gameService: GameService) {
-      this.state = States.Loading;
+    // public snackBar: MdSnackBar,
+    private dnlService: DNLService) {
+      this.state = GameDigStates.Loading;
    }
 
   ngOnInit() {
@@ -50,12 +45,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
 
   private queryGameServerData() {
-    this.gameService.queryGameServer().takeUntil(this.ngUnsubscribe).subscribe((response) => {
+    this.dnlService.queryGameServer().takeUntil(this.ngUnsubscribe).subscribe((response) => {
       this.gameData = response.serverState;
-      this.state = response.timedOut ? States.TimedOut : States.Finished;
+      this.state = response.state;
       this.lastUpdate = new Date();
 
-      if (this.state === this.states.Finished) {
+      if (this.state === GameDigStates.Success) {
         const now = new Date().valueOf();
         for (const player of this.gameData.players) {
           player.timeDate = new Date(now - player.time * 1000);

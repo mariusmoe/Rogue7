@@ -6,11 +6,11 @@ import { DebugElement } from '@angular/core';
 // required for this specific test
 import { MaterialModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MomentModule } from 'angular2-moment';
+import { DateFnsModule } from 'ngx-date-fns';
 
-import { GameService } from '../../../_services/game.service';
+import { DNLService } from '../../../_services/dnl.service';
 import { HttpModule } from '@angular/http';
-import { GameDig } from './../../../_models/gamedig';
+import { GameDig, GameDigStates } from './../../../_models/gamedig';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
@@ -18,40 +18,41 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/timeout';
 import { interval } from 'rxjs/Observable/interval';
 
-import { GameComponent } from './game.component';
+import { DNLServerComponent } from './dnlserver.component';
 
-describe('GameComponent', () => {
-  let component: GameComponent;
-  let fixture: ComponentFixture<GameComponent>;
-  let gameService: GameService;
+describe('DNLServerComponent', () => {
+  let component: DNLServerComponent;
+  let fixture: ComponentFixture<DNLServerComponent>;
+  let dnlService: DNLService;
 
   beforeEach(async(() => {
-    const gameServiceStub = {
-      queryGameServer(): Observable<{ message: string; serverState?: GameDig; timedOut?: boolean}> {
+    const dnlServiceStub = {
+      queryGameServer(): Observable<{ message: string; serverState?: GameDig; state: GameDigStates }> {
         const obs = Observable.of({
           'message': 'Request timed out',
           'timedOut': true,
+          'state': GameDigStates.TimedOut
         });
         return obs;
       }
     };
     TestBed.configureTestingModule({
-      declarations: [ GameComponent ],
+      declarations: [ DNLServerComponent ],
       imports: [
         MaterialModule,
         RouterTestingModule,
-        MomentModule,
+        DateFnsModule,
         HttpModule
       ],
-      providers: [ { provide: GameService, useValue: gameServiceStub } ]
+      providers: [ { provide: DNLService, useValue: dnlServiceStub } ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GameComponent);
+    fixture = TestBed.createComponent(DNLServerComponent);
     component = fixture.componentInstance;
-    gameService = TestBed.get(GameService);
+    dnlService = TestBed.get(DNLService);
     fixture.detectChanges();
   });
 

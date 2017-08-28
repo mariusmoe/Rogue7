@@ -65,3 +65,11 @@ export interface GameDig {
     query?: Query;
     raw?: Raw;
 }
+
+
+export enum GameDigStates {
+  Loading,
+  Error,
+  Success,
+  TimedOut,
+}

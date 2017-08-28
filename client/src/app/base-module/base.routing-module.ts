@@ -13,7 +13,7 @@ const routes: Routes = [
     path: '' , component: BaseComponent, // canActivate: [AuthGuard],
     children: [
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'game', loadChildren: 'app/base/game/game.module#GameModule' },
+      { path: 'dnl', loadChildren: 'app/base-module/dnl-module/dnl.module#DNLModule' },
 
       { path: '**', redirectTo: '', pathMatch: 'full' },
     ]

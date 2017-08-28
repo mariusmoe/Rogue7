@@ -1,25 +1,25 @@
 import { NgModule } from '@angular/core';
 
 // Router
-import { GameRoutingModule } from './game.routing-module';
+import { DNLRoutingModule } from './dnl.routing-module';
 
 // Modules
 import { SharedModule } from './../../shared.module';
 import { DateFnsModule } from 'ngx-date-fns';
 
 // Components
-import { GameComponent } from './game-component/game.component';
+import { DNLServerComponent } from './dnlserver-component/dnlserver.component';
 
 // Services
-import { GameService } from '../../_services/game.service';
+import { DNLService } from '../../_services/dnl.service';
 
 
 @NgModule({
   declarations: [
-    GameComponent,
+    DNLServerComponent,
   ],
   imports: [
-    GameRoutingModule,
+    DNLRoutingModule,
     SharedModule,
     DateFnsModule,
   ],
@@ -27,7 +27,7 @@ import { GameService } from '../../_services/game.service';
 
   ],
   providers: [
-    GameService,
+    DNLService,
   ]
 })
-export class GameModule { }
+export class DNLModule { }
