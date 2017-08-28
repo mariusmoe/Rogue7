@@ -16,7 +16,7 @@ export class DNLService {
 
   constructor(
     private http: Http,
-    private router: Router ) {
+    private router: Router) {
   }
 
   queryGameServer(): Observable<{
@@ -28,7 +28,7 @@ export class DNLService {
       .map(
         response => {
           const json = response.json();
-          json.state = GameDigStates.Success;
+          json.state = json.serverState ? GameDigStates.Success : GameDigStates.Error;
           return json;
         },
         error => {
