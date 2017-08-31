@@ -27,8 +27,16 @@ export class DNLService {
     return this.http.get(environment.URL.queryGameServer, options).timeout(5000)
       .map(
         response => {
+          // all successful responses do not necessarily mean the server is up and running etc.
           const json = response.json();
-          json.state = json.serverState ? GameDigStates.Success : GameDigStates.Error;
+          if (json.serverState) {
+            // may still only have PARTIAL information
+            json.state = GameDigStates.Success;
+          } else if (json.timeout) {
+            json.state = GameDigStates.TimedOut;
+          } else if (json.offline) {
+            json.state = GameDigStates.Error;
+          }
           return json;
         },
         error => {
