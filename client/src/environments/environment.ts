@@ -11,7 +11,7 @@ export const environment = {
     login:          'http://localhost:2000/api/auth/login',
     renewJWT:       'http://localhost:2000/api/auth/renewjwt',
     newUser:        'http://localhost:2000/api/auth/newuser',
-    queryGameServer: 'http://localhost:2000/api/game/query',
+    queryGameServer: 'http://localhost:2000/api/dnl/query',
   }
 };
 

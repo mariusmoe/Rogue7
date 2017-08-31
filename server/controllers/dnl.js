@@ -15,6 +15,11 @@ exports.getServerData = (req, res, next) => {
   }).then((state) => {
       res.status(200).send({message: "Server is online", serverState: state});
   }).catch((error) => {
-    res.status(200).send({message: "Server is offline"});
+    if (error && error == "UDP Watchdog Timeout") {
+      res.status(200).send({message: "DNL server timed out", timeout: true });
+      return;
+    }
+    console.log('DNL server error: ', error);
+    res.status(200).send({message: "Server is offline", failed: true });
   });
 };

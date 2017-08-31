@@ -12,6 +12,6 @@ export const environment = {
     login:          'http://173.212.225.7/api/auth/login',
     renewJWT:       'http://173.212.225.7/api/auth/renewjwt',
     newUser:        'http://173.212.225.7/api/auth/newuser',
-    queryGameServer: 'http://173.212.225.7/api/game/query',
+    queryGameServer: 'http://173.212.225.7/api/dnl/query',
   }
 };

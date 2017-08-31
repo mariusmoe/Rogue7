@@ -1,6 +1,6 @@
 const AuthenticationController = require('./controllers/authentication'),
       ErrorController = require('./controllers/error'),
-      GameController = require('./controllers/gamedig'),
+      DNLController = require('./controllers/dnl'),
       express = require('express'),
       passportService = require('./libs/passport'),
       passport = require('passport'),
@@ -20,10 +20,10 @@ module.exports = (app) => {
   // route groups
   const apiRoutes  = express.Router(),
         authRoutes = express.Router(),
-        gameRoutes = express.Router();
+        dnlRoutes = express.Router();
   // Set auth and game routes as subgroup to apiRoutes
   apiRoutes.use('/auth', authRoutes);
-  apiRoutes.use('/game', gameRoutes);
+  apiRoutes.use('/dnl', dnlRoutes);
   // Set a common fallback for /api/*; 404 for invalid route
   apiRoutes.all('*', ErrorController.error);
 
@@ -87,12 +87,12 @@ module.exports = (app) => {
 
   /*
    |--------------------------------------------------------------------------
-   | Game routes
+   | DNL routes
    |--------------------------------------------------------------------------
   */
 
 
-  gameRoutes.get('/query', GameController.getServerData);
+  dnlRoutes.get('/query', DNLController.getServerData);
 
   app.use('/api', apiRoutes);
 };
