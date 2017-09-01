@@ -1,13 +1,32 @@
 
+export interface GameDig {
+    bots: [any];
+    map: string;
+    maxplayers: number;
+    name: string;
+    password: boolean;
+    players: [GameDigPlayer];
+    query?: GameDigQuery;
+    raw?: GameDigRaw;
+}
 
-interface Player {
+
+export const GameDigStates = {
+  Loading: 0,
+  Error: 1,
+  Success: 2,
+  TimedOut: 3,
+};
+
+
+interface GameDigPlayer {
   name: string;
   score: number;
   time: number;
   timeDate?: Date;
 }
 
-interface Query {
+interface GameDigQuery {
   address: string;
   host: string;
   port: number;
@@ -16,7 +35,7 @@ interface Query {
   type: string;
 }
 
-interface Raw {
+interface GameDigRaw {
   environment: string;
   folder: string;
   game: string;
@@ -26,7 +45,7 @@ interface Raw {
   numplayers: number;
   port: number;
   protocol: number;
-  rules: Rules;
+  rules: GameDigRules;
   secure: number;
   steamappid: number;
   steamid: string;
@@ -34,7 +53,7 @@ interface Raw {
   version: string; // a.b.c.d
 }
 
-interface Rules {
+interface GameDigRules {
   BuildId_s: string;  // number string
   CUSTOMSERVERNAME_s: string;
   DayTime_s: string;
@@ -53,23 +72,4 @@ interface Rules {
   SERVERUSESBATTLEYE_b: string; // boolean string
   SESSIONFLAGS: string; // "683", so far.
   ServerPassword_b: string; // boolean string
-}
-
-export interface GameDig {
-    bots: [any];
-    map: string;
-    maxplayers: number;
-    name: string;
-    password: boolean;
-    players: [Player];
-    query?: Query;
-    raw?: Raw;
-}
-
-
-export enum GameDigStates {
-  Loading,
-  Error,
-  Success,
-  TimedOut,
 }

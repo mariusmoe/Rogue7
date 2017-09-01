@@ -12,8 +12,6 @@ import 'rxjs/add/operator/takeUntil';
 import { GameDig, GameDigStates } from './../../../_models/gamedig';
 
 
-
-
 @Component({
   selector: 'app-dnlserver-component',
   templateUrl: './dnlserver.component.html',
@@ -22,8 +20,8 @@ import { GameDig, GameDigStates } from './../../../_models/gamedig';
 export class DNLServerComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
-  public state: GameDigStates;
-  public states = GameDigStates;
+  public GameDigStates = GameDigStates;
+  public state = GameDigStates.Loading;
 
   public gameData: GameDig;
   public lastUpdate: Date;
@@ -32,7 +30,6 @@ export class DNLServerComponent implements OnInit, OnDestroy {
     private router: Router,
     // public snackBar: MdSnackBar,
     private dnlService: DNLService) {
-      this.state = GameDigStates.Loading;
    }
 
   ngOnInit() {

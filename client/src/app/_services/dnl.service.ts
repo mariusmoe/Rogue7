@@ -20,7 +20,7 @@ export class DNLService {
   }
 
   queryGameServer(): Observable<{
-    message: string; serverState?: GameDig; state: GameDigStates}> {
+    message: string; serverState?: GameDig; state: number}> {
     const headers = new Headers();
     headers.append('Content-Type', 'application/json');
     const options = new RequestOptions({ headers: headers });
