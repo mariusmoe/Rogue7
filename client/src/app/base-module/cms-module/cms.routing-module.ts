@@ -3,12 +3,12 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from '../../_guards/auth.guard';
 
-import { MemberHomeComponent } from './member-home-component/member-home.component';
+import { CMSNewComponent } from './cms-new-component/cms-new.component';
 
 
 const routes: Routes = [
   {
-    path: '' , component: MemberHomeComponent, canActivate: [AuthGuard],
+    path: '' , component: CMSNewComponent, canActivate: [AuthGuard],
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
@@ -21,4 +21,4 @@ const routes: Routes = [
    RouterModule
  ]
 })
-export class MemberRoutingModule {}
+export class CMSRoutingModule {}

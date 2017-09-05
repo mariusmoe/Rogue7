@@ -1,25 +1,24 @@
 import { NgModule } from '@angular/core';
 
 // Router
-import { MemberRoutingModule } from './member.routing-module';
+import { CMSRoutingModule } from './cms.routing-module';
 
 // Modules
 import { SharedModule } from '../../_modules/shared.module';
 import { DateFnsModule } from 'ngx-date-fns';
 
 // Components
-import { MemberHomeComponent } from './member-home-component/member-home.component';
+import { CMSNewComponent } from './cms-new-component/cms-new.component';
 
 // Services
-import { DNLService } from '../../_services/dnl.service';
 
 
 @NgModule({
   declarations: [
-    MemberHomeComponent,
+    CMSNewComponent,
   ],
   imports: [
-    MemberRoutingModule,
+    CMSRoutingModule,
     SharedModule,
     DateFnsModule,
   ],
@@ -27,7 +26,6 @@ import { DNLService } from '../../_services/dnl.service';
 
   ],
   providers: [
-    DNLService,
   ]
 })
 export class MemberModule { }

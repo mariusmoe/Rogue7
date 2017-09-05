@@ -23,16 +23,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.authService.getUser().takeUntil(this.ngUnsubscribe).subscribe(user => {
-      if (user) {
-        this.nav = [
-          { 'name': 'DNL Server', 'url': '/dnl' },
-          { 'name': 'Member Section', 'url': '/members' },
-        ];
-      } else {
-        this.nav = [
-          { 'name': 'DNL Server', 'url': '/dnl' },
-        ];
-      }
+      // f
     });
   }
 

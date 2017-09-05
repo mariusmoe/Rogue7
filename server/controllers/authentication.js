@@ -162,5 +162,5 @@ exports.register = (req, res, next) => {
       if (err2) { return next(err2); }
       return res.status(200).send({message: status.ACCOUNT_CREATED.message, status: status.ACCOUNT_CREATED.code} )
     });
-  });
+  }).lean();
 }

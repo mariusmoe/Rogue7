@@ -21,9 +21,7 @@ const TIMEOUT = 2000;
 
 @Injectable()
 export class AuthService {
-  public token: string;
   private jwtHelper: JwtHelper = new JwtHelper();
-
   private userSubject: BehaviorSubject<User>;
 
   constructor(

@@ -1,6 +1,7 @@
 const AuthenticationController = require('./controllers/authentication'),
       ErrorController = require('./controllers/error'),
       DNLController = require('./controllers/dnl'),
+      CMSController = require('./controllers/cms'),
       express = require('express'),
       passportService = require('./libs/passport'),
       passport = require('passport'),
@@ -20,10 +21,12 @@ module.exports = (app) => {
   // route groups
   const apiRoutes  = express.Router(),
         authRoutes = express.Router(),
+        cmsRoutes = express.Router(),
         dnlRoutes = express.Router();
   // Set auth and game routes as subgroup to apiRoutes
   apiRoutes.use('/auth', authRoutes);
   apiRoutes.use('/dnl', dnlRoutes);
+  apiRoutes.use('/cms', cmsRoutes);
   // Set a common fallback for /api/*; 404 for invalid route
   apiRoutes.all('*', ErrorController.error);
 
@@ -48,6 +51,28 @@ module.exports = (app) => {
 
   // Request to update password
   authRoutes.post('/updatepassword', requireAuth, AuthenticationController.updatepassword);
+
+
+  /*
+   |--------------------------------------------------------------------------
+   | CMS routes
+   |--------------------------------------------------------------------------
+  */
+
+  // Get content
+  cmsRoutes.get('/:contentId', CMSController.getContent);
+
+
+  // Patch content
+  cmsRoutes.patch('/:contentId', requireAuth, CMSController.patchContent);
+
+
+  // Create content
+  cmsRoutes.post('/', requireAuth, CMSController.createContent);
+
+
+  // Get content structure
+  cmsRoutes.get('/', CMSController.getContentStructure);
 
   /*
    |--------------------------------------------------------------------------

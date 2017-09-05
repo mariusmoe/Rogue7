@@ -11,5 +11,6 @@ export const environment = {
     dnl: {
       query:        'http://173.212.225.7/api/dnl/query',
     },
+    cms:            'http://173.212.225.7/api/cms',
   }
 };

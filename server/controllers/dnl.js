@@ -1,9 +1,4 @@
-const jwt = require('jsonwebtoken'),
-      crypto = require('crypto'),
-      validator = require('validator'),
-      config = require('config'),
-      User = require('../models/user'),
-      status = require('../status'),
+const status = require('../status'),
       Gamedig = require('gamedig');
 
 
@@ -13,13 +8,13 @@ exports.getServerData = (req, res, next) => {
       host: '173.212.225.7',
       port: '27015',
   }).then((state) => {
-      res.status(200).send({message: "Server is online", serverState: state});
+      res.status(200).send({message: status.DNL_SERVER_ONLINE.message, status: status.DNL_SERVER_ONLINE.code, serverState: state});
   }).catch((error) => {
     if (error && error == "UDP Watchdog Timeout") {
-      res.status(200).send({message: "DNL server timed out", timeout: true });
+      res.status(200).send({message: status.DNL_SERVER_TIMED_OUT.message, status: status.DNL_SERVER_TIMED_OUT.code, timeout: true });
       return;
     }
     console.log('DNL server error: ', error);
-    res.status(200).send({message: "Server is offline", offline: true });
+    res.status(200).send({message: status.DNL_SERVER_OFFLINE.message, status: status.DNL_SERVER_OFFLINE.code, offline: true });
   });
 };

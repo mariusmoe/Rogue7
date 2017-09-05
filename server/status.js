@@ -37,5 +37,22 @@ module.exports = {
   PASSWORD_UPDATED: {
     message: "Password has been successfully updated",
     code: 20007,
-  }
+  },
+
+
+
+
+  // DNL CODES: 40000
+  DNL_SERVER_ONLINE: {
+    message: "DNL server is online",
+    code: 40000,
+  },
+  DNL_SERVER_OFFLINE: {
+    message: "DNL Server is offline",
+    code: 40001,
+  },
+  DNL_SERVER_TIMED_OUT: {
+    message: "DNL server request timed out",
+    code: 40002,
+  },
 }
