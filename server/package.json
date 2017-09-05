@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "SotRESTServer",
   "version": "1.0.0",
   "description": "Backend for Sotingane",
   "main": "index.js",
@@ -28,7 +28,6 @@
     "gamedig": "^1.0.36",
     "helmet": "^3.8.1",
     "https": "^1.0.0",
-    "jsonschema": "^1.2.0",
     "jsonwebtoken": "^7.4.3",
     "method-override": "^2.3.9",
     "moment": "^2.18.1",

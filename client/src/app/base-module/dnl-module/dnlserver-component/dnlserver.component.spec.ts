@@ -5,17 +5,18 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 // required for this specific test
-import { MaterialModule } from '@angular/material';
+import { MaterialModule } from './../../../material.module';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DateFnsModule } from 'ngx-date-fns';
+import { HttpClientModule } from '@angular/common/http';
 
 import { DNLService } from '../../../_services/dnl.service';
-import { HttpModule } from '@angular/http';
-import { GameDig, GameDigStates } from './../../../_models/gamedig';
+
+import { GameDig, DNLStates } from './../../../_models/dnl';
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/timeout';
 import { interval } from 'rxjs/Observable/interval';
 
@@ -31,38 +32,38 @@ describe('DNLServerComponent', () => {
 
   beforeEach(async(() => {
     const dnlServiceStub = {
-      queryGameServer(): Observable<{ message: string; serverState?: GameDig; state: GameDigStates }> {
+      queryGameServer(): Observable<{ message: string; serverState?: GameDig; state: number }> {
         const serviceState = component.state;
-        switch (<GameDigStates>serviceState) {
-          case GameDigStates.TimedOut:
+        switch (serviceState) {
+          case DNLStates.TimedOut:
             return Observable.of({
               'message': 'Request timed out',
-              'state': GameDigStates.TimedOut
+              'state': DNLStates.TimedOut
             });
-          case GameDigStates.Success:
+          case DNLStates.Success:
             return Observable.of({
               'message': 'Server is online',
-              'state': GameDigStates.Success,
+              'state': DNLStates.Success,
               'serverState': successServerState
             });
-          case GameDigStates.Error:
+          case DNLStates.Error:
             return Observable.of({
               'message': 'Error! Some error!',
-              'state': GameDigStates.Error,
+              'state': DNLStates.Error,
             });
           default: // happens for state: Loading. We can ignore this one.
-            return Observable.of({});
+            return Observable.of({ message: 'just loading!', state: DNLStates.Loading });
         }
       }
     };
     TestBed.configureTestingModule({
       declarations: [ DNLServerComponent ],
       imports: [
+        BrowserAnimationsModule,
         MaterialModule,
         RouterTestingModule,
         DateFnsModule,
-        HttpModule,
-        BrowserAnimationsModule
+        HttpClientModule,
       ],
       providers: [ { provide: DNLService, useValue: dnlServiceStub } ]
     })
@@ -81,7 +82,7 @@ describe('DNLServerComponent', () => {
 
   it('should show loading when state = Loading', () => {
     fixture.detectChanges();
-    component.state = GameDigStates.Loading;
+    component.state = DNLStates.Loading;
     fixture.detectChanges();
     de = fixture.debugElement.query(By.css('md-progress-bar.loading'));
     expect(de).toBeDefined();
@@ -90,7 +91,7 @@ describe('DNLServerComponent', () => {
   });
 
   it('should show dnlData when state = Success', () => {
-    component.state = GameDigStates.Success;
+    component.state = DNLStates.Success;
     fixture.detectChanges();
 
     de = fixture.debugElement.query(By.css('.gameData'));
@@ -110,7 +111,7 @@ describe('DNLServerComponent', () => {
 
 
   it('should show timedOut when state = TimedOut', () => {
-    component.state = GameDigStates.TimedOut;
+    component.state = DNLStates.TimedOut;
     fixture.detectChanges();
     de = fixture.debugElement.query(By.css('.serverStatus.timedOut'));
     expect(de).toBeDefined();
@@ -120,7 +121,7 @@ describe('DNLServerComponent', () => {
 
 
   it('should show offline when state = Error', () => {
-    component.state = GameDigStates.Error;
+    component.state = DNLStates.Error;
     fixture.detectChanges();
     de = fixture.debugElement.query(By.css('.serverStatus.offline'));
     expect(de).toBeDefined();

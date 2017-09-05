@@ -1,0 +1,68 @@
+<!-- ASYNC CHECK; SUBSCRIBES TO LOGGED-IN OBSERVABLE; UPDATES AUTOMAGICALLY -->
+<ng-container *ngIf="authService.getUser() | async; let user;">
+  <md-accordion multi="false">
+    <!-- ACCOUNT SETTINGS -->
+    <md-expansion-panel>
+      <md-expansion-panel-header>
+        <md-panel-title>Account settings</md-panel-title>
+        <!-- <md-panel-description>Account settings</md-panel-description> -->
+      </md-expansion-panel-header>
+      <div>
+
+        <!-- CHANGE PASSWORD FORM -->
+        <form [formGroup]="changePasswordForm" (ngSubmit)="submitForm()" id="changePasswordForm">
+          <!-- CURRENT PASSWORD -->
+          <md-form-field class="field">
+            <input mdInput placeholder="Current password" type="password" [formControl]="changePasswordForm.controls['currentPassword']" required>
+            <md-error *ngIf="changePasswordForm.controls['currentPassword'].hasError('required')">
+              Current password is <strong>required</strong>
+            </md-error>
+          </md-form-field>
+
+          <!-- NEW PASSWORD -->
+          <md-form-field class="field">
+            <input mdInput placeholder="New password" type="password" [formControl]="changePasswordForm.controls['password']" required>
+            <md-error *ngIf="changePasswordForm.controls['password'].hasError('required')">
+              Password is <strong>required</strong>
+            </md-error>
+            <md-hint *ngIf="changePasswordForm.errors?.matchingPasswords">
+              This field must match the confirm password field
+            </md-hint>
+          </md-form-field>
+
+          <!-- CONFIRM PASSWORD -->
+          <md-form-field class="field">
+            <input mdInput placeholder="Confirm password" type="password" [formControl]="changePasswordForm.controls['confirm']" required>
+            <md-error *ngIf="changePasswordForm.controls['confirm'].hasError('required')">
+              Password is <strong>required</strong>
+            </md-error>
+            <md-hint *ngIf="changePasswordForm.errors?.matchingPasswords">
+              This field must match the password field
+            </md-hint>
+          </md-form-field>
+        </form>
+        <!-- PASSWORDS MUST MATCH MESSAGE -->
+
+      </div>
+      <md-action-row>
+        <button md-raised-button form="changePasswordForm" type="submit" [disabled]="!changePasswordForm.valid" color="primary">
+          Change Password
+        </button>
+      </md-action-row>
+    </md-expansion-panel>
+
+    <!-- SOMETHING ELSE -->
+    <md-expansion-panel>
+      <md-expansion-panel-header>
+        <md-panel-title>Future stuff</md-panel-title>
+        <!-- <md-panel-description>Future!</md-panel-description> -->
+      </md-expansion-panel-header>
+      <div>
+
+      </div>
+      <md-action-row>
+      <button md-raised-button color="primary">Button</button>
+    </md-action-row>
+    </md-expansion-panel>
+  </md-accordion>
+</ng-container>

@@ -1,55 +1,41 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, Response, RequestOptions } from '@angular/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 
-import { GameDig, GameDigStates } from './../_models/gamedig';
+import { DNLMessage, DNLStates } from './../_models/dnl';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/timeout';
 
 @Injectable()
 export class DNLService {
 
   constructor(
-    private http: Http,
+    private http: HttpClient,
     private router: Router) {
   }
 
-  queryGameServer(): Observable<{
-    message: string; serverState?: GameDig; state: number}> {
-    const headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    const options = new RequestOptions({ headers: headers });
-    return this.http.get(environment.URL.queryGameServer, options).timeout(5000)
-      .map(
-        response => {
-          // all successful responses do not necessarily mean the server is up and running etc.
-          const json = response.json();
-          if (json.serverState) {
-            // may still only have PARTIAL information
-            json.state = GameDigStates.Success;
-          } else if (json.timeout) {
-            json.state = GameDigStates.TimedOut;
-          } else if (json.offline) {
-            json.state = GameDigStates.Error;
-          }
-          return json;
-        },
-        error => {
-          return Observable.of({
-            message: error.text(),
-            state: GameDigStates.Error
-          });
-        }
-      ).catch(e => {
-        return Observable.of({
-          message: 'Request timed out',
-          state: GameDigStates.TimedOut
-        });
+  queryGameServer(): Observable<DNLMessage> {
+    return this.http.get(environment.URL.dnl.query).map( (json: DNLMessage) => {
+      // all successful responses do not necessarily mean the server is up and running etc.
+      if (json.serverState) {
+        // may still only have PARTIAL information
+        json.state = DNLStates.Success;
+      } else if (json.timeout) {
+        json.state = DNLStates.TimedOut;
+      } else if (json.offline) {
+        json.state = DNLStates.Error;
+      }
+      return json;
+    }).timeout(5000).catch(e => {
+      return Observable.of({
+        message: 'Request timed out',
+        state: DNLStates.TimedOut
       });
+    });
   }
 }

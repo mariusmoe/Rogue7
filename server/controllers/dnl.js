@@ -20,6 +20,6 @@ exports.getServerData = (req, res, next) => {
       return;
     }
     console.log('DNL server error: ', error);
-    res.status(200).send({message: "Server is offline", failed: true });
+    res.status(200).send({message: "Server is offline", offline: true });
   });
 };

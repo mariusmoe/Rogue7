@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
@@ -6,9 +5,9 @@ import { DebugElement } from '@angular/core';
 // required for this specific test
 import { MaterialModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientModule } from '@angular/common/http';
 
-import { AuthenticationService } from '../../_services/authentication.service';
-import { HttpModule } from '@angular/http';
+import { AuthService } from '../../_services/auth.service';
 
 import { HomeComponent } from './home.component';
 
@@ -25,9 +24,9 @@ describe('HomeComponent', () => {
       imports: [
         MaterialModule,
         RouterTestingModule,
-        HttpModule
+        HttpClientModule
       ],
-      providers: [ { provide: AuthenticationService, useValue: authServiceStub } ]
+      providers: [ { provide: AuthService, useValue: authServiceStub } ]
     })
     .compileComponents();
   }));

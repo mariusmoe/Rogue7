@@ -1,4 +1,3 @@
-/* tslint:disable:no-unused-variable */
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { By } from '@angular/platform-browser';
@@ -19,14 +18,11 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/timeout';
 
-import { BaseComponent } from './base.component';
-import { LoginComponent } from './../login-component/login.component';
-import { UserComponent } from './../user-component/user.component';
+import { LoginComponent } from './login.component';
 
-
-describe('BaseComponent', () => {
-  let component: BaseComponent;
-  let fixture: ComponentFixture<BaseComponent>;
+describe('LoginComponent', () => {
+  let component: LoginComponent;
+  let fixture: ComponentFixture<LoginComponent>;
 
   const authServiceStub = {
     getUser(): Observable<User> {
@@ -40,7 +36,7 @@ describe('BaseComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BaseComponent, LoginComponent, UserComponent ],
+      declarations: [ LoginComponent ],
       imports: [
         BrowserAnimationsModule,
         MaterialModule,
@@ -54,7 +50,7 @@ describe('BaseComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BaseComponent);
+    fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

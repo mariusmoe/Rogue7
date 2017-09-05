@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 
 // Router
-import { DNLRoutingModule } from './dnl.routing-module';
+import { MemberRoutingModule } from './member.routing-module';
 
 // Modules
 import { SharedModule } from '../../_modules/shared.module';
 import { DateFnsModule } from 'ngx-date-fns';
 
 // Components
-import { DNLServerComponent } from './dnlserver-component/dnlserver.component';
+import { MemberHomeComponent } from './member-home-component/member-home.component';
 
 // Services
 import { DNLService } from '../../_services/dnl.service';
@@ -16,10 +16,10 @@ import { DNLService } from '../../_services/dnl.service';
 
 @NgModule({
   declarations: [
-    DNLServerComponent,
+    MemberHomeComponent,
   ],
   imports: [
-    DNLRoutingModule,
+    MemberRoutingModule,
     SharedModule,
     DateFnsModule,
   ],
@@ -30,4 +30,4 @@ import { DNLService } from '../../_services/dnl.service';
     DNLService,
   ]
 })
-export class DNLModule { }
+export class MemberModule { }

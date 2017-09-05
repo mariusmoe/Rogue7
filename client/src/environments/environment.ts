@@ -8,10 +8,14 @@ export const environment = {
 
   URL: {
     base:           'http://localhost:2000',
-    login:          'http://localhost:2000/api/auth/login',
-    renewJWT:       'http://localhost:2000/api/auth/renewjwt',
-    newUser:        'http://localhost:2000/api/auth/newuser',
-    queryGameServer: 'http://localhost:2000/api/dnl/query',
+    auth: {
+      login:        'http://localhost:2000/api/auth/login',
+      token:        'http://localhost:2000/api/auth/token',
+      updatepass:   'http://localhost:2000/api/auth/updatepassword',
+    },
+    dnl: {
+      query:        'http://localhost:2000/api/dnl/query',
+    },
   }
 };
 

@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 
@@ -8,7 +7,7 @@ import { AppComponent } from './app.component';
 
 // Modules
 import { AppRoutingModule } from './app.routing-module';
-import { CoreModule } from './core.module';
+// import { CoreModule } from './core.module';
 
 
 @NgModule({
@@ -17,9 +16,8 @@ import { CoreModule } from './core.module';
   ],
   imports: [
     BrowserAnimationsModule,
-    CommonModule,
     AppRoutingModule,
-    CoreModule,
+    // CoreModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

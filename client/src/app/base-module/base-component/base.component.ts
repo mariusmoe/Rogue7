@@ -1,17 +1,43 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
+import { AuthService } from '../../_services/auth.service';
+
+import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
+
 
 @Component({
   selector: 'app-base-component',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
 })
-export class BaseComponent {
-    public nav;
+export class BaseComponent implements OnInit, OnDestroy {
+  private ngUnsubscribe = new Subject();
 
-    constructor() {
-      this.nav = [
-        { 'name': 'DNL Server', 'url': '/dnl' },
-        // { 'name': 'bob', 'url': '/bob' },
-      ];
-    }
+  public nav: [{'name': string, 'url': string }];
+
+  constructor(
+    private authService: AuthService) {
+  }
+
+  ngOnInit() {
+    this.authService.getUser().takeUntil(this.ngUnsubscribe).subscribe(user => {
+      if (user) {
+        this.nav = [
+          { 'name': 'DNL Server', 'url': '/dnl' },
+          { 'name': 'Member Section', 'url': '/members' },
+        ];
+      } else {
+        this.nav = [
+          { 'name': 'DNL Server', 'url': '/dnl' },
+        ];
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+  }
 }

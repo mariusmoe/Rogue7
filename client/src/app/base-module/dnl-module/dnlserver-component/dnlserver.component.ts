@@ -9,7 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { interval } from 'rxjs/Observable/interval';
 import 'rxjs/add/operator/takeUntil';
 
-import { GameDig, GameDigStates } from './../../../_models/gamedig';
+import { GameDig, DNLStates } from './../../../_models/dnl';
 
 
 @Component({
@@ -20,15 +20,14 @@ import { GameDig, GameDigStates } from './../../../_models/gamedig';
 export class DNLServerComponent implements OnInit, OnDestroy {
 
   private ngUnsubscribe = new Subject();
-  public GameDigStates = GameDigStates;
-  public state = GameDigStates.Loading;
+  public DNLStates = DNLStates;
+  public state = DNLStates.Loading;
 
   public gameData: GameDig;
   public lastUpdate: Date;
 
   constructor(
     private router: Router,
-    // public snackBar: MdSnackBar,
     private dnlService: DNLService) {
    }
 
@@ -47,7 +46,7 @@ export class DNLServerComponent implements OnInit, OnDestroy {
       this.state = response.state;
       this.lastUpdate = new Date();
 
-      if (this.state === GameDigStates.Success) {
+      if (this.state === DNLStates.Success) {
         const now = new Date().valueOf();
         for (const player of this.gameData.players) {
           player.timeDate = new Date(now - player.time * 1000);

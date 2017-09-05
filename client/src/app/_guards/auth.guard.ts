@@ -2,27 +2,27 @@ import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
 import { JwtHelper } from 'angular2-jwt';
 import { MdSnackBar } from '@angular/material';
-import { AuthenticationService } from '../_services/authentication.service';
+import { AuthService } from '../_services/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-  jwtHelper: JwtHelper = new JwtHelper();
+  private jwtHelper: JwtHelper = new JwtHelper();
 
   constructor(
-    private router: Router,
     public snackBar: MdSnackBar,
-    private authenticationService: AuthenticationService) { }
+    private router: Router,
+    private authService: AuthService) { }
 
   /**
-   * Defines a time 20 min before the JWT rottens
-   * @return {Date} 20 min before rotten JWT
+   * Defines a time 60 min before the JWT rottens
+   * @return {Date} 60 min before rotten JWT
    */
-  getAlarmtime() {
+  private getAlarmtime() {
     const token = localStorage.getItem('token');
     const expDate = this.jwtHelper.getTokenExpirationDate(token);
 
-    return new Date(expDate.getTime() * 1000 - 20 * 60000);     // 20 min before expDate
+    return new Date(expDate.getTime() * 1000 - 60 * 60000);     // 60 min before expDate
   }
 
   /**
@@ -35,20 +35,17 @@ export class AuthGuard implements CanActivate {
       const alarmTime = this.getAlarmtime();
       if (alarmTime.getTime() < (new Date().getTime() * 1000)) {
         // check if JWT can be renewed
-        const sub = this.authenticationService.getNewJWT()
-            .subscribe(result => {
-              sub.unsubscribe();
-              if (result === true) {
-                return true;
-              } else {
-                // Session expired
-                localStorage.removeItem('token');
-                this.openSnackBar('Session expired', '');
-
-                this.router.navigate(['/login']);
-                return false;
-              }
-            });
+        const sub = this.authService.renewToken().subscribe(
+          result => {
+            sub.unsubscribe();
+            if (result === false) {
+              // Session expired
+              this.openSnackBar('Session expired', '');
+              this.authService.logOut();
+              return false;
+            }
+            return true;
+        });
       } else {
         return true;
       }
@@ -65,9 +62,9 @@ export class AuthGuard implements CanActivate {
    * @param  {string} message The message that is to be displayed
    * @param  {string} action  the action message that is to be displayed
    */
-  openSnackBar(message: string, action: string) {
+  private openSnackBar(message: string, action: string) {
     this.snackBar.open(message, action, {
-      duration: 7000,
+      duration: 5000,
     });
   }
 
