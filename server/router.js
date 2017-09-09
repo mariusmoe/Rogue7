@@ -61,11 +61,11 @@ module.exports = (app) => {
   */
 
   // Get content lists
-  cmsRoutes.get('/', requireAccess, CMSController.getContentList);
+  cmsRoutes.get('/', CMSController.getContentList);
 
 
   // Get content
-  cmsRoutes.get('/:route', requireAccess, CMSController.getContent);
+  cmsRoutes.get('/:route', CMSController.getContent);
 
 
   // Patch content

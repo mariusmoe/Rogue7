@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, ElementRef } from '@angular/core';
 import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CMSService } from '../../../_services/cms.service';
@@ -12,6 +12,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
+import { ClassicEditor as CKEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+
 @Component({
   selector: 'app-create-component',
   templateUrl: './create.component.html',
@@ -21,7 +23,10 @@ export class CreateComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   contentForm: FormGroup;
   accessChoices: string[] = ['everyone', 'user'];
+  accessVerbose = { 'everyone': 'Everyone', 'admin': 'Admins', 'user': 'Users' };
   inputContent: CmsContent;
+  @ViewChild('content') editorBox: ElementRef;
+  editor: any;
 
 
   disallowedRoutes(contentList: BehaviorSubject<CmsContent[]>) {
@@ -57,6 +62,7 @@ export class CreateComponent implements OnInit, OnDestroy {
           this.contentForm.controls['title'].setValue(data.title);
           this.contentForm.controls['access'].setValue(data.access);
           this.contentForm.controls['content'].setValue(data.content);
+          if (this.editor) { this.editor.setData(data.content); }
         },
         err => {
           router.navigate(['/admin']);
@@ -73,16 +79,26 @@ export class CreateComponent implements OnInit, OnDestroy {
         return;
       }
     });
+    console.log(CKEditor.build.plugins.map( plugin => plugin.pluginName ).slice(1));
+    CKEditor.create(this.editorBox.nativeElement)
+    .then( editor => {
+      this.editor = editor;
+      if (this.inputContent) { this.editor.setData(this.inputContent.content); }
+    }).catch( err => {
+      console.log(err);
+    });
   }
 
 
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
+    this.editor.destroy();
   }
 
   submitForm() {
     const content: CmsContent = this.contentForm.value;
+    content.content = this.editor.getData();
     if (this.inputContent) {
       // disabled fields do not deliver content on the .value, so we'll manually add it back.
       content.route = this.inputContent.route;

@@ -17,7 +17,7 @@
 
 
       <!-- THE ACTUAL CONTENT WILL BE RENDERED INSIDE HERE!!! -->
-      <div #content class="content" [innerHTML]="san.bypassSecurityTrustHtml(contentObject.content)">
+      <div #content class="content ck-editor__editable" [innerHTML]="san.bypassSecurityTrustHtml(contentObject.content)">
       </div>
 
 

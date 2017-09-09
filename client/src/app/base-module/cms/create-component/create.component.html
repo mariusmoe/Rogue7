@@ -31,13 +31,13 @@
         <!-- ACCESS -->
         <md-select ngClass="field" placeholder="Access" [formControl]="contentForm.controls['access']" required>
           <md-option *ngFor="let option of accessChoices" [value]="option">
-            {{option}}
+            {{ accessVerbose[option] }}
           </md-option>
         </md-select>
 
 
         <!-- CONTENT -->
-        <div class="content">
+        <div class="content" #content>
         </div>
       </form>
     </md-card-content>
