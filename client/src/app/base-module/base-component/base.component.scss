@@ -1,15 +1,28 @@
+
+
+$contentBG: #fff;
+$navBG: #ddd;
+$border: 1px solid #999;
+
+
+
 .wrapper {
   max-width: 1200px;
-  // min-width: 1200px;
   margin: 0 auto;
 }
 .content {
   padding: 10px;
-  background: #ddd;
+  background: $contentBG;
   min-height: 450px;
+  border: $border;
+  border-style: none solid solid solid;
 }
 
 .navBar {
+  background: $navBG;
+  border: $border;
+  border-style: none solid;
+  padding-top: 0;
   a {
     display: inline-block;
   }
@@ -24,7 +37,7 @@ a.mat-list-item.navItem {
   // min-width: 200px;
   // text-align: center;
   &.active {
-    background: #ddd;
+    background: #fff;
   }
 }
 
