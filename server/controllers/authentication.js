@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken'),
       validator = require('validator'),
       config = require('config'),
       User = require('../models/user'),
-      status = require('../status');
+      msg = require('../libs/responseMessage');
 
-const userTypes = ['sysadmin', 'user'];
+const userTypes = ['admin', 'member'];
 
 /**
  * getSecureRandomBytes in hex format
@@ -31,24 +31,6 @@ function generateToken(user) {
   });
 }
 
-exports.roleAuthorization = function(role){
-  return function(req,res,next){
-    let id = req.user._id;
-
-    User.findById(id, function(err,foundUser){
-      if(err){
-        res.status(422).json({error: status.USER_NOT_FOUND.message, status: status.USER_NOT_FOUND.code});
-        return next(err);
-      }
-      if(foundUser.role == role){
-        return next();
-      }
-      res.status(401).json({error: 'You are not authorized.'});
-      return next('Unauthorized');
-    })
-  }
-}
-
 
 exports.updatepassword = (req, res, next) => {
   const currentPassword = req.body.currentPassword,
@@ -58,11 +40,11 @@ exports.updatepassword = (req, res, next) => {
 
 
   if (validator.isEmpty(currentPassword) || validator.isEmpty(password) || validator.isEmpty(confirm)) {
-    return res.status(400).send({message: status.NO_PASSWORD_OR_NEW_PASSWORDS.message, status: status.NO_PASSWORD_OR_NEW_PASSWORDS.code });
+    return res.status(400).send(msg.append('NO_PASSWORD_OR_NEW_PASSWORDS'));
   }
 
   if (password != confirm) {
-    return res.status(400).send({message: status.PASSWORD_AND_CONFIRM_NOT_EQUAL.message, status: status.PASSWORD_AND_CONFIRM_NOT_EQUAL.code });
+    return res.status(400).send(msg.append('PASSWORD_AND_CONFIRM_NOT_EQUAL'));
   }
 
   user.comparePassword(currentPassword, (x, isMatch) => {
@@ -72,7 +54,8 @@ exports.updatepassword = (req, res, next) => {
     user.password = password;
     user.save((err2, updatedUser) => {
       if (err2) { next(err2); }
-      return res.status(200).send({message: status.PASSWORD_UPDATED.message, status: status.PASSWORD_UPDATED.code });
+
+      return res.status(200).send(msg.append('PASSWORD_UPDATED'));
     });
   });
 }
@@ -93,19 +76,18 @@ exports.token = (req, res, next) => {
  * Delete one account
  */
 exports.deleteAccount = (req, res, next) => {
-  // let id = req.user._id;
   let id = req.body.id
-  if (!id){
-    return res.status(400).send({message: status.USER_NOT_FOUND.message, status: status.USER_NOT_FOUND.code })
+
+  if(req.user.role !== userTypes[0]) {
+    return res.status(401).send(msg.append('ROUTE_UNAUTHORISED'))
   }
-  if(req.user.role === userTypes[0]) {
-    User.findByIdAndRemove(id, (err) => {
-      if (err) { return next(err); }
-      return res.status(200).send({message: "deleted user"})
-    })
-  } else {
-    return res.status(401).send({message: "unauthorized"})
+  if (!id) {
+    return res.status(400).send(msg.append('USER_NOT_FOUND'));
   }
+  User.findByIdAndRemove(id, (err) => {
+    if (err) { return next(err); }
+    return res.status(200).send(msg.append('ACCOUNT_DELETED'));
+  });
 }
 
 /**
@@ -131,16 +113,10 @@ exports.register = (req, res, next) => {
 
 
   if (validator.isEmpty(email) || validator.isEmpty(password)){
-    return res.status(400).send({
-      message: status.NO_EMAIL_OR_PASSWORD.message,
-      status: status.NO_EMAIL_OR_PASSWORD.code
-    });
+    return res.status(400).send(msg.append('NO_EMAIL_OR_PASSWORD'));
   }
   if (validator.isEmpty(role) || (['admin', 'user'].indexOf(role) == -1) ) {
-    return res.status(400).send({
-      message: status.NO_OR_BAD_ROLE.message,
-      status: status.NO_OR_BAD_ROLE.code
-    });
+    return res.status(400).send(msg.append('NO_OR_BAD_ROLE'));
   }
 
   email = email.toLowerCase(); // use lower case to avoid case sensitivity issues later
@@ -150,7 +126,7 @@ exports.register = (req, res, next) => {
 
     // check if the email is already in use first
     if (emailAlreadyExisting) {
-      return res.status(409).send({ message: status.EMAIL_NOT_AVILIABLE.message, status: status.EMAIL_NOT_AVILIABLE.code });
+      return res.status(409).send(msg.append('EMAIL_NOT_AVILIABLE'));
     }
 
     let user = new User({
@@ -160,7 +136,7 @@ exports.register = (req, res, next) => {
     });
     user.save((err2, newUser) => {
       if (err2) { return next(err2); }
-      return res.status(200).send({message: status.ACCOUNT_CREATED.message, status: status.ACCOUNT_CREATED.code} )
+      return res.status(200).send(msg.append('ACCOUNT_CREATED'));
     });
   }).lean();
 }

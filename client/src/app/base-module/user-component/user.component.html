@@ -1,6 +1,20 @@
 <!-- ASYNC CHECK; SUBSCRIBES TO LOGGED-IN OBSERVABLE; UPDATES AUTOMAGICALLY -->
 <ng-container *ngIf="authService.getUser() | async; let user;">
   <md-accordion multi="false">
+
+    <!-- CMS PANEL -->
+    <md-expansion-panel>
+      <md-expansion-panel-header>
+        <md-panel-title>Content Management</md-panel-title>
+        <!-- <md-panel-description>Future!</md-panel-description> -->
+      </md-expansion-panel-header>
+      <div>
+      </div>
+      <md-action-row>
+      <button md-raised-button color="primary" routerLink="/compose">Compose page</button>
+    </md-action-row>
+    </md-expansion-panel>
+
     <!-- ACCOUNT SETTINGS -->
     <md-expansion-panel>
       <md-expansion-panel-header>
@@ -49,20 +63,6 @@
           Change Password
         </button>
       </md-action-row>
-    </md-expansion-panel>
-
-    <!-- SOMETHING ELSE -->
-    <md-expansion-panel>
-      <md-expansion-panel-header>
-        <md-panel-title>Future stuff</md-panel-title>
-        <!-- <md-panel-description>Future!</md-panel-description> -->
-      </md-expansion-panel-header>
-      <div>
-
-      </div>
-      <md-action-row>
-      <button md-raised-button color="primary">Button</button>
-    </md-action-row>
     </md-expansion-panel>
   </md-accordion>
 </ng-container>

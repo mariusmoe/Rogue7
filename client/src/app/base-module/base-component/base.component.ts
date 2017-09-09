@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { AuthService } from '../../_services/auth.service';
+import { CMSService } from '../../_services/cms.service';
 
-import { Subscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { CmsContent } from '../../_models/cms';
+
 
 
 @Component({
@@ -13,22 +13,20 @@ import 'rxjs/add/operator/takeUntil';
   styleUrls: ['./base.component.scss'],
 })
 export class BaseComponent implements OnInit, OnDestroy {
-  private ngUnsubscribe = new Subject();
 
-  public nav: [{'name': string, 'url': string }];
+  defaultRoutes = [
+    {'title': 'DNL Server', route: '/dnl' },
+  ];
 
   constructor(
-    private authService: AuthService) {
+    private authService: AuthService,
+    public cmsService: CMSService) {
   }
 
   ngOnInit() {
-    this.authService.getUser().takeUntil(this.ngUnsubscribe).subscribe(user => {
-      // f
-    });
+
   }
 
   ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 }

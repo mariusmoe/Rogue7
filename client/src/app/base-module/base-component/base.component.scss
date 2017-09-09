@@ -10,16 +10,19 @@
 }
 
 .navBar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  a {
+    display: inline-block;
+  }
+  // display: flex;
+  // flex-wrap: wrap;
+  // justify-content: space-between;
 }
 
 a.mat-list-item.navItem {
   // display: inline-block;
-  flex: 1 1;
-  min-width: 200px;
-  text-align: center;
+  // flex: 1 1;
+  // min-width: 200px;
+  // text-align: center;
   &.active {
     background: #ddd;
   }

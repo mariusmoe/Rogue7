@@ -40,6 +40,14 @@ a:hover {
   text-decoration: none;
   color: inherit;
 }
+.contentWrapper {
+  a {
+    &:hover {
+      color: map-get(nth($primary, 1), nth($primary, 2));
+    }
+    text-decoration: underline;
+  }
+}
 
 
 input:-webkit-autofill,

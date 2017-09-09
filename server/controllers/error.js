@@ -1,7 +1,8 @@
 "use strict";
 
-const status = require('../status');
+const msg = require('../libs/responseMessage');
+
 
 exports.error = (req, res, next) => {
-  return res.status(404).send({message: status.ROUTE_INVALID.message, status: status.ROUTE_INVALID.code});
+  return res.status(404).send(msg.append('ROUTE_INVALID'));
 };

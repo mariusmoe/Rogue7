@@ -2,7 +2,7 @@
   <md-toolbar color="primary" ngClass="topHeader">
     <a routerLink="/">Sotingane</a>
     <span class="spacer"></span>
-    <button md-mini-fab (click)="userSection.toggle()"><md-icon>person</md-icon></button>
+    <button md-mini-fab (click)="userSection.toggle()"><md-icon>person_outline</md-icon></button>
   </md-toolbar>
 
   <md-sidenav-container>
@@ -13,13 +13,22 @@
       <app-user-component></app-user-component>
     </md-sidenav>
 
+
+
     <!-- NAVIGATION BAR -->
+
     <md-nav-list ngClass="navBar">
-      <a md-list-item *ngFor="let navEntry of nav"
-        routerLink="{{navEntry.url}}"
+      <a md-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+        routerLink="/{{navEntry.route}}"
         ngClass="navItem"
-        routerLinkActive="active">{{ navEntry.name }}</a>
+        routerLinkActive="active">{{ navEntry.title }}</a>
+      <a md-list-item *ngFor="let navEntry of defaultRoutes"
+        routerLink="{{navEntry.route}}"
+        ngClass="navItem"
+        routerLinkActive="active">{{ navEntry.title }}</a>
     </md-nav-list>
+
+
 
     <!-- CONTENT -->
     <div class="content">

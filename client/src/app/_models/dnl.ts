@@ -1,23 +1,5 @@
 
 
-export const DNLStates = {
-  Loading: 0,
-  Error: 1,
-  Success: 2,
-  TimedOut: 3,
-};
-
-export interface DNLMessage {
-  message: string;
-  serverState?: GameDig;
-  timeout?: boolean;
-  offline?: boolean;
-  state?: number;
-}
-
-
-
-
 export interface GameDig {
     bots: [any];
     map: string;
@@ -27,6 +9,7 @@ export interface GameDig {
     players: [GameDigPlayer];
     query?: GameDigQuery;
     raw?: GameDigRaw;
+    lastUpdate?: Date; // Added separately from GameDig
 }
 
 
@@ -37,7 +20,7 @@ interface GameDigPlayer {
   name: string;
   score: number;
   time: number;
-  timeDate?: Date;
+  timeDate?: Date; // Added separately from GameDig
 }
 
 interface GameDigQuery {

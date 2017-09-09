@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+
+
 
 @Component({
   selector: 'app-outlet-component',
@@ -9,4 +10,6 @@ import { Router } from '@angular/router';
 export class OutletComponent {
 
   constructor() {}
+
+
 }

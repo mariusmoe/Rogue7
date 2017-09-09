@@ -16,7 +16,9 @@ export const environment = {
     dnl: {
       query:        'http://localhost:2000/api/dnl/query',
     },
-    cms:            'http://localhost:2000/api/cms',
+    cms: {
+      content:      'http://localhost:2000/api/cms',
+    },
   }
 };
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 // services
 import { AuthService } from '../_services/auth.service';
+import { CMSService } from '../_services/cms.service';
 
 // Modules
 import { RouterModule, Routes } from '@angular/router';
@@ -10,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 // import { MaterialModule } from '@angular/material'; <- depricated
 import { MaterialModule } from './material.module';
+import { DateFnsModule } from 'ngx-date-fns';
 
 
 // Pipes
@@ -27,6 +29,7 @@ import { AuthGuard } from '../_guards/auth.guard';
   ],
   providers: [
     AuthService,
+    CMSService,
     AuthGuard
   ],
   exports: [
@@ -36,6 +39,7 @@ import { AuthGuard } from '../_guards/auth.guard';
     ReactiveFormsModule,
     RouterModule,
     HttpClientModule,
+    DateFnsModule
   ]
 })
 export class SharedModule { }

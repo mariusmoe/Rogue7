@@ -5,7 +5,6 @@ import { DNLRoutingModule } from './dnl.routing-module';
 
 // Modules
 import { SharedModule } from '../../_modules/shared.module';
-import { DateFnsModule } from 'ngx-date-fns';
 
 // Components
 import { DNLServerComponent } from './dnlserver-component/dnlserver.component';
@@ -21,7 +20,6 @@ import { DNLService } from '../../_services/dnl.service';
   imports: [
     DNLRoutingModule,
     SharedModule,
-    DateFnsModule,
   ],
   entryComponents: [
 

@@ -7,13 +7,14 @@ const mongoose = require('mongoose'),
  |--------------------------------------------------------------------------
 */
 const contentSchema = new Schema({
-  route: {
+  title: {
     type: String,
     unique: true,
     required: true
   },
-  content: {
-    type: String, // html
+  route: {
+    type: String,
+    unique: true,
     required: true
   },
   access: {
@@ -21,7 +22,15 @@ const contentSchema = new Schema({
     enum: ['admin', 'user', 'everyone'],
     default: 'everyone'
   },
+  content: {
+    type: String, // html
+    required: true
+  },
   updatedBy: {
+    type: mongoose.Schema.Types.ObjectId, ref: 'User',
+    required: true,
+  },
+  createdBy: {
     type: mongoose.Schema.Types.ObjectId, ref: 'User',
     required: true,
   },
@@ -30,5 +39,13 @@ const contentSchema = new Schema({
   timestamps: true
 });
 
+contentSchema.index({ route: 1 }, { unique: true });
+
+var autoPopulate = function(next) {
+  this.populate({ path: 'updatedBy', select: ['_id', 'email', 'role']});
+  this.populate({ path: 'createdBy', select: ['_id', 'email', 'role']});
+  next();
+};
+contentSchema.pre('findOne', autoPopulate);
 
 module.exports = mongoose.model('Content', contentSchema);

@@ -14,46 +14,57 @@ export class AuthGuard implements CanActivate {
     private router: Router,
     private authService: AuthService) { }
 
-  /**
-   * Defines a time 60 min before the JWT rottens
-   * @return {Date} 60 min before rotten JWT
-   */
-  private getAlarmtime() {
-    const token = localStorage.getItem('token');
-    const expDate = this.jwtHelper.getTokenExpirationDate(token);
 
-    return new Date(expDate.getTime() * 1000 - 60 * 60000);     // 60 min before expDate
+  /**
+   * Dictates the access rights to a given route
+   * @return {boolean} whether access is granted
+   */
+  canActivate() {
+    if (!this.authService.getUser().getValue()) {
+      // not logged in so redirect to login page
+      // this.router.navigate(['/login']);
+      return false;
+    }
+
+    // User might be logged in
+    const expDate = this.getTokenExpirationDate().getTime();
+    const now = new Date().getTime();
+    const warningTime = expDate - 60 * 60 * 1000;     // 60 min before expDate
+    if (now > expDate) {
+      this.openSnackBar('Session expired', '');
+      this.authService.logOut();
+      return false;
+    }
+
+    // At this point we know that the user is logged in.
+    // Anything below here should return true
+
+    if (warningTime < now) {
+      // We know because of the prior if check that we're BEFORE the expiry Date
+      // so if now is further ahead than the warn time, we're within the 60 min
+      // window, and thusly should query for a renewal of the token.
+      const sub = this.authService.renewToken().subscribe(result => {
+        sub.unsubscribe();
+        if (result === false) {
+          // Session expired
+          console.log('session expired due to renewToken');
+          this.openSnackBar('Session expired', '');
+          this.authService.logOut();
+        }
+      });
+    }
+    return true;
   }
 
   /**
-   * [canActivate description]
-   * @return {[type]} [description]
+   * Returns the expiry date of the JWT
+   * @return {Date} the date time the JWT expires
    */
-  canActivate() {
-    if (localStorage.getItem('token')) {
-      // User might be loged in
-      const alarmTime = this.getAlarmtime();
-      if (alarmTime.getTime() < (new Date().getTime() * 1000)) {
-        // check if JWT can be renewed
-        const sub = this.authService.renewToken().subscribe(
-          result => {
-            sub.unsubscribe();
-            if (result === false) {
-              // Session expired
-              this.openSnackBar('Session expired', '');
-              this.authService.logOut();
-              return false;
-            }
-            return true;
-        });
-      } else {
-        return true;
-      }
-    } else {
-      // not logged in so redirect to login page
-      this.router.navigate(['/login']);
-      return false;
-    }
+  private getTokenExpirationDate() {
+    const token = localStorage.getItem('token');
+    const expDate = this.jwtHelper.getTokenExpirationDate(token);
+
+    return expDate;
   }
 
 

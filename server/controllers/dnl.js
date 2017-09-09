@@ -1,5 +1,7 @@
-const status = require('../status'),
-      Gamedig = require('gamedig');
+const Gamedig = require('gamedig'),
+      msg = require('../libs/responseMessage');
+
+
 
 
 exports.getServerData = (req, res, next) => {
@@ -8,13 +10,16 @@ exports.getServerData = (req, res, next) => {
       host: '173.212.225.7',
       port: '27015',
   }).then((state) => {
-      res.status(200).send({message: status.DNL_SERVER_ONLINE.message, status: status.DNL_SERVER_ONLINE.code, serverState: state});
+      res.status(200).send(state);
   }).catch((error) => {
     if (error && error == "UDP Watchdog Timeout") {
-      res.status(200).send({message: status.DNL_SERVER_TIMED_OUT.message, status: status.DNL_SERVER_TIMED_OUT.code, timeout: true });
+      const m = msg.append('DNL_SERVER_TIMED_OUT');
+      m.timeout = true;
+      res.status(504).send(m);
       return;
     }
-    console.log('DNL server error: ', error);
-    res.status(200).send({message: status.DNL_SERVER_OFFLINE.message, status: status.DNL_SERVER_OFFLINE.code, offline: true });
+    const m = msg.append('DNL_SERVER_TIMED_OUT');
+    m.offline = true;
+    res.status(504).send(m);
   });
 };

@@ -28,7 +28,13 @@ export class AuthService {
     private http: HttpClient,
     private router: Router ) {
       this.userSubject = new BehaviorSubject(null);
-      this.updateCurrentUserData(localStorage.getItem('token'));
+
+      const token = localStorage.getItem('token');
+      if (!token || this.jwtHelper.isTokenExpired(token)) {
+        // this.logOut();
+        return;
+      }
+      this.updateCurrentUserData(token);
   }
 
   // ---------------------------------------
@@ -41,9 +47,9 @@ export class AuthService {
    */
   private updateCurrentUserData(token: string) {
     if (!token) { return; }
-    const u = this.jwtHelper.decodeToken(token);
+    const u: User = this.jwtHelper.decodeToken(token);
     if (!u) { return; }
-    this.userSubject.next({ _id: u._id, email: u.email, role: u.role });
+    this.userSubject.next(u);
   }
 
   // ---------------------------------------
@@ -52,10 +58,18 @@ export class AuthService {
 
   /**
    * Gets the user as an observable
-   * @return {Observable<User>}    the user observable
+   * @return {BehaviorSubject<User>}    the user Subject
    */
-  getUser(): Observable<User> {
-    return this.userSubject.asObservable();
+  getUser(): BehaviorSubject<User> {
+    return this.userSubject;
+  }
+
+  /**
+   * Returns the time, in ms, until the http request is timed out.
+   * @return {number} the time, in ms.
+   */
+  getTimeout(): number {
+    return TIMEOUT;
   }
 
   // ---------------------------------------
@@ -69,18 +83,12 @@ export class AuthService {
    */
   login(user: User): Observable<boolean> {
     const headers = { headers: new HttpHeaders().set('content-type', 'application/json') };
-    return this.http.post(environment.URL.auth.login, JSON.stringify(user), headers).map( (json: JWT) => {
-      localStorage.setItem('token', json.token);    // Set token
-      this.updateCurrentUserData(json.token);       // Set user data & Notify subscribers
-      return !!json.token;
-
-    }).timeout(TIMEOUT).catch(err => {
-      // essentially, IF we catch due to a HTTP status code >= 400
-      if (err && err.status && err.status >= 400) {
-        return Observable.of(false);  // We want to send a basic false.
-      }
-      return Observable.throw(false); // If we time out, however, we want to throw the false.
-    });
+    return this.http.post(environment.URL.auth.login, JSON.stringify(user), headers)
+      .map( ( json: JWT) => {
+        localStorage.setItem('token', json.token);    // Set token
+        this.updateCurrentUserData(json.token);       // Set user data & Notify subscribers
+        return !!json.token;
+      }).timeout(TIMEOUT);
   }
 
 
@@ -100,17 +108,13 @@ export class AuthService {
    * @return {Observable<boolean>} wether the JWT was successfully renewed
    */
   renewToken(): Observable<boolean> {
+    console.log('ATTEMPTED TO RENEW TOKEN!!!!');
     const headers = { headers: new HttpHeaders().set('Authorization', localStorage.getItem('token')) };
-    return this.http.get(environment.URL.auth.token, headers).map( (json: JWT) => {
-      localStorage.setItem('token', json.token);
-      return !!json.token;
-    }).timeout(TIMEOUT).catch(err => {
-      // essentially, IF we catch due to a HTTP status code >= 400
-      if (err && err.status && err.status >= 400) {
-        return Observable.of(false);  // We want to send a basic false.
-      }
-      return Observable.throw(false); // If we time out, however, we want to throw the false.
-    });
+    return this.http.get(environment.URL.auth.token, headers)
+      .map( ( json: JWT) => {
+        localStorage.setItem('token', json.token);    // Set token
+        return !!json.token;
+      }).timeout(TIMEOUT);
   }
 
   /**
@@ -123,15 +127,10 @@ export class AuthService {
         .set('Authorization', localStorage.getItem('token'))
         .set('content-type', 'application/json')
     };
-    return this.http.post(environment.URL.auth.updatepass, user, headers).map( () => {
-      return true;
-    }).timeout(TIMEOUT).catch(err => {
-      // essentially, IF we catch due to a HTTP status code >= 400
-      if (err && err.status && err.status >= 400) {
-        return Observable.of(false);  // We want to send a basic false.
-      }
-      return Observable.throw(false); // If we time out, however, we want to throw the false.
-    });
+    return this.http.post(environment.URL.auth.updatepass, user, headers)
+      .map( () => true)
+      .timeout(TIMEOUT)
+      .catch(err => Observable.of(false)); // returns message objects
   }
 
 

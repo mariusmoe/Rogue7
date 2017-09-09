@@ -2,57 +2,86 @@ module.exports = {
   // ROUTER CODES: 10000
   ROUTE_INVALID: {
     message: "The requested route does not exist. Did you forget a param?",
-    code: 10000,
+    status: 10000,
+  },
+  ROUTE_UNAUTHORISED: {
+    message: "The requested route does not exist. Did you forget a param?",
+    status: 10000,
   },
 
   // AUTH CODES: 20000
   NO_EMAIL_OR_PASSWORD: {
     message: "Missing email or password",
-    code: 20000,
+    status: 20000,
   },
   NO_OR_BAD_ROLE: {
     message: "Missing or bad role",
-    code: 20001,
+    status: 20001,
   },
   EMAIL_NOT_AVILIABLE: {
     message: "Email already taken",
-    code: 20002,
+    status: 20002,
   },
   ACCOUNT_CREATED: {
     message: "Account created",
-    code: 20003,
+    status: 20003,
+  },
+  ACCOUNT_DELETED: {
+    message: "Account successfully deleted",
+    status: 20004,
   },
   NO_PASSWORD_OR_NEW_PASSWORDS: {
     message: "Missing password, newPassword or confirm",
-    code: 20004,
+    status: 20005,
   },
   PASSWORD_AND_CONFIRM_NOT_EQUAL: {
     message: "newPassword and confirm are not equal",
-    code: 20005,
+    status: 20006,
   },
   PASSWORD_DID_NOT_MATCH: {
     message: "Password did not match the current password",
-    code: 20006,
+    status: 20007,
   },
   PASSWORD_UPDATED: {
     message: "Password has been successfully updated",
-    code: 20007,
+    status: 20008,
   },
 
 
+  // CMS CODES: 30000
+  CMS_NO_ROUTES: {
+    message: "No routes were found",
+    status: 30000,
+  },
+  CMS_CONTENT_NOT_FOUND: {
+    message: "Could not retrieve content for the provided route",
+    status: 30001,
+  },
+  CMS_DATA_UNPROCESSABLE: {
+    message: "The provided data could not be processed",
+    status: 30002,
+  },
+  CMS_DATA_UNABLE_TO_SAVE: {
+    message: "Could not save. Internal server error",
+    status: 30003,
+  },
+  CMS_CONTENT_DELETED: {
+    message: "Content were successfully deleted",
+    status: 30004,
+  },
 
 
   // DNL CODES: 40000
   DNL_SERVER_ONLINE: {
     message: "DNL server is online",
-    code: 40000,
+    status: 40000,
   },
   DNL_SERVER_OFFLINE: {
     message: "DNL Server is offline",
-    code: 40001,
+    status: 40001,
   },
   DNL_SERVER_TIMED_OUT: {
     message: "DNL server request timed out",
-    code: 40002,
+    status: 40002,
   },
 }

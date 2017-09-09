@@ -3,39 +3,40 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 
-import { DNLMessage, DNLStates } from './../_models/dnl';
+import { GameDig } from './../_models/dnl';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/timeout';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Injectable()
 export class DNLService {
+  private dataSubject = new BehaviorSubject<GameDig>(null);
+
 
   constructor(
     private http: HttpClient,
     private router: Router) {
   }
 
-  queryGameServer(): Observable<DNLMessage> {
-    return this.http.get(environment.URL.dnl.query).map( (json: DNLMessage) => {
-      // all successful responses do not necessarily mean the server is up and running etc.
-      if (json.serverState) {
-        // may still only have PARTIAL information
-        json.state = DNLStates.Success;
-      } else if (json.timeout) {
-        json.state = DNLStates.TimedOut;
-      } else if (json.offline) {
-        json.state = DNLStates.Error;
-      }
-      return json;
-    }).timeout(5000).catch(e => {
-      return Observable.of({
-        message: 'Request timed out',
-        state: DNLStates.TimedOut
-      });
-    });
+  getServerData(): BehaviorSubject<GameDig> {
+    return this.dataSubject;
+  }
+
+  queryGameServer() {
+    this.http.get(environment.URL.dnl.query)
+      .map( (data: GameDig) => data)
+      .timeout(5000)
+      .subscribe(
+        data => {
+          data.lastUpdate = new Date();
+          const now = new Date().valueOf();
+          for (const player of data.players) {
+            player.timeDate = new Date(now - player.time * 1000);
+          }
+          console.log(data);
+          this.dataSubject.next(data);
+        },
+        data => { this.dataSubject.next(data); }
+    );
   }
 }

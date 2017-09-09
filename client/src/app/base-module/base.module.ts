@@ -8,11 +8,12 @@ import { SharedModule } from '../_modules/shared.module';
 
 // Components
 import { BaseComponent } from './base-component/base.component';
-import { HomeComponent } from './home-component/home.component';
-import { OutletComponent } from './outlet-component/outlet.component';
 import { LoginComponent } from './login-component/login.component';
 import { UserComponent } from './user-component/user.component';
 
+import { CreateComponent } from './cms/create-component/create.component';
+import { ContentComponent } from './cms/content-component/content.component';
+import { OutletComponent } from './cms/outlet-component/outlet.component';
 
 // Services
 
@@ -20,17 +21,17 @@ import { UserComponent } from './user-component/user.component';
 @NgModule({
   declarations: [
     BaseComponent,
-    HomeComponent,
-    OutletComponent,
     LoginComponent,
-    UserComponent
+    UserComponent,
+    CreateComponent,
+    ContentComponent,
+    OutletComponent
   ],
   imports: [
     SharedModule,
     BaseRoutingModule,
   ],
   entryComponents: [
-
   ],
   providers: [
     // GameService,

@@ -10,11 +10,12 @@ const AuthenticationController = require('./controllers/authentication'),
 
 
 // Require login/auth
-const requireAuth   = passport.authenticate('jwt', { session: false });
-const requireLogin  = passport.authenticate('local', { session: false });
+const requireLogin  = passport.authenticate('local',          { session: false });
+const requireAuth   = passport.authenticate('fullAuth',       { session: false });
+const requireAccess = passport.authenticate('cmsAccessAuth',  { session: false });
 
-// Role types enum: ['sysadmin', 'user'],
-const REQUIRE_SYSADMIN = "sysadmin",
+// Role types enum: ['admin', 'user'],
+const REQUIRE_ADMIN = "admin",
       REQUIRE_USER = "user";
 
 module.exports = (app) => {
@@ -59,20 +60,28 @@ module.exports = (app) => {
    |--------------------------------------------------------------------------
   */
 
+  // Get content lists
+  cmsRoutes.get('/', requireAccess, CMSController.getContentList);
+
+
   // Get content
-  cmsRoutes.get('/:contentId', CMSController.getContent);
+  cmsRoutes.get('/:route', requireAccess, CMSController.getContent);
 
 
   // Patch content
-  cmsRoutes.patch('/:contentId', requireAuth, CMSController.patchContent);
+  cmsRoutes.patch('/:route', requireAuth, CMSController.patchContent);
+
+
+  // Delete content
+  cmsRoutes.delete('/:route', requireAuth, CMSController.deleteContent);
 
 
   // Create content
   cmsRoutes.post('/', requireAuth, CMSController.createContent);
 
 
-  // Get content structure
-  cmsRoutes.get('/', CMSController.getContentStructure);
+
+
 
   /*
    |--------------------------------------------------------------------------
