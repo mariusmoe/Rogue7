@@ -19,7 +19,7 @@ export class BaseComponent implements OnInit, OnDestroy {
   ];
 
   constructor(
-    private authService: AuthService,
+    public authService: AuthService,
     public cmsService: CMSService) {
   }
 

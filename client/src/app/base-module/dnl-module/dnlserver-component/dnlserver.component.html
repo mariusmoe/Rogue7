@@ -1,6 +1,6 @@
 
 <div class="gameWrapper">
-  <h1 class="alignCenter">Dark and Light Server</h1>
+  <h2 class="alignCenter">Dark and Light Server</h2>
 
 
   <ng-container *ngIf="dnlService.getServerData() | async; let gameData; else loading">
@@ -24,7 +24,7 @@
 
           <!-- Server info -->
           <div class="flex">
-            <h2>Server Information</h2>
+            <h3 class="alignCenter">Server Information</h3>
             <table class="gameDataTable">
               <tr><th>Header</th><th>Value</th></tr>
               <tr><td>Name</td><td class="alignRight">{{ gameData.name.substring(0,gameData.name.indexOf(' ')) }}</td></tr>
@@ -40,7 +40,7 @@
 
           <!-- player info -->
           <div class="flex">
-            <h2>Player Information</h2>
+            <h3 class="alignCenter">Player Information</h3>
             <table class="playerDataTable">
               <tr>
                 <th>Player Steam Name</th>

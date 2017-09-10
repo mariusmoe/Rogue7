@@ -50,7 +50,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       'route': ['', this.disallowedRoutes(cmsService.getContentList())],
       'title': ['', Validators.required],
       'access': ['everyone', Validators.required],
-      'content': ['', Validators.required]
+      // 'content': ['', Validators.required]
     });
     const param = route.snapshot.params['route'];
     if (param) {
@@ -61,7 +61,7 @@ export class CreateComponent implements OnInit, OnDestroy {
           this.contentForm.controls['route'].setValue(data.route);
           this.contentForm.controls['title'].setValue(data.title);
           this.contentForm.controls['access'].setValue(data.access);
-          this.contentForm.controls['content'].setValue(data.content);
+          // this.contentForm.controls['content'].setValue(data.content);
           if (this.editor) { this.editor.setData(data.content); }
         },
         err => {
@@ -79,13 +79,13 @@ export class CreateComponent implements OnInit, OnDestroy {
         return;
       }
     });
-    console.log(CKEditor.build.plugins.map( plugin => plugin.pluginName ).slice(1));
     CKEditor.create(this.editorBox.nativeElement)
     .then( editor => {
       this.editor = editor;
+      // console.log(editor);
       if (this.inputContent) { this.editor.setData(this.inputContent.content); }
     }).catch( err => {
-      console.log(err);
+      // console.log(err);
     });
   }
 
@@ -99,12 +99,13 @@ export class CreateComponent implements OnInit, OnDestroy {
   submitForm() {
     const content: CmsContent = this.contentForm.value;
     content.content = this.editor.getData();
+
     if (this.inputContent) {
-      // disabled fields do not deliver content on the .value, so we'll manually add it back.
       content.route = this.inputContent.route;
       this.onSubmit(this.cmsService.updateContent(content.route, content), content.route);
       return;
     }
+    content.route = content.route.toLowerCase();
     this.onSubmit(this.cmsService.createContent(content), content.route);
   }
 

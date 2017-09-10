@@ -1,5 +1,6 @@
-import { Component, OnChanges } from '@angular/core';
+import { Component, OnChanges, Output, EventEmitter } from '@angular/core';
 
+import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { User, UpdatePasswordUser } from '../../_models/user';
 
@@ -18,12 +19,14 @@ enum STATES {
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent {
+  @Output() navigated: EventEmitter<boolean> = new EventEmitter();
   changePasswordForm: FormGroup;
   STATES = STATES;
   state: STATES;
 
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     public authService: AuthService) {
     this.changePasswordForm = fb.group({
@@ -57,7 +60,6 @@ export class UserComponent {
   }
 
 
-
   /**
    * Compares the password and confirm fields and returns true if they match
    * @param  {FormGroup} group the form group upon which the check is done
@@ -72,4 +74,11 @@ export class UserComponent {
   }
 
 
+  /**
+   * Navigates to the compose page
+   */
+  navigateToCompose() {
+    this.navigated.emit(true);
+    this.router.navigate(['compose']);
+  }
 }

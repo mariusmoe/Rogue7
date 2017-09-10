@@ -5,19 +5,19 @@
     <button md-mini-fab (click)="userSection.toggle()"><md-icon>person_outline</md-icon></button>
   </md-toolbar>
 
-  <md-sidenav-container>
+  <md-sidenav-container ngClass="main">
     <md-sidenav #userSection mode="over" opened="false" position="end" class="userSection">
       <!-- LOGIN BOX -->
-      <app-login-component></app-login-component>
+      <app-login-component (navigated)="userSection.close()"></app-login-component>
       <!-- USER SETTINGS -->
-      <app-user-component></app-user-component>
+      <app-user-component (navigated)="userSection.close()"></app-user-component>
     </md-sidenav>
 
 
 
     <!-- NAVIGATION BAR -->
 
-    <md-nav-list ngClass="navBar">
+    <md-nav-list ngClass="navBar" *ngIf="(authService.getUser() | async) || true">
       <a md-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
         routerLink="/{{navEntry.route}}"
         ngClass="navItem"

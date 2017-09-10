@@ -6,35 +6,37 @@
     </md-card-header>
     <md-card-content>
       <form [formGroup]="contentForm" (ngSubmit)="submitForm()" id="contentForm">
-        <!-- TITLE -->
-        <md-form-field class="field">
-          <input mdInput placeholder="Title" type="text" [formControl]="contentForm.controls['title']" autocomplete="off" required>
-          <md-error *ngIf="contentForm.controls['title'].hasError('required')">
-            Title is <strong>required</strong>
-          </md-error>
-        </md-form-field>
+
+        <div class="formControls">
+          <!-- TITLE -->
+          <md-form-field class="field">
+            <input mdInput placeholder="Title" type="text" [formControl]="contentForm.controls['title']" autocomplete="off" required>
+            <md-error *ngIf="contentForm.controls['title'].hasError('required')">
+              Title is <strong>required</strong>
+            </md-error>
+          </md-form-field>
 
 
-        <!-- ROUTE -->
-        <md-form-field class="field">
-          <span mdPrefix> / </span>
-          <input mdInput placeholder="Route" type="text" [formControl]="contentForm.controls['route']" autocomplete="off" required>
-          <md-error *ngIf="contentForm.controls['route'].hasError('required')">
-            Route is <strong>required</strong>
-          </md-error>
-          <md-error *ngIf="contentForm.controls['route'].hasError('routeAlreadyTaken')">
-            Route is already taken! Choose another
-          </md-error>
-        </md-form-field>
+          <!-- ROUTE -->
+          <md-form-field class="field">
+            <span mdPrefix> / </span>
+            <input mdInput placeholder="Route" type="text" [formControl]="contentForm.controls['route']" autocomplete="off" required>
+            <md-error *ngIf="contentForm.controls['route'].hasError('required')">
+              Route is <strong>required</strong>
+            </md-error>
+            <md-error *ngIf="contentForm.controls['route'].hasError('routeAlreadyTaken')">
+              Route is already taken! Choose another
+            </md-error>
+          </md-form-field>
 
 
-        <!-- ACCESS -->
-        <md-select ngClass="field" placeholder="Access" [formControl]="contentForm.controls['access']" required>
-          <md-option *ngFor="let option of accessChoices" [value]="option">
-            {{ accessVerbose[option] }}
-          </md-option>
-        </md-select>
-
+          <!-- ACCESS -->
+          <md-select ngClass="field" placeholder="Access" [formControl]="contentForm.controls['access']" required>
+            <md-option *ngFor="let option of accessChoices" [value]="option">
+              {{ accessVerbose[option] }}
+            </md-option>
+          </md-select>
+        </div>
 
         <!-- CONTENT -->
         <div class="content" #content>
@@ -47,5 +49,4 @@
       </button>
     </md-card-actions>
   </md-card>
-
 </div>

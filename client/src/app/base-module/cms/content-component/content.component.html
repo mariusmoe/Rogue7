@@ -23,14 +23,13 @@
 
       <div class="info" *ngIf="url !== 'home'">
         <div>
-          Written by: {{contentObject.createdBy.email}}
-        </div>
-        <div>
-          Updated by: {{contentObject.updatedBy.email}}
-        </div>
-        <div>
-          Last updated: <span mdTooltip="{{ contentObject.updatedAt | dfnsDistanceInWordsToNow }} ago" mdTooltipPosition="above">
+          Updated by: {{contentObject.updatedBy.email}}, <span mdTooltip="{{ contentObject.updatedAt | dfnsDistanceInWordsToNow }} ago" mdTooltipPosition="above">
             {{ contentObject.updatedAt | date:'dd. MMM yyyy, HH:mm' }}
+          </span>
+        </div>
+        <div>
+          Written by {{contentObject.createdBy.email}}, <span mdTooltip="{{ contentObject.updatedAt | dfnsDistanceInWordsToNow }} ago" mdTooltipPosition="above">
+            {{ contentObject.createdAt | date:'dd. MMM yyyy, HH:mm' }}
           </span>
         </div>
       </div>

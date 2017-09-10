@@ -38,13 +38,13 @@ export class CMSService {
    */
   getContentList(forceUpdate = false): BehaviorSubject<CmsContent[]> {
     if (forceUpdate) {
-      console.log('forcing update....');
+      // console.log('forcing update....');
       const sub = this.requestContentList().subscribe(
         contentList => {
           sub.unsubscribe();
-          console.log('nexting');
+          // console.log('nexting');
           this.listSubject.next(contentList);
-          console.log(this.listSubject.getValue().length);
+          // console.log(this.listSubject.getValue().length);
         }
       );
     }

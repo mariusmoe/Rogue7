@@ -18,7 +18,7 @@ const validator = require('validator'),
 
 exports.getContentList = (req, res, next) => {
   const user = req.user;
-  console.log(user);
+  // console.log(user);
   const accessRights = ['everyone'];
   if (user) {
     accessRights.push('user');
@@ -41,7 +41,7 @@ exports.getContent = (req, res, next) => {
   const route      = req.params.route,
         user       = req.user;
 
-  console.log(user);
+  // console.log(user);
 
   Content.findOne({ route: route }, (err, content) => {
     if (err) { next(err); }
@@ -66,7 +66,7 @@ exports.createContent = (req, res, next) => {
   const data = req.body,
         user = req.user;
 
-  if (validator.isEmpty(data.route) || validator.isEmpty(data.content) || validator.isEmpty(data.access)) {
+  if (validator.isEmpty(data.route) || validator.isEmpty(data.content) || validator.isEmpty(data.access) || validator.isEmpty(data.title)) {
       return res.status(422).send(msg.append('CMS_DATA_UNPROCESSABLE'));
   }
   if (['admin', 'user', 'everyone'].indexOf(data.access) == -1) {
@@ -75,7 +75,8 @@ exports.createContent = (req, res, next) => {
 
   // Sanitize
   data.content = DOMPurify.sanitize(data.content);
-  console.log(data);
+  data.title = DOMPurify.sanitize(data.title);
+  data.route = validator.escape(data.route).toLowerCase();
 
   let content = new Content({
     title: data.title,
@@ -102,15 +103,23 @@ exports.patchContent = (req, res, next) => {
         data       = req.body,
         user       = req.user;
 
-  if (validator.isEmpty(data.route) || validator.isEmpty(data.title) || validator.isEmpty(data.content)) {
+  if (validator.isEmpty(data.route) || validator.isEmpty(data.content) || validator.isEmpty(data.access) || validator.isEmpty(data.title)) {
       return res.status(422).send(msg.append('CMS_DATA_UNPROCESSABLE'));
   }
 
   // Sanitize
   data.content = DOMPurify.sanitize(data.content);
-  console.log(data);
+  data.title = DOMPurify.sanitize(data.title);
+  data.route = validator.escape(data.route).toLowerCase();
 
-  Content.findOneAndUpdate({route: route }, { $set: data }, {new: true}, (err, content) => {
+  Content.findOneAndUpdate({route: route }, { $set:
+    {
+      content: data.content,
+      title: data.title,
+      route: data.route,
+      access: data.access,
+      updatedBy: user._id,
+    }}, {new: true}, (err, content) => {
     if (err) { next(err); }
     if (content) {
       return res.status(200).send(content);

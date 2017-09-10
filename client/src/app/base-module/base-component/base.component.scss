@@ -4,24 +4,26 @@ $contentBG: #fff;
 $navBG: #ddd;
 $border: 1px solid #999;
 
-
-
 .wrapper {
   max-width: 1200px;
   margin: 0 auto;
 }
-.content {
-  padding: 10px;
+
+.main {
   background: $contentBG;
-  min-height: 450px;
   border: $border;
   border-style: none solid solid solid;
+  min-height: calc(100vh - 64px);
+}
+
+
+.content {
+  padding: 10px;
+  min-height: 450px;
 }
 
 .navBar {
   background: $navBG;
-  border: $border;
-  border-style: none solid;
   padding-top: 0;
   a {
     display: inline-block;

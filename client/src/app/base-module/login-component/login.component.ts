@@ -1,4 +1,4 @@
-import { Component, OnChanges } from '@angular/core';
+import { Component, OnChanges, Output, EventEmitter } from '@angular/core';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -22,6 +22,7 @@ enum STATES {
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  @Output() navigated: EventEmitter<boolean> = new EventEmitter();
   loginForm: FormGroup;
   STATES = STATES;
   state: STATES;
@@ -44,6 +45,7 @@ export class LoginComponent {
         sub.unsubscribe();
         if (loggedIn) {
           this.state = STATES.SUCCESS;
+          this.navigated.emit(true);
           this.router.navigate(['/']);
           return;
         }
