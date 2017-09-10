@@ -1,36 +1,60 @@
 
 
-$contentBG: #fff;
-$navBG: #ddd;
-$border: 1px solid #999;
+$contentBG: rgba(255,255,255,0.8);
+$navBG: rgba(200,200,200,0.8);
+$border: 1px solid #666;
 
+$wrapperWidth: 1100px;
+
+
+// SITE SETUP
 .wrapper {
-  max-width: 1200px;
+  max-width: $wrapperWidth;
   margin: 0 auto;
+  background: $contentBG;
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
 }
 
 .main {
-  background: $contentBG;
+  background: none; // override MD
   border: $border;
-  border-style: none solid solid solid;
+  border-style: none solid;
   min-height: calc(100vh - 64px);
 }
-
-
-.content {
-  padding: 10px;
-  min-height: 450px;
+@media (max-width: 600px) {
+  .main {
+    min-height: calc(100vh - 56px);
+  }
+}
+@media (max-width: $wrapperWidth) {
+  .main {
+    border-style: none;
+  }
 }
 
+// HEADER
+.topHeader {
+  position: relative;
+  .headerContent {
+    width: $wrapperWidth;
+    margin: 0 auto;
+    padding: 0 10px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    .spacer {
+      flex: 1 1 auto;
+    }
+  }
+}
 .navBar {
   background: $navBG;
   padding-top: 0;
   a {
     display: inline-block;
   }
-  // display: flex;
-  // flex-wrap: wrap;
-  // justify-content: space-between;
 }
 
 a.mat-list-item.navItem {
@@ -39,17 +63,31 @@ a.mat-list-item.navItem {
   // min-width: 200px;
   // text-align: center;
   &.active {
-    background: #fff;
+    background: $contentBG;
   }
 }
 
-.spacer {
-  flex: 1 1 auto;
-}
+
+
+// SIDE CONTENT
 
 .userSection {
   padding: 10px;
   background: #ddd;
   width: 420px;
   max-width: 100%;
+}
+
+// PAGE WRAPPER
+
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  align-content: space-between;
+
+  // CONTENT
+  .content {
+    flex: 1 1;
+    padding: 10px 25px;
+  }
 }

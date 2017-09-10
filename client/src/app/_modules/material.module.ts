@@ -15,6 +15,7 @@ import {
   MdSidenavModule,
   MdExpansionModule,
   MdSelectModule,
+  MdMenuModule,
 
 
 } from '@angular/material';
@@ -36,7 +37,8 @@ import {
     MdSnackBarModule,
     MdSidenavModule,
     MdExpansionModule,
-    MdSelectModule
+    MdSelectModule,
+    MdMenuModule
   ]
 })
 export class MaterialModule { }

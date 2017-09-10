@@ -10,6 +10,7 @@ import { SharedModule } from '../_modules/shared.module';
 import { BaseComponent } from './base-component/base.component';
 import { LoginComponent } from './login-component/login.component';
 import { UserComponent } from './user-component/user.component';
+import { FooterComponent } from './footer-component/footer.component';
 
 import { CreateComponent } from './cms/create-component/create.component';
 import { ContentComponent } from './cms/content-component/content.component';
@@ -23,6 +24,7 @@ import { OutletComponent } from './cms/outlet-component/outlet.component';
     BaseComponent,
     LoginComponent,
     UserComponent,
+    FooterComponent,
     CreateComponent,
     ContentComponent,
     OutletComponent

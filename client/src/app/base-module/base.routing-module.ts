@@ -15,7 +15,7 @@ const routes: Routes = [
       { path: 'compose' , component: CreateComponent, canActivate: [AuthGuard], pathMatch: 'full' },
       { path: 'compose/:route', component: CreateComponent, canActivate: [AuthGuard], pathMatch: 'full' },
       { path: 'dnl', loadChildren: 'app/base-module/dnl-module/dnl.module#DNLModule' },
-      { path: 'home' , component: ContentComponent },
+      // { path: 'home' , component: ContentComponent },
       { path: '' , redirectTo: 'home', pathMatch: 'full' },
       { path: '**' , component: ContentComponent },
     ]

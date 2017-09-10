@@ -59,9 +59,10 @@
         </div>
 
         <!-- Footer -->
-        <span class="footer alignCenter" mdTooltip="{{ gameData.lastUpdate | dfnsDistanceInWordsToNow }} ago"
-          mdTooltipPosition="above">
-          Last update: {{ gameData.lastUpdate | date:'HH:mm:ss'}}
+        <span class="footer alignCenter">
+          <span mdTooltip="{{ gameData.lastUpdate | dfnsDistanceInWordsToNow }} ago"
+            mdTooltipPosition="above">
+            Last update: {{ gameData.lastUpdate | date:'HH:mm:ss'}}</span>
         </span>
       </div>
 
