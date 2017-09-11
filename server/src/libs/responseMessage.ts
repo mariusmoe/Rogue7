@@ -1,4 +1,14 @@
-module.exports = {
+
+
+export let msg = (value) => {
+  return {
+    'message': status[value].message,
+    'status': status[value].status,
+  };
+}
+
+
+const status = {
   // ROUTER CODES: 10000
   ROUTE_INVALID: {
     message: "The requested route does not exist. Did you forget a param?",

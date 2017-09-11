@@ -1,0 +1,69 @@
+import { Express, Request, Response, NextFunction } from 'express';
+import { util as configUtil } from 'config';
+
+import * as compression from 'compression';
+import * as helmet from 'helmet';
+import { json, urlencoded } from 'body-parser';
+import * as logger from 'morgan';
+import * as methodOverride from 'method-override';
+
+
+
+const allowedOrigins = [
+  'http://localhost:4200',
+  'http://localhost:2000',
+  'http://173.212.225.7:2000'
+];
+
+export class Setup {
+  /**
+   * Initiates setup
+   * @param  {Express} app express
+   */
+  public static initiate(app: Express) {
+    // Compress / gzip outgoing
+    app.use(compression(<compression.CompressionOptions>{
+      filter: (req: Request) => { return !req.headers['x-no-compression']; }
+    }));
+
+    // Pretty print
+    app.set("json spaces", 4);
+
+    // Secure app with helmet, less xss
+    app.use(helmet());
+
+    // set port
+    app.set('port', 2000);
+
+    // bodyParser
+    app.use(urlencoded({ extended: false }));
+    app.use(json());
+
+    // Logging
+    if(configUtil.getEnv('NODE_ENV') !== 'test') {
+        //use morgan to log at command line
+        app.use(logger('dev')); //'combined' outputs the Apache style LOGs
+    }
+
+    // Headers (CORS)
+    app.use( (req: Request, res: Response, next: NextFunction) => {
+      const origin = req.headers.origin;
+      if (typeof origin === "string" && allowedOrigins.indexOf(origin) > -1 ){
+        res.setHeader('Access-Control-Allow-Origin', origin);
+      }
+      res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, PATCH, OPTIONS');
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials");
+      res.header("Access-Control-Allow-Credentials", "true");
+      next();
+    });
+
+    // Method override
+    app.use(methodOverride());
+
+    app.use(function (err, req, res, next) {
+      return res.status(404).send({ error: 'Something failed!' })
+    });
+
+    console.log('[Setup] completed');
+  }
+}
