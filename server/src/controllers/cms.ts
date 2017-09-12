@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { isEmpty, escape } from 'validator';
+import { escape } from 'validator';
 import { user } from '../models/user';
 import { Content, content } from '../models/content';
-// import { get as configGet } from 'config';
 import { msg } from '../libs/responseMessage';
-import { sanitize } from 'dompurify';
+import { sanitize } from '../libs/sanitizer';
 
 
 export class CMSController {
@@ -79,7 +78,7 @@ export class CMSController {
     const data = <content>req.body,
           user = <user>req.user;
 
-    if (isEmpty(data.route) || isEmpty(data.content) || isEmpty(data.access) || isEmpty(data.title)) {
+    if (!data.route || !data.content || !data.access || !data.title) {
         return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
     }
     if (['admin', 'user', 'everyone'].indexOf(data.access) === -1) {
@@ -100,7 +99,7 @@ export class CMSController {
       updatedBy: user._id,
     });
     content.save((err, success) => {
-      if (err) { next(err); }
+      // if (err) { next(err); }
       if (success) {
         return res.status(200).send(success);
       }
@@ -123,7 +122,7 @@ export class CMSController {
           data       = <content>req.body,
           user       = <user>req.user;
 
-    if (isEmpty(data.route) || isEmpty(data.content) || isEmpty(data.access) || isEmpty(data.title)) {
+    if (!data.route || !data.content || !data.access || !data.title) {
         return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
     }
 
@@ -139,7 +138,7 @@ export class CMSController {
       access: data.access,
       updatedBy: user._id,
     }}, { new: true }, (err, content) => {
-      if (err) { next(err); }
+      // if (err) { next(err); }
       if (content) {
         return res.status(200).send(content);
       }
@@ -158,9 +157,9 @@ export class CMSController {
     const route = <string>req.params.route;
 
     Content.remove({route: route}, (err) => {
-      if (err) { next(err); }
+      // if (err) { next(err); }
+      if (err) { return res.status(404).send(msg('CMS_CONTENT_NOT_FOUND')); }
       return res.status(200).send(msg('CMS_CONTENT_DELETED'));
-      // return res.status(404).send(msg('CMS_CONTENT_NOT_FOUND'));
     });
   }
 
