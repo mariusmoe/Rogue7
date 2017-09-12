@@ -38,10 +38,10 @@ export class AuthController {
           role            = <string>req.body.role;
     let   email           = <string>req.body.email; // must be non-const
 
-    if (isEmpty(email) || isEmpty(password)){
+    if (isEmpty(email) || isEmpty(password)) {
       return res.status(400).send(msg('NO_EMAIL_OR_PASSWORD'));
     }
-    if (isEmpty(role) || (userTypes.indexOf(role) == -1) ) {
+    if (isEmpty(role) || (userTypes.indexOf(role) === -1) ) {
       return res.status(400).send(msg('NO_OR_BAD_ROLE'));
     }
 
@@ -83,7 +83,7 @@ export class AuthController {
       return res.status(400).send(msg('NO_PASSWORD_OR_NEW_PASSWORDS'));
     }
 
-    if (password != confirm) {
+    if (password !== confirm) {
       return res.status(400).send(msg('PASSWORD_AND_CONFIRM_NOT_EQUAL'));
     }
 
@@ -112,8 +112,8 @@ export class AuthController {
     const id    = <string>req.body.id,
           user  = <user>req.user;
 
-    if(user.role !== userTypes[0]) {
-      return res.status(401).send(msg('ROUTE_UNAUTHORISED'))
+    if (user.role !== userTypes[0]) {
+      return res.status(401).send(msg('ROUTE_UNAUTHORISED'));
     }
     if (!id) {
       return res.status(400).send(msg('USER_NOT_FOUND'));

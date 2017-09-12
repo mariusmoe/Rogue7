@@ -34,7 +34,7 @@ export class CMSController {
       }
       return res.status(200).send(contentList);
     }).lean();
-  };
+  }
 
 
   /**
@@ -53,9 +53,9 @@ export class CMSController {
       if (!content) {
         return res.status(404).send(msg('CMS_CONTENT_NOT_FOUND'));
       }
-      let access = content.access == 'everyone' ||
-                   (user && user.role == 'admin') ||
-                   (user && user.role == content.access);
+      let access = content.access === 'everyone' ||
+                   (user && user.role === 'admin') ||
+                   (user && user.role === content.access);
 
       if (!access) {
         return res.status(401).send(msg('ROUTE_UNAUTHORISED'));
@@ -82,7 +82,7 @@ export class CMSController {
     if (isEmpty(data.route) || isEmpty(data.content) || isEmpty(data.access) || isEmpty(data.title)) {
         return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
     }
-    if (['admin', 'user', 'everyone'].indexOf(data.access) == -1) {
+    if (['admin', 'user', 'everyone'].indexOf(data.access) === -1) {
       return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
     }
 

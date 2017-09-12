@@ -48,8 +48,8 @@ export interface content extends Document {
   content: string;
   updatedBy: Schema.Types.ObjectId;
   createdBy: Schema.Types.ObjectId;
-  updatedAt: Date,
-  createdAt: Date,
+  updatedAt: Date;
+  createdAt: Date;
 }
 
 // Set indexing
@@ -57,14 +57,12 @@ schema.index({ route: 1 }, { unique: true });
 
 
 // Before fetching one contentObject, do the following
-var autoPopulate = function(next: NextFunction) {
+schema.pre('findOne', function(next: NextFunction) {
   const content: content = this;
   content.populate({ path: 'updatedBy', select: ['_id', 'email', 'role']});
   content.populate({ path: 'createdBy', select: ['_id', 'email', 'role']});
   next();
-};
-schema.pre('findOne', autoPopulate);
+});
 
 
-
-export let Content = model<content>('Content', schema);
+export const Content = model<content>('Content', schema);

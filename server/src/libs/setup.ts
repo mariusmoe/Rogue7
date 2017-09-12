@@ -27,7 +27,7 @@ export class Setup {
     }));
 
     // Pretty print
-    app.set("json spaces", 4);
+    app.set('json spaces', 4);
 
     // Secure app with helmet, less xss
     app.use(helmet());
@@ -40,7 +40,7 @@ export class Setup {
     app.use(json());
 
     // Logging
-    if(configUtil.getEnv('NODE_ENV') !== 'test') {
+    if (configUtil.getEnv('NODE_ENV') !== 'test') {
         //use morgan to log at command line
         app.use(logger('dev')); //'combined' outputs the Apache style LOGs
     }
@@ -48,21 +48,17 @@ export class Setup {
     // Headers (CORS)
     app.use( (req: Request, res: Response, next: NextFunction) => {
       const origin = req.headers.origin;
-      if (typeof origin === "string" && allowedOrigins.indexOf(origin) > -1 ){
+      if (typeof origin === 'string' && allowedOrigins.indexOf(origin) > -1 ) {
         res.setHeader('Access-Control-Allow-Origin', origin);
       }
       res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, PATCH, OPTIONS');
-      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials");
-      res.header("Access-Control-Allow-Credentials", "true");
+      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
+      res.header('Access-Control-Allow-Credentials', 'true');
       next();
     });
 
     // Method override
     app.use(methodOverride());
-
-    app.use(function (err, req, res, next) {
-      return res.status(404).send({ error: 'Something failed!' })
-    });
 
     console.log('[Setup] completed');
   }
