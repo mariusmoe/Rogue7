@@ -1,12 +1,12 @@
 {
   "name": "sotingserver",
   "version": "1.0.0",
-  "description": "test",
+  "description": "Server backend for Sotingane",
   "main": "dist/index.js",
   "scripts": {
     "compile": "tsc",
-    "dev": "concurrently \"tsc --watch\" \"nodemon --watch dist dist/index.js\"",
-    "lint": "tslint node_modules/tslint/lib/linter.js  -c tslint.json 'src/**/*.ts'"
+    "dev": "concurrently \"tsc --watch\" \"nodemon node_modules/nodemon/bin/nodemon.js --watch dist dist/index.js\"",
+    "lint": "tslint node_modules/tslint/bin/linter.js -c tslint.json 'src/**/*.ts'"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +15,6 @@
     "body-parser": "^1.18.0",
     "config": "^1.26.2",
     "compression": "^1.7.0",
-    "concurrently": "^3.5.0",
     "dompurify": "^1.0.2",
     "express": "^4.15.4",
     "gamedig": "^1.0.37",
@@ -53,6 +52,7 @@
     "@types/validator": "^6.2.3",
     "chai": "^4.1.2",
     "chai-http": "^3.0.0",
+    "concurrently": "^3.5.0",
     "mocha": "^3.5.2",
     "nodemon": "^1.12.0",
     "sinon": "^3.2.1",
