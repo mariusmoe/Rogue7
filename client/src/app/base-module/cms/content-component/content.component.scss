@@ -1,0 +1,28 @@
+
+
+.contentWrapper {
+  display: flex;
+  position: relative;
+  flex-flow: column;
+  .content {
+    flex: 1 1;
+  }
+
+  .info {
+    flex: 1 1;
+    align-self: flex-end;
+    text-align: right;
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 0.75em;
+  }
+}
+
+
+
+
+.pageControls {
+  position: absolute;
+  right: -10px;
+  top: 5px;
+}

@@ -44,7 +44,7 @@ server/config/*
 .DS_Store
 
 
-# dont include dist (build in angular)
+# dont include dist
 dist/
 
 # Do not upload test images to github

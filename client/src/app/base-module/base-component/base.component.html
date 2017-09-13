@@ -1,14 +1,41 @@
-<div class="wrapper">
-  <md-toolbar color="primary" ngClass="topHeader">
-    <a routerLink="/">Sotingane</a>
-  </md-toolbar>
-  <md-nav-list ngClass="navBar">
-    <a md-list-item *ngFor="let navEntry of nav"
-      routerLink="{{navEntry.url}}"
-      ngClass="navItem"
-      routerLinkActive="active">{{ navEntry.name }}</a>
-  </md-nav-list>
-  <div class="content">
-    <router-outlet></router-outlet>
+<md-toolbar color="primary" ngClass="topHeader">
+  <div class="headerContent">
+    <a routerLink="/" (click)="userSection.close()">Sotingane</a>
+    <span class="spacer"></span>
+    <button md-mini-fab (click)="userSection.toggle()"><md-icon>person_outline</md-icon></button>
   </div>
+</md-toolbar>
+<div class="wrapper">
+
+  <md-sidenav-container ngClass="main">
+    <md-sidenav #userSection mode="over" opened="false" position="end" class="userSection">
+      <!-- LOGIN BOX -->
+      <app-login-component (navigated)="userSection.close()"></app-login-component>
+      <!-- USER SETTINGS -->
+      <app-user-component (navigated)="userSection.close()"></app-user-component>
+    </md-sidenav>
+
+    <!-- NAVIGATION BAR -->
+    <md-nav-list ngClass="navBar" *ngIf="(authService.getUser() | async) || true">
+      <a md-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+        routerLink="/{{navEntry.route}}"
+        ngClass="navItem"
+        routerLinkActive="active">{{ navEntry.title }}</a>
+      <a md-list-item *ngFor="let navEntry of defaultRoutes"
+        routerLink="{{navEntry.route}}"
+        ngClass="navItem"
+        routerLinkActive="active">{{ navEntry.title }}</a>
+    </md-nav-list>
+
+    <div class="pageWrapper">
+      <!-- CONTENT -->
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+
+      <!-- FOOTER -->
+      <app-footer-component></app-footer-component>
+    </div>
+
+  </md-sidenav-container>
 </div>

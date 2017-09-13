@@ -3,7 +3,6 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from '../../_guards/auth.guard';
 
-import { OutletComponent } from './../outlet-component/outlet.component';
 import { DNLServerComponent } from './dnlserver-component/dnlserver.component';
 
 
