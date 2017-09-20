@@ -79,6 +79,6 @@ export class UserComponent {
    */
   navigateToCompose() {
     this.navigated.emit(true);
-    this.router.navigate(['compose']);
+    this.router.navigateByUrl('/admin/compose');
   }
 }

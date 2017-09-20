@@ -2,9 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { Router, ActivatedRoute } from '@angular/router';
-import { CMSService } from '../../../_services/cms.service';
-import { AuthService } from '../../../_services/auth.service';
-import { CmsContent } from '../../../_models/cms';
+import { CMSService } from '../../_services/cms.service';
+import { AuthService } from '../../_services/auth.service';
+import { CmsContent } from '../../_models/cms';
 
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -57,7 +57,7 @@ export class ContentComponent implements OnInit, OnDestroy {
   }
 
   editPage() {
-    this.router.navigate(['/compose', this.contentSubject.getValue().route]);
+    this.router.navigateByUrl('/admin/compose/' + this.contentSubject.getValue().route);
   }
   deletePage() {
     this.cmsService.deleteContent(this.url).subscribe(

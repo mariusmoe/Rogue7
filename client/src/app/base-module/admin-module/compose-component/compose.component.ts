@@ -12,14 +12,15 @@ import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/takeUntil';
 
-import { ClassicEditor as CKEditor } from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+
 
 @Component({
-  selector: 'app-create-component',
-  templateUrl: './create.component.html',
-  styleUrls: ['./create.component.scss'],
+  selector: 'app-compose-component',
+  templateUrl: './compose.component.html',
+  styleUrls: ['./compose.component.scss'],
 })
-export class CreateComponent implements OnInit, OnDestroy {
+export class ComposeComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   contentForm: FormGroup;
   accessChoices: string[] = ['everyone', 'user'];
@@ -65,7 +66,7 @@ export class CreateComponent implements OnInit, OnDestroy {
           if (this.editor) { this.editor.setData(data.content); }
         },
         err => {
-          router.navigate(['/admin']);
+          router.navigateByUrl('/admin/compose');
         },
       );
     }
@@ -79,7 +80,8 @@ export class CreateComponent implements OnInit, OnDestroy {
         return;
       }
     });
-    CKEditor.create(this.editorBox.nativeElement)
+    // console.log(ClassicEditor);
+    ClassicEditor.create(this.editorBox.nativeElement)
     .then( editor => {
       this.editor = editor;
       // console.log(editor);

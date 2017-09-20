@@ -16,16 +16,11 @@
     </md-sidenav>
 
     <!-- NAVIGATION BAR -->
-    <md-nav-list ngClass="navBar" *ngIf="(authService.getUser() | async) || true">
-      <a md-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+    <nav md-tab-nav-bar *ngIf="(authService.getUser() | async) || true">
+      <a md-tab-link *ngFor="let navEntry of cmsService.getContentList() | async"
         routerLink="/{{navEntry.route}}"
-        ngClass="navItem"
         routerLinkActive="active">{{ navEntry.title }}</a>
-      <a md-list-item *ngFor="let navEntry of defaultRoutes"
-        routerLink="{{navEntry.route}}"
-        ngClass="navItem"
-        routerLinkActive="active">{{ navEntry.title }}</a>
-    </md-nav-list>
+    </nav>
 
     <div class="pageWrapper">
       <!-- CONTENT -->
