@@ -49,6 +49,8 @@ a:hover {
 }
 .contentWrapper {
   a {
+    word-wrap: break-word;
+
     &:hover {
       color: map-get(nth($primary, 1), nth($primary, 2));
     }
@@ -56,12 +58,34 @@ a:hover {
   }
 }
 
-.ck-editor__editable .image > figcaption {
-  background-color: rgba(0,0,0,0.075) !important;
-}
-
 input:-webkit-autofill,
 textarea:-webkit-autofill,
 select:-webkit-autofill {
   box-shadow: inset 0 0 0 0.6em #fff;
+}
+
+// CKEditor content
+.content {
+  .image {
+    text-align: center;
+    clear: both;
+
+    > img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    & > figcaption {
+      color: #333;
+      background-color: rgba(0,0,0,0.075) !important;
+      padding: .8em;
+      font-size: .75em;
+    }
+    &.image-style-side {
+      float: right;
+      margin-left: .8em;
+      max-width: 50%;
+    }
+  }
 }
