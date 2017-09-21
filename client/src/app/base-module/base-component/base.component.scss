@@ -12,13 +12,10 @@ $sideWidth: 250px;
 // SITE SETUP
 .sidenavContainer {
   background: none !important;
-  min-height: calc(100vh - 47px);
+  min-height: calc(100vh - 47px - 48px);
 }
 
 .wrapper {
-  // min-width: 100vw;
-  // min-height: calc(100vh - 47px);
-
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
@@ -105,10 +102,9 @@ $sideWidth: 250px;
     .center.main {
       max-width: none;
     }
-  }
-
-  .wrapper .nav {
-    display: none;
+    .nav {
+      display: none;
+    }
   }
   .topHeader .navMenu {
     display: block !important;
