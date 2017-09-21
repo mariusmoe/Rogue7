@@ -1,4 +1,4 @@
-import { Component, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -19,7 +19,6 @@ enum STATES {
   styleUrls: ['./user.component.scss'],
 })
 export class UserComponent {
-  @Output() navigated: EventEmitter<boolean> = new EventEmitter();
   changePasswordForm: FormGroup;
   STATES = STATES;
   state: STATES;
@@ -78,7 +77,6 @@ export class UserComponent {
    * Navigates to the compose page
    */
   navigateToCompose() {
-    this.navigated.emit(true);
     this.router.navigateByUrl('/admin/compose');
   }
 }

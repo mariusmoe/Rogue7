@@ -10,12 +10,13 @@ md-card.loginBox {
 
 .mat-card-avatar {
   font-size: 2.8em;
+  margin-right: 10px;
+  margin-left: -10px;
 }
 
 .actions {
   display: flex;
-  justify-content: flex-end;
-  button { }
+  justify-content: space-between;
 }
 
 .overlay {

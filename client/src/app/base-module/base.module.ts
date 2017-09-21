@@ -34,7 +34,6 @@ import { OutletComponent } from './outlet-component/outlet.component';
   entryComponents: [
   ],
   providers: [
-    // GameService,
   ]
 })
 export class BaseModule { }

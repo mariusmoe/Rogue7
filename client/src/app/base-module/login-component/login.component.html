@@ -5,12 +5,15 @@
     <md-card-header>
       <md-card-title>{{ user.email }}</md-card-title>
       <md-card-subtitle>{{ user.role }}</md-card-subtitle>
-      <md-icon md-card-avatar color="primary">person</md-icon>
+      <md-icon md-card-avatar color="accent">person</md-icon>
     </md-card-header>
     <md-card-content>
     </md-card-content>
     <md-card-actions ngClass="actions">
-      <button md-raised-button color="primary" (click)="authService.logOut()">
+      <button md-raised-button color="primary" (click)="navigateToUserPage()">
+        User Settings
+      </button>
+      <button md-raised-button color="primary" (click)="logOut()">
         Log out
       </button>
     </md-card-actions>
@@ -21,7 +24,7 @@
   <ng-template #loginFormSection>
     <md-card-content>
       <!-- LOGIN FORM -->
-      <form [formGroup]="loginForm" (ngSubmit)="submitForm()" id="loginForm">
+      <form [formGroup]="loginForm" (ngSubmit)="logIn()" id="loginForm">
         <!-- EMAIL -->
         <md-form-field class="field">
           <input mdInput placeholder="Email" type="email" pattern="\S+@\S+\.\S+" [formControl]="loginForm.controls['email']" required>

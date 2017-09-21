@@ -15,7 +15,7 @@ import { CmsContent } from '../../_models/cms';
 export class BaseComponent implements OnInit, OnDestroy {
 
   defaultRoutes = [
-    {'title': 'DNL Server', route: '/dnl' },
+    {'title': 'DNL Server', route: 'dnl' },
   ];
 
   constructor(

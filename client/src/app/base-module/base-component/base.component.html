@@ -1,36 +1,64 @@
-<md-toolbar color="primary" ngClass="topHeader">
-  <div class="headerContent">
-    <a routerLink="/" (click)="userSection.close()">Sotingane</a>
-    <span class="spacer"></span>
-    <button md-mini-fab (click)="userSection.toggle()"><md-icon>person_outline</md-icon></button>
-  </div>
-</md-toolbar>
-<div class="wrapper">
+<div class="topHeader">
+  <button md-icon-button ngClass="navMenu" (click)="navbar.toggle()">
+    <md-icon>menu</md-icon>
+  </button>
+  <a routerLink="/">Sotingane</a>
+  <button md-icon-button ngClass="userMenu" (click)="userbar.toggle()">
+    <md-icon>menu</md-icon>
+  </button>
+</div>
 
-  <md-sidenav-container ngClass="main">
-    <md-sidenav #userSection mode="over" opened="false" position="end" class="userSection">
-      <!-- LOGIN BOX -->
-      <app-login-component (navigated)="userSection.close()"></app-login-component>
-      <!-- USER SETTINGS -->
-      <app-user-component (navigated)="userSection.close()"></app-user-component>
-    </md-sidenav>
-
-    <!-- NAVIGATION BAR -->
-    <nav md-tab-nav-bar *ngIf="(authService.getUser() | async) || true">
-      <a md-tab-link *ngFor="let navEntry of cmsService.getContentList() | async"
-        routerLink="/{{navEntry.route}}"
+<md-sidenav-container ngClass="sidenavContainer">
+  <ng-template #navbarTemplate>
+    <md-nav-list *ngIf="(authService.getUser() | async) || true">
+      <a md-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+        routerLink="/{{navEntry.route}}" (click)="navbar.close()"
         routerLinkActive="active">{{ navEntry.title }}</a>
-    </nav>
+      <a md-list-item *ngFor="let navEntry of defaultRoutes"
+        routerLink="/{{navEntry.route}}" (click)="navbar.close()"
+        routerLinkActive="active">{{ navEntry.title }}</a>
+    </md-nav-list>
+  </ng-template>
 
-    <div class="pageWrapper">
-      <!-- CONTENT -->
-      <div class="content">
-        <router-outlet></router-outlet>
-      </div>
 
-      <!-- FOOTER -->
-      <app-footer-component></app-footer-component>
+
+  <!-- NAVIGATION BAR MOBILE -->
+  <md-sidenav #navbar mode="over" opened="false" position="start" ngClass="sidebarMobile navbar">
+    <ng-container *ngTemplateOutlet="navbarTemplate"></ng-container>
+  </md-sidenav>
+
+  <!-- USER BAR MOBILE -->
+  <md-sidenav #userbar mode="over" opened="false" position="end" ngClass="sidebarMobile">
+    <!-- LOGIN BOX -->
+    <app-login-component (navigated)="userbar.close()"></app-login-component>
+  </md-sidenav>
+
+  <div class="wrapper">
+    <!-- NAVIGATION BAR -->
+    <div class="nav left">
+      <md-card>
+        <md-card-content>
+          <ng-container *ngTemplateOutlet="navbarTemplate"></ng-container>
+        </md-card-content>
+      </md-card>
+
     </div>
 
-  </md-sidenav-container>
-</div>
+    <!-- CONTENT -->
+    <div class="main center">
+      <router-outlet></router-outlet>
+    </div>
+
+
+    <div class="user right">
+      <!-- LOGIN BOX -->
+      <app-login-component></app-login-component>
+    </div>
+  </div>
+
+</md-sidenav-container>
+
+<!-- FOOTER -->
+<!-- <md-toolbar color="primary">
+  <app-footer-component class="footer"></app-footer-component>
+</md-toolbar> -->

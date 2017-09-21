@@ -37,7 +37,11 @@ export class LoginComponent {
     });
   }
 
-  submitForm() {
+
+  /**
+   * Submits the login form
+   */
+  logIn() {
     this.state = STATES.LOADING;
     const user: User = this.loginForm.value;
     const sub = this.authService.login(user).subscribe(
@@ -56,5 +60,22 @@ export class LoginComponent {
         this.state = STATES.TIMED_OUT;
       },
     );
+  }
+
+  /**
+   * Sends a request to the auth service to log out the user
+   */
+  logOut() {
+    this.navigated.emit(true);
+    this.authService.logOut();
+  }
+
+
+  /**
+   * Navigates the user to the user page
+   */
+  navigateToUserPage() {
+    this.navigated.emit(true);
+    this.router.navigateByUrl('/user');
   }
 }

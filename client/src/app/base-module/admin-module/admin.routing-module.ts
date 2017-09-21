@@ -6,8 +6,8 @@ import { ComposeComponent } from './compose-component/compose.component';
 
 
 const routes: Routes = [
-  { path: '' , component: ComposeComponent, canActivate: [AuthGuard], pathMatch: 'full' },
-  { path: 'compose/:route', component: ComposeComponent, canActivate: [AuthGuard], pathMatch: 'full' },
+  { path: 'compose' , component: ComposeComponent, canActivate: [AuthGuard], pathMatch: 'full' },
+  { path: 'compose/:route', component: ComposeComponent, canActivate: [AuthGuard] },
 ];
 
 
