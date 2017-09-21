@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // services
@@ -9,7 +9,6 @@ import { CMSService } from '../_services/cms.service';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-// import { MaterialModule } from '@angular/material'; <- depricated
 import { MaterialModule } from './material.module';
 import { DateFnsModule } from 'ngx-date-fns';
 
@@ -27,11 +26,6 @@ import { AuthGuard } from '../_guards/auth.guard';
   declarations: [
     KeysPipe,
   ],
-  providers: [
-    AuthService,
-    CMSService,
-    AuthGuard
-  ],
   exports: [
     CommonModule,
     KeysPipe,
@@ -42,4 +36,15 @@ import { AuthGuard } from '../_guards/auth.guard';
     DateFnsModule
   ]
 })
-export class SharedModule { }
+export class SharedModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: SharedModule,
+      providers: [
+        AuthService,
+        CMSService,
+        AuthGuard
+      ],
+    };
+  }
+}

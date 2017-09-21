@@ -28,7 +28,7 @@ import { OutletComponent } from './outlet-component/outlet.component';
     OutletComponent
   ],
   imports: [
-    SharedModule,
+    SharedModule.forRoot(),
     BaseRoutingModule,
   ],
   entryComponents: [
