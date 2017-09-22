@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { Router, ActivatedRoute } from '@angular/router';
@@ -20,16 +20,12 @@ import 'rxjs/add/operator/publish';
   templateUrl: './content.component.html',
   styleUrls: ['./content.component.scss'],
 })
-export class ContentComponent implements OnInit, OnDestroy {
+export class ContentComponent implements OnDestroy {
   private ngUnsubscribe = new Subject();
-
-  editorOptions = {
-  };
-
+  public contentSubject = new BehaviorSubject<CmsContent>(null);
   url = '';
   editMode = false;
 
-  public contentSubject = new BehaviorSubject<CmsContent>(null);
 
   constructor(
     private router: Router,
@@ -47,21 +43,19 @@ export class ContentComponent implements OnInit, OnDestroy {
     });
   }
 
-
-  ngOnInit() {
-  }
-
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
+
   editPage() {
     this.router.navigateByUrl('/admin/compose/' + this.contentSubject.getValue().route);
   }
   deletePage() {
-    this.cmsService.deleteContent(this.url).subscribe(
+    const sub = this.cmsService.deleteContent(this.url).subscribe(
       () => {
+        sub.unsubscribe();
         this.cmsService.getContentList(true);
         this.router.navigate(['/']);
       }
