@@ -1,44 +1,44 @@
 <div class="topHeader">
-  <button md-icon-button ngClass="navMenu" (click)="navbar.toggle()">
-    <md-icon>menu</md-icon>
+  <button mat-icon-button ngClass="navMenu" (click)="navbar.toggle()">
+    <mat-icon>menu</mat-icon>
   </button>
   <a routerLink="/">Sotingane</a>
-  <button md-icon-button ngClass="userMenu" (click)="userbar.toggle()">
-    <md-icon>menu</md-icon>
+  <button mat-icon-button ngClass="userMenu" (click)="userbar.toggle()">
+    <mat-icon>menu</mat-icon>
   </button>
 </div>
 
 <ng-template #navbarTemplate>
-  <md-nav-list>
-    <a md-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+  <mat-nav-list>
+    <a mat-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
       routerLink="/{{navEntry.route}}" (click)="navbar.close()"
       routerLinkActive="active">{{ navEntry.title }}</a>
-    <a md-list-item *ngFor="let navEntry of defaultRoutes"
+    <a mat-list-item *ngFor="let navEntry of defaultRoutes"
       routerLink="/{{navEntry.route}}" (click)="navbar.close()"
       routerLinkActive="active">{{ navEntry.title }}</a>
-  </md-nav-list>
+  </mat-nav-list>
 </ng-template>
 
-<md-sidenav-container ngClass="sidenavContainer">
+<mat-sidenav-container ngClass="sidenavContainer">
   <!-- NAVIGATION BAR MOBILE -->
-  <md-sidenav #navbar mode="over" opened="false" position="start" ngClass="sidebarMobile navbar">
+  <mat-sidenav #navbar mode="over" opened="false" position="start" ngClass="sidebarMobile navbar">
     <ng-container *ngTemplateOutlet="navbarTemplate"></ng-container>
-  </md-sidenav>
+  </mat-sidenav>
 
   <!-- USER BAR MOBILE -->
-  <md-sidenav #userbar mode="over" opened="false" position="end" ngClass="sidebarMobile">
+  <mat-sidenav #userbar mode="over" opened="false" position="end" ngClass="sidebarMobile">
     <!-- LOGIN BOX -->
     <app-login-component (navigated)="userbar.close()"></app-login-component>
-  </md-sidenav>
+  </mat-sidenav>
 
   <div class="wrapper">
     <!-- NAVIGATION BAR -->
     <div class="nav left">
-      <md-card>
-        <md-card-content>
+      <mat-card>
+        <mat-card-content>
           <ng-container *ngTemplateOutlet="navbarTemplate"></ng-container>
-        </md-card-content>
-      </md-card>
+        </mat-card-content>
+      </mat-card>
     </div>
 
     <!-- CONTENT -->
@@ -53,7 +53,7 @@
     </div>
   </div>
 
-</md-sidenav-container>
+</mat-sidenav-container>
 
 <!-- FOOTER -->
 <app-footer-component class="footer"></app-footer-component>

@@ -15,7 +15,7 @@ import { FooterComponent } from './footer-component/footer.component';
 import { ContentComponent } from './content-component/content.component';
 import { OutletComponent } from './outlet-component/outlet.component';
 
-// Services
+import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
 
 
 @NgModule({
@@ -34,6 +34,7 @@ import { OutletComponent } from './outlet-component/outlet.component';
   entryComponents: [
   ],
   providers: [
+    { provide: MATERIAL_COMPATIBILITY_MODE, useValue: true } // forces "mat" instead of "md"
   ]
 })
 export class BaseModule { }

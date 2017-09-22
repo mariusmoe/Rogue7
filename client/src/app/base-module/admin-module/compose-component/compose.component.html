@@ -1,50 +1,50 @@
 <div>
-  <md-card>
-    <md-card-title>Settings</md-card-title>
-    <md-card-content>
+  <mat-card>
+    <mat-card-title>Settings</mat-card-title>
+    <mat-card-content>
       Fill in all required fields
       <form [formGroup]="contentForm" (ngSubmit)="submitForm()" id="contentForm">
 
         <div class="formControls">
           <!-- TITLE -->
-          <md-form-field class="field">
-            <input mdInput placeholder="Title" type="text" [formControl]="contentForm.controls['title']" autocomplete="off" required>
-            <md-error *ngIf="contentForm.controls['title'].hasError('required')">
+          <mat-form-field class="field">
+            <input matInput placeholder="Title" type="text" [formControl]="contentForm.controls['title']" autocomplete="off" required>
+            <mat-error *ngIf="contentForm.controls['title'].hasError('required')">
               Title is <strong>required</strong>
-            </md-error>
-          </md-form-field>
+            </mat-error>
+          </mat-form-field>
 
 
           <!-- ROUTE -->
-          <md-form-field class="field">
-            <span mdPrefix> / </span>
-            <input mdInput placeholder="Route" type="text" [formControl]="contentForm.controls['route']" autocomplete="off" required>
-            <md-error *ngIf="contentForm.controls['route'].hasError('required')">
+          <mat-form-field class="field">
+            <span matPrefix> / </span>
+            <input matInput placeholder="Route" type="text" [formControl]="contentForm.controls['route']" autocomplete="off" required>
+            <mat-error *ngIf="contentForm.controls['route'].hasError('required')">
               Route is <strong>required</strong>
-            </md-error>
-            <md-error *ngIf="contentForm.controls['route'].hasError('routeAlreadyTaken')">
+            </mat-error>
+            <mat-error *ngIf="contentForm.controls['route'].hasError('routeAlreadyTaken')">
               Route is already taken! Choose another
-            </md-error>
-          </md-form-field>
+            </mat-error>
+          </mat-form-field>
 
 
           <!-- ACCESS -->
-          <md-select ngClass="field" placeholder="Access" [formControl]="contentForm.controls['access']" required>
-            <md-option *ngFor="let option of accessChoices" [value]="option">
+          <mat-select ngClass="field" placeholder="Access" [formControl]="contentForm.controls['access']" required>
+            <mat-option *ngFor="let option of accessChoices" [value]="option">
               {{ accessVerbose[option] }}
-            </md-option>
-          </md-select>
+            </mat-option>
+          </mat-select>
         </div>
 
         <!-- CONTENT -->
         <div class="content" #content>
         </div>
       </form>
-    </md-card-content>
-    <md-card-actions ngClass="actions">
-      <button md-raised-button form="contentForm" type="submit" [disabled]="!contentForm.valid" color="primary">
+    </mat-card-content>
+    <mat-card-actions ngClass="actions">
+      <button mat-raised-button form="contentForm" type="submit" [disabled]="!contentForm.valid" color="primary">
         {{ inputContent ? 'Update page' : 'Create page' }}
       </button>
-    </md-card-actions>
-  </md-card>
+    </mat-card-actions>
+  </mat-card>
 </div>
