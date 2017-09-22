@@ -12,7 +12,7 @@ $sideWidth: 250px;
 // SITE SETUP
 .sidenavContainer {
   background: none !important;
-  min-height: calc(100vh - 47px - 48px);
+  min-height: calc(100vh - 44px - 48px);
 }
 
 .wrapper {
@@ -43,11 +43,11 @@ $sideWidth: 250px;
   background: $headerColor;
   display: flex;
   justify-content: center;
-  padding: 5px;
+  padding: 0.5em;
   color: #fff;
   a {
     text-align: center;
-    font-size: 2em;
+    font-size: 1.5em;
     margin: 0 auto;
   }
 

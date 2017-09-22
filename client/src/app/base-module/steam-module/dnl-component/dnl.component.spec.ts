@@ -20,11 +20,11 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/timeout';
 import { interval } from 'rxjs/Observable/interval';
 
-import { DNLServerComponent } from './dnlserver.component';
+import { DNLComponent } from './dnl.component';
 
-describe('DNLServerComponent', () => {
-  let component: DNLServerComponent;
-  let fixture: ComponentFixture<DNLServerComponent>;
+describe('DNLComponent', () => {
+  let component: DNLComponent;
+  let fixture: ComponentFixture<DNLComponent>;
   let dnlService: DNLService;
 
   let de: DebugElement;
@@ -57,7 +57,7 @@ describe('DNLServerComponent', () => {
       }
     };
     TestBed.configureTestingModule({
-      declarations: [ DNLServerComponent ],
+      declarations: [ DNLComponent ],
       imports: [
         BrowserAnimationsModule,
         MaterialModule,
@@ -71,7 +71,7 @@ describe('DNLServerComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DNLServerComponent);
+    fixture = TestBed.createComponent(DNLComponent);
     component = fixture.componentInstance;
     dnlService = TestBed.get(DNLService);
   });

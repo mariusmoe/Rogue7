@@ -8,20 +8,18 @@
   </button>
 </div>
 
+<ng-template #navbarTemplate>
+  <md-nav-list>
+    <a md-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+      routerLink="/{{navEntry.route}}" (click)="navbar.close()"
+      routerLinkActive="active">{{ navEntry.title }}</a>
+    <a md-list-item *ngFor="let navEntry of defaultRoutes"
+      routerLink="/{{navEntry.route}}" (click)="navbar.close()"
+      routerLinkActive="active">{{ navEntry.title }}</a>
+  </md-nav-list>
+</ng-template>
+
 <md-sidenav-container ngClass="sidenavContainer">
-  <ng-template #navbarTemplate>
-    <md-nav-list *ngIf="(authService.getUser() | async) || true">
-      <a md-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
-        routerLink="/{{navEntry.route}}" (click)="navbar.close()"
-        routerLinkActive="active">{{ navEntry.title }}</a>
-      <a md-list-item *ngFor="let navEntry of defaultRoutes"
-        routerLink="/{{navEntry.route}}" (click)="navbar.close()"
-        routerLinkActive="active">{{ navEntry.title }}</a>
-    </md-nav-list>
-  </ng-template>
-
-
-
   <!-- NAVIGATION BAR MOBILE -->
   <md-sidenav #navbar mode="over" opened="false" position="start" ngClass="sidebarMobile navbar">
     <ng-container *ngTemplateOutlet="navbarTemplate"></ng-container>
@@ -41,7 +39,6 @@
           <ng-container *ngTemplateOutlet="navbarTemplate"></ng-container>
         </md-card-content>
       </md-card>
-
     </div>
 
     <!-- CONTENT -->

@@ -8,8 +8,9 @@ export const environment = {
       token:        'http://173.212.225.7/api/auth/token',
       updatepass:   'http://173.212.225.7/api/auth/updatepassword',
     },
-    dnl: {
-      query:        'http://173.212.225.7/api/dnl/query',
+    steam: {
+      dnl:          'http://173.212.225.7/api/steam/dnl',
+      ark:          'http://173.212.225.7/api/steam/ark',
     },
     cms: {
       content:      'http://173.212.225.7/api/cms',
@@ -22,8 +23,9 @@ export const environment = {
   //     token:        'http://localhost:2000/api/auth/token',
   //     updatepass:   'http://localhost:2000/api/auth/updatepassword',
   //   },
-  //   dnl: {
-  //     query:        'http://localhost:2000/api/dnl/query',
+  //   steam: {
+  //     dnl:          'http://localhost:2000/api/steam/dnl',
+  //     ark:          'http://localhost:2000/api/steam/ark',
   //   },
   //   cms: {
   //     content:      'http://localhost:2000/api/cms',

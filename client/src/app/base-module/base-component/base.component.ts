@@ -1,10 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { AuthService } from '../../_services/auth.service';
 import { CMSService } from '../../_services/cms.service';
-
-import { CmsContent } from '../../_models/cms';
-
 
 
 @Component({
@@ -12,10 +9,10 @@ import { CmsContent } from '../../_models/cms';
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
 })
-export class BaseComponent implements OnInit, OnDestroy {
-
+export class BaseComponent {
   defaultRoutes = [
-    {'title': 'DNL Server', route: 'dnl' },
+    {'title': 'ARK Server', route: 'steam/ark' },
+    {'title': 'DNL Server', route: 'steam/dnl' },
   ];
 
   constructor(
@@ -23,10 +20,9 @@ export class BaseComponent implements OnInit, OnDestroy {
     public cmsService: CMSService) {
   }
 
-  ngOnInit() {
-
-  }
-
-  ngOnDestroy() {
+  tempAdd() {
+    const list = this.cmsService.getContentList().getValue();
+    list.push(list[list.length - 1]);
+    this.cmsService.getContentList().next(list);
   }
 }

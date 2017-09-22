@@ -4,7 +4,7 @@
 
   <md-card-content>
 
-      <ng-container *ngIf="dnlService.getServerData() | async; let gameData; else loading">
+      <ng-container *ngIf="steamService.getDNLData() | async; let gameData; else loading">
 
         <!-- Lets check if the content is actually there. Else there was an issue -->
         <ng-container *ngIf="gameData.players; else issue">

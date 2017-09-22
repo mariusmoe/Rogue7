@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 // import { MdSnackBar } from '@angular/material';
 
-import { DNLService } from './../../../_services/dnl.service';
+import { SteamService } from './../../../_services/steam.service';
 
 import { GameDig } from './../../../_models/dnl';
 
@@ -11,19 +11,19 @@ import { interval } from 'rxjs/Observable/interval';
 import 'rxjs/add/operator/takeUntil';
 
 @Component({
-  selector: 'app-dnlserver-component',
-  templateUrl: './dnlserver.component.html',
-  styleUrls: ['./dnlserver.component.scss'],
+  selector: 'app-dnl-component',
+  templateUrl: './dnl.component.html',
+  styleUrls: ['./dnl.component.scss'],
 })
-export class DNLServerComponent implements OnDestroy {
+export class DNLComponent implements OnDestroy {
   private ngUnsubscribe = new Subject();
 
-  constructor(public dnlService: DNLService) {
+  constructor(public steamService: SteamService) {
     // every 30 sec, it asks again.
     interval(30 * 1000).takeUntil(this.ngUnsubscribe).subscribe(() => {
-      dnlService.queryGameServer();
+      steamService.queryDNLServer();
     });
-    dnlService.queryGameServer();
+    steamService.queryDNLServer();
    }
 
   ngOnDestroy() {

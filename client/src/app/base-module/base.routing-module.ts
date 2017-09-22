@@ -14,7 +14,7 @@ const routes: Routes = [
     children: [
       { path: 'admin' , loadChildren: 'app/base-module/admin-module/admin.module#AdminModule', canActivate: [AuthGuard] },
       { path: 'user', component: UserComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-      { path: 'dnl', loadChildren: 'app/base-module/dnl-module/dnl.module#DNLModule', pathMatch: 'full' },
+      { path: 'steam', loadChildren: 'app/base-module/steam-module/steam.module#SteamModule' },
       { path: '' , redirectTo: 'home', pathMatch: 'full' },
       { path: '**' , component: ContentComponent },
     ]
