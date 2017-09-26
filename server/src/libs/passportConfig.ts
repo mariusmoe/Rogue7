@@ -10,7 +10,7 @@ import { Handler } from 'express';
 // LocalStrategy = require('passport-local');
 
 const localOptions: localOptions = {
-  usernameField: 'email'
+  usernameField: 'username'
 };
 // Setting JWT strategy options
 const jwtOptions: jwtOptions = {
@@ -41,8 +41,8 @@ export class PassportConfig {
 
 
 // Setting up local login strategy
-const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
-  User.findOne({ email: email.toLowerCase() }, (err, user) => {
+const localLogin = new LocalStrategy(localOptions, (username, password, done) => {
+  User.findOne({ username_lower: username.toLowerCase() }, (err, user) => {
     if (err) { return done(err); }
 
     if (!user) { return done(null, false); }

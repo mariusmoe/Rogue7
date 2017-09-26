@@ -1,59 +1,36 @@
 <div class="topHeader">
-  <button mat-icon-button ngClass="navMenu" (click)="navbar.toggle()">
-    <mat-icon>menu</mat-icon>
-  </button>
   <a routerLink="/">Sotingane</a>
-  <button mat-icon-button ngClass="userMenu" (click)="userbar.toggle()">
-    <mat-icon>menu</mat-icon>
-  </button>
 </div>
 
-<ng-template #navbarTemplate>
-  <mat-nav-list>
-    <a mat-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
-      routerLink="/{{navEntry.route}}" (click)="navbar.close()"
-      routerLinkActive="active">{{ navEntry.title }}</a>
-    <a mat-list-item *ngFor="let navEntry of defaultRoutes"
-      routerLink="/{{navEntry.route}}" (click)="navbar.close()"
-      routerLinkActive="active">{{ navEntry.title }}</a>
-  </mat-nav-list>
-</ng-template>
-
-<mat-sidenav-container ngClass="sidenavContainer">
-  <!-- NAVIGATION BAR MOBILE -->
-  <mat-sidenav #navbar mode="over" opened="false" position="start" ngClass="sidebarMobile navbar">
-    <ng-container *ngTemplateOutlet="navbarTemplate"></ng-container>
-  </mat-sidenav>
-
-  <!-- USER BAR MOBILE -->
-  <mat-sidenav #userbar mode="over" opened="false" position="end" ngClass="sidebarMobile">
-    <!-- LOGIN BOX -->
-    <app-login-component (navigated)="userbar.close()"></app-login-component>
-  </mat-sidenav>
-
-  <div class="wrapper">
-    <!-- NAVIGATION BAR -->
-    <div class="nav left">
-      <mat-card>
-        <mat-card-content>
-          <ng-container *ngTemplateOutlet="navbarTemplate"></ng-container>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="main center">
-      <router-outlet></router-outlet>
-    </div>
-
-
-    <div class="user right">
-      <!-- LOGIN BOX -->
-      <app-login-component></app-login-component>
-    </div>
+<div class="wrapper">
+  <!-- NAVIGATION BAR -->
+  <div class="nav left">
+    <mat-card>
+      <mat-card-content>
+        <mat-nav-list dense>
+          <a mat-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+            routerLink="/{{navEntry.route}}"
+            routerLinkActive="active">{{ navEntry.title }}</a>
+          <a mat-list-item *ngFor="let navEntry of defaultRoutes"
+            routerLink="/{{navEntry.route}}"
+            routerLinkActive="active">{{ navEntry.title }}</a>
+        </mat-nav-list>
+      </mat-card-content>
+    </mat-card>
   </div>
 
-</mat-sidenav-container>
+  <!-- CONTENT -->
+  <div class="main center">
+    <router-outlet></router-outlet>
+  </div>
+
+
+  <div class="user right">
+    <app-login-component></app-login-component>
+    <app-control-panel-component></app-control-panel-component>
+  </div>
+</div>
+
 
 <!-- FOOTER -->
 <app-footer-component class="footer"></app-footer-component>

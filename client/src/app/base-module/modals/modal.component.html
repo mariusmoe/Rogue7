@@ -1,0 +1,8 @@
+<h1 mat-dialog-title align="center">{{ headerText }}</h1>
+<div mat-dialog-content align="center">
+  <p>{{ bodyText }}</p>
+</div>
+<div mat-dialog-actions align="center">
+  <button mat-raised-button [color]="proceedColor" (click)="proceed()">{{ proceedText }}</button>
+  <button mat-raised-button *ngIf="includeCancel" [color]="cancelColor" (click)="cancel()">{{ cancelText }}</button>
+</div>

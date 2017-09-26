@@ -12,6 +12,10 @@ const sanitizeOptions: sanitizeHtml.IOptions = {
     'a': [ 'href' ],
     '*': [ 'class' ],
     'img': [ 'src', 'alt' ],
+  },
+  // allowedSchemes: [ 'http', 'https', 'steam' ]
+  allowedSchemesByTag: {
+    'a': [ 'http', 'https', 'steam' ]
   }
 };
 

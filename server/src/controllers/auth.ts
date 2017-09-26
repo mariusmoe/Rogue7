@@ -18,7 +18,7 @@ export class AuthController {
     * @return {Response}          server response: object containing token and user
     */
   public static token(req: Request, res: Response, next: NextFunction) {
-    let user = <user>{ _id: req.user._id, email: req.user.email, role: req.user.role };
+    let user = <user>{ _id: req.user._id, username: req.user.username, role: req.user.role };
     return res.status(200).json({
       token: 'bearer ' + sign(user, configGet('secret'), { expiresIn: 10080 }), // expiresIn in seconds
       user: user
@@ -35,26 +35,27 @@ export class AuthController {
    */
   public static register(req: Request, res: Response, next: NextFunction): Response {
     const password        = <string>req.body.password,
-          role            = <string>req.body.role;
-    let   email           = <string>req.body.email; // must be non-const
+          role            = <string>req.body.role,
+          username        = <string>req.body.username;
 
-    if (isEmpty(email) || isEmpty(password)) {
-      return res.status(400).send(msg('NO_EMAIL_OR_PASSWORD'));
+    if (isEmpty(username) || isEmpty(password)) {
+      return res.status(400).send(msg('NO_USERNAME_OR_PASSWORD'));
     }
     if (isEmpty(role) || (userTypes.indexOf(role) === -1) ) {
       return res.status(400).send(msg('NO_OR_BAD_ROLE'));
     }
 
-    User.findOne({email: email.toLowerCase() }, (err1, emailAlreadyExisting) => {
+    User.findOne({ username_lower: username.toLowerCase() }, (err1, userAlreadyExists) => {
       if (err1) { return next(err1); }
 
       // check if the email is already in use first
-      if (emailAlreadyExisting) {
-        return res.status(409).send(msg('EMAIL_NOT_AVILIABLE'));
+      if (userAlreadyExists) {
+        return res.status(409).send(msg('USERNAME_NOT_AVILIABLE'));
       }
 
       let user = new User({
-        email:      email,
+        username:   username,
+        username_lower: username.toLowerCase(),
         password:   password,
         role:       role,
       }).save((err2, newUser) => {

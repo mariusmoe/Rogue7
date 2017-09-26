@@ -14,7 +14,7 @@
               <button mat-menu-item (click)="editPage()">
                 <mat-icon>mode_edit</mat-icon> Edit
               </button>
-              <button mat-menu-item (click)="deletePage()" [disabled]="url === 'home'">
+              <button mat-menu-item (click)="deletePage()" [disabled]="contentObject.route === 'home'">
                 <mat-icon>delete</mat-icon> Delete
               </button>
             </mat-menu>
@@ -26,14 +26,14 @@
           </div>
 
 
-          <div class="info" *ngIf="url !== 'home'">
+          <div class="info" *ngIf="contentObject.route !== 'home'">
             <div>
-              Updated by: {{contentObject.updatedBy.email}}, <span matTooltip="{{ contentObject.updatedAt | dfnsDistanceInWordsToNow }} ago" matTooltipPosition="above">
+              Updated by: {{contentObject.updatedBy.username}}, <span matTooltip="{{ contentObject.updatedAt | dfnsDistanceInWordsToNow }} ago" matTooltipPosition="above">
                 {{ contentObject.updatedAt | date:'dd. MMM yyyy, HH:mm' }}
               </span>
             </div>
             <div>
-              Written by: {{contentObject.createdBy.email}}, <span matTooltip="{{ contentObject.createdAt | dfnsDistanceInWordsToNow }} ago" matTooltipPosition="above">
+              Written by: {{contentObject.createdBy.username}}, <span matTooltip="{{ contentObject.createdAt | dfnsDistanceInWordsToNow }} ago" matTooltipPosition="above">
                 {{ contentObject.createdAt | date:'dd. MMM yyyy, HH:mm' }}
               </span>
             </div>

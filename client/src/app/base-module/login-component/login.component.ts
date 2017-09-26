@@ -1,13 +1,14 @@
-import { Component, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '../../_models/user';
 
 import { AuthService } from '../../_services/auth.service';
 
 
-const EMAIL_REGEX = /\S+@\S+\.\S+/;
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 enum STATES {
   LOADING,
@@ -20,19 +21,20 @@ enum STATES {
   selector: 'app-login-component',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
   @Output() navigated: EventEmitter<boolean> = new EventEmitter();
-  loginForm: FormGroup;
+  public loginForm: FormGroup;
   STATES = STATES;
-  state: STATES;
+  public state = new BehaviorSubject<STATES>(null);
 
   constructor(
     private router: Router,
     private fb: FormBuilder,
     public authService: AuthService) {
     this.loginForm = fb.group({
-      'email': ['', Validators.pattern(EMAIL_REGEX)],
+      'username': ['', Validators.required],
       'password': ['', Validators.required]
     });
   }
@@ -42,22 +44,26 @@ export class LoginComponent {
    * Submits the login form
    */
   logIn() {
-    this.state = STATES.LOADING;
-    const user: User = this.loginForm.value;
+    this.state.next(STATES.LOADING);
+    const user: User = this.loginForm.getRawValue();
     const sub = this.authService.login(user).subscribe(
       (loggedIn) => {
         sub.unsubscribe();
         if (loggedIn) {
-          this.state = STATES.SUCCESS;
+          this.state.next(STATES.SUCCESS);
           this.navigated.emit(true);
           this.router.navigate(['/']);
           return;
         }
-        this.state = STATES.TRY_AGAIN;
+        this.state.next(STATES.TRY_AGAIN);
       },
-      error => {
+      (error: HttpErrorResponse) => {
         sub.unsubscribe();
-        this.state = STATES.TIMED_OUT;
+        if (error && error.status >= 400 && error.status < 500) {
+          this.state.next(STATES.TRY_AGAIN);
+          return;
+        }
+        this.state.next(STATES.TIMED_OUT);
       },
     );
   }
@@ -68,14 +74,5 @@ export class LoginComponent {
   logOut() {
     this.navigated.emit(true);
     this.authService.logOut();
-  }
-
-
-  /**
-   * Navigates the user to the user page
-   */
-  navigateToUserPage() {
-    this.navigated.emit(true);
-    this.router.navigateByUrl('/user');
   }
 }

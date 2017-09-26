@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 // import { MdSnackBar } from '@angular/material';
 
@@ -14,6 +14,7 @@ import 'rxjs/add/operator/takeUntil';
   selector: 'app-dnl-component',
   templateUrl: './dnl.component.html',
   styleUrls: ['./dnl.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DNLComponent implements OnDestroy {
   private ngUnsubscribe = new Subject();

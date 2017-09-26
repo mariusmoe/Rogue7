@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { AuthService } from '../../_services/auth.service';
 import { CMSService } from '../../_services/cms.service';
@@ -18,11 +18,5 @@ export class BaseComponent {
   constructor(
     public authService: AuthService,
     public cmsService: CMSService) {
-  }
-
-  tempAdd() {
-    const list = this.cmsService.getContentList().getValue();
-    list.push(list[list.length - 1]);
-    this.cmsService.getContentList().next(list);
   }
 }

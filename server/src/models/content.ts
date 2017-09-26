@@ -59,8 +59,8 @@ schema.index({ route: 1 }, { unique: true });
 // Before fetching one contentObject, do the following
 schema.pre('findOne', function(next: NextFunction) {
   const content: content = this;
-  content.populate({ path: 'updatedBy', select: ['_id', 'email', 'role']});
-  content.populate({ path: 'createdBy', select: ['_id', 'email', 'role']});
+  content.populate({ path: 'updatedBy', select: ['username', 'role']});
+  content.populate({ path: 'createdBy', select: ['username', 'role']});
   next();
 });
 

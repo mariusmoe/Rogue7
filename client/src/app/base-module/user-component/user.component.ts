@@ -1,4 +1,4 @@
-import { Component, OnChanges } from '@angular/core';
+import { Component, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -6,25 +6,21 @@ import { User, UpdatePasswordUser } from '../../_models/user';
 
 import { AuthService } from '../../_services/auth.service';
 
-enum STATES {
-  LOADING,
-  SUCCESS,
-  TRY_AGAIN,
-  TIMED_OUT,
-}
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { ChangePasswordModalComponent } from '../modals/change.password.component';
+
 
 @Component({
   selector: 'app-user-component',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserComponent {
   changePasswordForm: FormGroup;
-  STATES = STATES;
-  state: STATES;
-
 
   constructor(
+    private dialog: MatDialog,
     private router: Router,
     private fb: FormBuilder,
     public authService: AuthService) {
@@ -39,21 +35,23 @@ export class UserComponent {
    * Submits the changePasswordForm
    */
   submitForm() {
-    this.state = STATES.LOADING;
     const user: UpdatePasswordUser = this.changePasswordForm.value;
     const sub = this.authService.updatePassword(user).subscribe(
       result => {
         sub.unsubscribe();
+        const config: MatDialogConfig = { data: { failure: false } };
         if (result) {
-          this.state = STATES.SUCCESS;
           this.changePasswordForm.reset();
+          this.changePasswordForm.markAsUntouched();
+          this.router.navigate(['/']);
+          this.dialog.open(ChangePasswordModalComponent, config);
           return;
         }
-        this.state = STATES.TRY_AGAIN;
+        config.data.failure = true;
+        this.dialog.open(ChangePasswordModalComponent, config);
       },
       error => {
         sub.unsubscribe();
-        this.state = STATES.TIMED_OUT;
       },
     );
   }
@@ -66,17 +64,9 @@ export class UserComponent {
    */
   private matchingPasswords(group: FormGroup) {
     // if they do not match, then we return that matchingPasswords is true (in that it is an error)
-    if (group.controls['password'].value !== group.controls['confirm'].value) {
+    if (group.get('password').value !== group.get('confirm').value) {
       return { matchingPasswords: true };
     }
     return null;
-  }
-
-
-  /**
-   * Navigates to the compose page
-   */
-  navigateToCompose() {
-    this.router.navigateByUrl('/admin/compose');
   }
 }

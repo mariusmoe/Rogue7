@@ -2,12 +2,20 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 
+import { AuthGuard } from './_guards/auth.guard';
+
 // Base
 import { AppComponent } from './app.component';
 
 // Modules
-import { AppRoutingModule } from './app.routing-module';
-// import { CoreModule } from './core.module';
+
+
+const appRoutes: Routes = [
+  // { path: 'login', component: LoginComponent },
+  { path: '', loadChildren: 'app/base-module/base.module#BaseModule' },
+  { path: '**', redirectTo: '', pathMatch: 'full' }
+];
+
 
 
 @NgModule({
@@ -16,8 +24,7 @@ import { AppRoutingModule } from './app.routing-module';
   ],
   imports: [
     BrowserAnimationsModule,
-    AppRoutingModule,
-    // CoreModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]

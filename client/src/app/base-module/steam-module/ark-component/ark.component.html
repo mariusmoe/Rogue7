@@ -3,7 +3,7 @@
   <mat-card-title>ARK: Survival Evolved Server</mat-card-title>
 
   <mat-card-content>
-      <ng-container *ngIf="steamService.getARKData() | async; let gameData; else loading">
+      <ng-container *ngIf="steamService.getARKData() | async as gameData; else loading">
 
         <!-- Lets check if the content is actually there. Else there was an issue -->
         <ng-container *ngIf="gameData.players; else issue">
@@ -11,12 +11,12 @@
 
           <div class="gameData">
             <!-- Players connected text -->
-            <span class="numOnline alignCenter" [ngSwitch]="(gameData && gameData.raw && gameData.raw.rules) ? true : false">
+            <span class="numOnline alignCenter" [ngSwitch]="(gameData?.raw?.rules) ? true : false">
               Players connected:
               <span *ngSwitchCase="true">
                 {{ gameData.maxplayers - gameData.raw.rules.NUMOPENPUBCONN }}
               </span>
-              <span *ngSwitchCase="false">{{ (gameData && gameData.players) ? gameData.players.length : 'N/A' }}</span>
+              <span *ngSwitchCase="false">{{ (gameData?.players) ? gameData.players.length : 'N/A' }}</span>
             </span>
 
             <!-- Server info & player info table parent -->
@@ -31,11 +31,11 @@
                   <tr><td>Map</td><td class="alignRight">{{ gameData.map }}</td></tr>
                   <tr><td>Max Players</td><td class="alignRight">{{ gameData.maxplayers }}</td></tr>
                   <tr><td>Password protected</td><td class="alignRight">{{ gameData.password }}</td></tr>
-                  <tr *ngIf="gameData"><td>Version</td><td class="alignRight">
+                  <tr *ngIf="gameData?.name"><td>Version</td><td class="alignRight">
                     {{ gameData.name.substring(gameData.name.indexOf('(')+1, gameData.name.length-1) }}</td></tr>
-                  <tr *ngIf="gameData && gameData.raw"><td>Days</td><td class="alignRight">
+                  <tr *ngIf="gameData?.raw?.rules?.DayTime_s"><td>Days</td><td class="alignRight">
                     {{ gameData.raw.rules.DayTime_s }}</td></tr>
-                  <tr *ngIf="gameData && gameData.raw"><td>BattlEye</td><td class="alignRight">
+                  <tr *ngIf="gameData?.raw?.rules?.SERVERUSESBATTLEYE_b"><td>BattlEye</td><td class="alignRight">
                     {{ gameData.raw.rules.SERVERUSESBATTLEYE_b }}</td></tr>
                 </table>
               </div>

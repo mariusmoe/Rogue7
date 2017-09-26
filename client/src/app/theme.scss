@@ -1,0 +1,16 @@
+@import "colours.scss";
+
+// COLOUR, defaultShade, lighterShade, darkerShade
+$primary: ($mat-red, 900, 300, 900);
+$accent: ($mat-gold, 600, 100, 700);
+$warn: $mat-red-warn; // imported from theme.colours.
+
+$background: #eee;
+
+
+
+// SET THE THEME IN viten.themes.scss! DO NOT MODIFY THE CODE BELOW
+$app-primary: mat-palette(nth($primary, 1), nth($primary, 2), nth($primary, 3), nth($primary, 4));
+$app-accent:  mat-palette(nth($accent, 1), nth($accent, 2), nth($accent, 3), nth($accent, 4));
+$app-warn:    mat-palette($warn);
+$app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);

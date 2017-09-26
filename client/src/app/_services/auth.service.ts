@@ -108,7 +108,6 @@ export class AuthService {
    * @return {Observable<boolean>} wether the JWT was successfully renewed
    */
   renewToken(): Observable<boolean> {
-    console.log('ATTEMPTED TO RENEW TOKEN!!!!');
     const headers = { headers: new HttpHeaders().set('Authorization', localStorage.getItem('token')) };
     return this.http.get(environment.URL.auth.token, headers)
       .map( ( json: JWT) => {

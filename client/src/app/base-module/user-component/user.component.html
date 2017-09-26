@@ -1,63 +1,43 @@
 <!-- ASYNC CHECK; SUBSCRIBES TO LOGGED-IN OBSERVABLE; UPDATES AUTOMAGICALLY -->
-<ng-container *ngIf="authService.getUser() | async; let user;">
+<ng-container *ngIf="authService.getUser() | async as user;">
   <mat-accordion multi="false">
 
-    <!-- CMS PANEL -->
     <mat-expansion-panel>
       <mat-expansion-panel-header>
-        <mat-panel-title>Content Management</mat-panel-title>
-        <!-- <mat-panel-description>Future!</mat-panel-description> -->
+        <mat-panel-title>Change Password</mat-panel-title>
       </mat-expansion-panel-header>
-      <div>
-      </div>
-      <mat-action-row>
-      <button mat-raised-button color="primary" (click)="navigateToCompose()">Compose page</button>
-    </mat-action-row>
-    </mat-expansion-panel>
+      <!-- CHANGE PASSWORD FORM -->
+      <form [formGroup]="changePasswordForm" (ngSubmit)="submitForm()" id="changePasswordForm">
+        <!-- CURRENT PASSWORD -->
+        <mat-form-field class="field">
+          <input matInput placeholder="Current password" type="password" formControlName="currentPassword" required>
+          <mat-error *ngIf="changePasswordForm.get('currentPassword').hasError('required')">
+            Current password is <strong>required</strong>
+          </mat-error>
+        </mat-form-field>
 
-    <!-- ACCOUNT SETTINGS -->
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Account settings</mat-panel-title>
-        <!-- <mat-panel-description>Account settings</mat-panel-description> -->
-      </mat-expansion-panel-header>
-      <div>
+        <!-- NEW PASSWORD -->
+        <mat-form-field class="field">
+          <input matInput placeholder="New password" type="password" formControlName="password" required>
+          <mat-error *ngIf="changePasswordForm.get('password').hasError('required')">
+            Password is <strong>required</strong>
+          </mat-error>
+          <mat-hint *ngIf="changePasswordForm.errors?.matchingPasswords">
+            This field must match the confirm password field
+          </mat-hint>
+        </mat-form-field>
 
-        <!-- CHANGE PASSWORD FORM -->
-        <form [formGroup]="changePasswordForm" (ngSubmit)="submitForm()" id="changePasswordForm">
-          <!-- CURRENT PASSWORD -->
-          <mat-form-field class="field">
-            <input matInput placeholder="Current password" type="password" [formControl]="changePasswordForm.controls['currentPassword']" required>
-            <mat-error *ngIf="changePasswordForm.controls['currentPassword'].hasError('required')">
-              Current password is <strong>required</strong>
-            </mat-error>
-          </mat-form-field>
-
-          <!-- NEW PASSWORD -->
-          <mat-form-field class="field">
-            <input matInput placeholder="New password" type="password" [formControl]="changePasswordForm.controls['password']" required>
-            <mat-error *ngIf="changePasswordForm.controls['password'].hasError('required')">
-              Password is <strong>required</strong>
-            </mat-error>
-            <mat-hint *ngIf="changePasswordForm.errors?.matchingPasswords">
-              This field must match the confirm password field
-            </mat-hint>
-          </mat-form-field>
-
-          <!-- CONFIRM PASSWORD -->
-          <mat-form-field class="field">
-            <input matInput placeholder="Confirm password" type="password" [formControl]="changePasswordForm.controls['confirm']" required>
-            <mat-error *ngIf="changePasswordForm.controls['confirm'].hasError('required')">
-              Password is <strong>required</strong>
-            </mat-error>
-            <mat-hint *ngIf="changePasswordForm.errors?.matchingPasswords">
-              This field must match the password field
-            </mat-hint>
-          </mat-form-field>
-        </form>
-        <!-- PASSWORDS MUST MATCH MESSAGE -->
-
-      </div>
+        <!-- CONFIRM PASSWORD -->
+        <mat-form-field class="field">
+          <input matInput placeholder="Confirm password" type="password" formControlName="confirm" required>
+          <mat-error *ngIf="changePasswordForm.get('confirm').hasError('required')">
+            Password is <strong>required</strong>
+          </mat-error>
+          <mat-hint *ngIf="changePasswordForm.errors?.matchingPasswords">
+            This field must match the password field
+          </mat-hint>
+        </mat-form-field>
+      </form>
       <mat-action-row>
         <button mat-raised-button form="changePasswordForm" type="submit" [disabled]="!changePasswordForm.valid" color="primary">
           Change Password
