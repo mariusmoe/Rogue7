@@ -1,5 +1,5 @@
 
-export interface Modal {
+export interface ModalData {
   headerText: string;
   bodyText: string;
 

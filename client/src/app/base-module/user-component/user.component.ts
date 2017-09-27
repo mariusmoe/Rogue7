@@ -7,7 +7,8 @@ import { User, UpdatePasswordUser } from '../../_models/user';
 import { AuthService } from '../../_services/auth.service';
 
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { ChangePasswordModalComponent } from '../modals/change.password.component';
+import { ModalComponent } from '../modals/modal.component';
+import { ModalData } from '../../_models/modalData';
 
 
 @Component({
@@ -39,16 +40,28 @@ export class UserComponent {
     const sub = this.authService.updatePassword(user).subscribe(
       result => {
         sub.unsubscribe();
-        const config: MatDialogConfig = { data: { failure: false } };
+
+        const data: ModalData = {
+          headerText: 'Password updated!',
+          bodyText: 'Your password was successfully updated.',
+
+          proceedColor: 'primary',
+          proceedText: 'Okay',
+
+          includeCancel: false,
+
+          proceed: () => {}
+        };
         if (result) {
           this.changePasswordForm.reset();
           this.changePasswordForm.markAsUntouched();
           this.router.navigate(['/']);
-          this.dialog.open(ChangePasswordModalComponent, config);
+          this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
           return;
         }
-        config.data.failure = true;
-        this.dialog.open(ChangePasswordModalComponent, config);
+        data.headerText = 'Failure';
+        data.bodyText = 'Could not update your password.';
+        this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
       },
       error => {
         sub.unsubscribe();

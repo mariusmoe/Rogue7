@@ -8,6 +8,7 @@ import { CMSService } from '../../_services/cms.service';
   selector: 'app-base-component',
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BaseComponent {
   defaultRoutes = [

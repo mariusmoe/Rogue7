@@ -7,8 +7,8 @@ import { AuthService } from '../../_services/auth.service';
 import { CmsContent } from '../../_models/cms';
 
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { DeleteContentModalComponent } from '../modals/delete.content.component';
-
+import { ModalComponent } from '../modals/modal.component';
+import { ModalData } from '../../_models/modalData';
 
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -48,12 +48,34 @@ export class ContentComponent implements OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
-
   editPage() {
     this.router.navigateByUrl('/admin/compose/' + this.contentSubject.getValue().route);
   }
   deletePage() {
-    const config: MatDialogConfig = { data: { content: this.contentSubject.getValue() } };
-    this.dialog.open(DeleteContentModalComponent, config);
+    const content = this.contentSubject.getValue();
+    const data: ModalData = {
+      headerText: 'Delete ' + content.title,
+      bodyText: 'Do you wish to proceed?',
+
+      proceedColor: 'warn',
+      proceedText: 'Delete',
+
+      cancelColor: 'accent',
+      cancelText: 'Cancel',
+
+      includeCancel: true,
+
+      proceed: () => {
+        const sub = this.cmsService.deleteContent(content.route).subscribe(
+          () => {
+            sub.unsubscribe();
+            this.cmsService.getContentList(true);
+            this.router.navigate(['/']);
+          }
+        );
+      },
+      cancel: () => {},
+    };
+    this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
   }
 }

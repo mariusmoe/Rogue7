@@ -16,8 +16,7 @@ import { FooterComponent } from './footer-component/footer.component';
 import { ContentComponent } from './content-component/content.component';
 import { OutletComponent } from './outlet-component/outlet.component';
 
-import { DeleteContentModalComponent } from './modals/delete.content.component';
-import { ChangePasswordModalComponent } from './modals/change.password.component';
+import { ModalComponent } from './modals/modal.component';
 
 
 import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
@@ -32,16 +31,14 @@ import { MATERIAL_COMPATIBILITY_MODE } from '@angular/material';
     FooterComponent,
     ContentComponent,
     OutletComponent,
-    DeleteContentModalComponent,
-    ChangePasswordModalComponent
+    ModalComponent,
   ],
   imports: [
     SharedModule.forRoot(),
     BaseRoutingModule,
   ],
   entryComponents: [
-    DeleteContentModalComponent,
-    ChangePasswordModalComponent
+    ModalComponent
   ],
   providers: [
     { provide: MATERIAL_COMPATIBILITY_MODE, useValue: true } // forces "mat" instead of "md"
