@@ -20,7 +20,7 @@ export class AuthController {
   public static token(req: Request, res: Response, next: NextFunction) {
     let user = <user>{ _id: req.user._id, username: req.user.username, role: req.user.role };
     return res.status(200).json({
-      token: 'bearer ' + sign(user, configGet('secret'), { expiresIn: 10080 }), // expiresIn in seconds
+      token: 'bearer ' + sign(user, configGet<string>('secret'), { expiresIn: 10080 }), // expiresIn in seconds
       user: user
     });
   }

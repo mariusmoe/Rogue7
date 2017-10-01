@@ -25,6 +25,4 @@ const sanitizeOptions: sanitizeHtml.IOptions = {
  * @param  {string} htmlInput       the HTML to sanitize
  * @return {string}                 the sanitized HTML output
  */
-const sanitizer = (htmlInput: string) => sanitizeHtml(htmlInput, sanitizeOptions);
-
-export const sanitize = sanitizer;
+export const sanitize = (htmlInput: string) => sanitizeHtml(htmlInput, sanitizeOptions);

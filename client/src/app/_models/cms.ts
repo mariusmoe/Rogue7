@@ -1,7 +1,7 @@
 
 
 export interface CmsContent {
-  _id: string;
+  _id?: string;
   title: string;
   access: string;
   route: string;

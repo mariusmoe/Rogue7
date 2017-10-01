@@ -60,11 +60,12 @@ export class AuthGuard implements CanActivate {
    * Returns the expiry date of the JWT
    * @return {Date} the date time the JWT expires
    */
-  private getTokenExpirationDate() {
+  private getTokenExpirationDate(): Date {
     const token = localStorage.getItem('token');
-    const expDate = this.jwtHelper.getTokenExpirationDate(token);
-
-    return expDate;
+    if (token) {
+      return this.jwtHelper.getTokenExpirationDate(token);
+    }
+    return new Date(); // now
   }
 
 
