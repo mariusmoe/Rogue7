@@ -1,0 +1,36 @@
+<div class="topHeader">
+  <a routerLink="/">Sotingane</a>
+</div>
+
+<div class="wrapper">
+  <!-- NAVIGATION BAR -->
+  <div class="nav left">
+    <mat-card>
+      <mat-card-content>
+        <mat-nav-list dense>
+          <a mat-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+            routerLink="/{{navEntry.route}}"
+            routerLinkActive="active">{{ navEntry.title }}</a>
+          <a mat-list-item *ngFor="let navEntry of defaultRoutes"
+            routerLink="/{{navEntry.route}}"
+            routerLinkActive="active">{{ navEntry.title }}</a>
+        </mat-nav-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="main center">
+    <router-outlet></router-outlet>
+  </div>
+
+
+  <div class="user right">
+    <app-login-component></app-login-component>
+    <app-control-panel-component></app-control-panel-component>
+  </div>
+</div>
+
+
+<!-- FOOTER -->
+<app-footer-component class="footer"></app-footer-component>

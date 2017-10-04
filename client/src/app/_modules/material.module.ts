@@ -2,22 +2,21 @@ import { NgModule } from '@angular/core';
 
 // Modules
 import {
-  MdCardModule,
-  MdListModule,
-  MdIconModule,
-  MdInputModule,
-  MdButtonModule,
-  MdProgressBarModule,
-  MdProgressSpinnerModule,
-  MdTooltipModule,
-  MdToolbarModule,
-  MdSnackBarModule,
-  MdSidenavModule,
-  MdExpansionModule,
-  MdSelectModule,
-  MdMenuModule,
-
-
+  MatCardModule,
+  MatListModule,
+  MatIconModule,
+  MatInputModule,
+  MatButtonModule,
+  MatProgressBarModule,
+  MatProgressSpinnerModule,
+  MatTooltipModule,
+  MatToolbarModule,
+  MatSnackBarModule,
+  MatSidenavModule,
+  MatExpansionModule,
+  MatSelectModule,
+  MatMenuModule,
+  MatDialogModule
 } from '@angular/material';
 
 
@@ -25,20 +24,21 @@ import {
 
 @NgModule({
   exports: [
-    MdCardModule,
-    MdListModule,
-    MdIconModule,
-    MdInputModule,
-    MdButtonModule,
-    MdProgressBarModule,
-    MdProgressSpinnerModule,
-    MdTooltipModule,
-    MdToolbarModule,
-    MdSnackBarModule,
-    MdSidenavModule,
-    MdExpansionModule,
-    MdSelectModule,
-    MdMenuModule
+    MatCardModule,
+    MatListModule,
+    MatIconModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    MatToolbarModule,
+    MatSnackBarModule,
+    MatSidenavModule,
+    MatExpansionModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatDialogModule
   ]
 })
 export class MaterialModule { }

@@ -10,9 +10,13 @@ const SALT_FACTOR = 10;
  |--------------------------------------------------------------------------
 */
 const schema = new Schema({
-  email: {
+  username: {
     type: String,
-    lowercase: true,
+    unique: true,
+    required: true
+  },
+  username_lower: {
+    type: String,
     unique: true,
     required: true
   },
@@ -27,8 +31,12 @@ const schema = new Schema({
   },
 });
 
+// Set indexing
+schema.index({ username_lower: 1 }, { unique: true });
+
 export interface user extends Document {
-  email: string;
+  username: string;
+  username_lower: string;
   password: string;
   role: string;
   comparePassword: (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void ) => null;

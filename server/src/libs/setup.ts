@@ -1,19 +1,11 @@
 import { Express, Request, Response, NextFunction } from 'express';
-import { util as configUtil } from 'config';
+import { util as configUtil, get as configGet } from 'config';
 
 import * as compression from 'compression';
 import * as helmet from 'helmet';
 import { json, urlencoded } from 'body-parser';
 import * as logger from 'morgan';
 import * as methodOverride from 'method-override';
-
-
-
-const allowedOrigins = [
-  'http://localhost:4200',
-  'http://localhost:2000',
-  'http://173.212.225.7:2000'
-];
 
 export class Setup {
   /**
@@ -48,7 +40,7 @@ export class Setup {
     // Headers (CORS)
     app.use( (req: Request, res: Response, next: NextFunction) => {
       const origin = req.headers.origin;
-      if (typeof origin === 'string' && allowedOrigins.indexOf(origin) > -1 ) {
+      if (typeof origin === 'string' && configGet<string[]>('allowedOrigins').indexOf(origin) > -1 ) {
         res.setHeader('Access-Control-Allow-Origin', origin);
       }
       res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, PATCH, OPTIONS');

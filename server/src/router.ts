@@ -8,7 +8,7 @@ import { PassportConfig } from './libs/passportConfig';
 // Controllers
 import { AuthController } from './controllers/auth';
 import { CMSController } from './controllers/cms';
-import { DNLController } from './controllers/dnl';
+import { SteamController } from './controllers/steam';
 import { ErrorController } from './controllers/error';
 
 
@@ -30,7 +30,7 @@ export class AppRouter {
     app.use('/api', apiRoutes);
     this.authRoutes(apiRoutes);
     this.cmsRoutes(apiRoutes);
-    this.dnlRoutes(apiRoutes);
+    this.steamRoutes(apiRoutes);
     // Set a common fallback for /api/*; 404 for invalid route
     apiRoutes.all('*', ErrorController.error);
 
@@ -94,12 +94,13 @@ export class AppRouter {
   }
 
 
-  private static dnlRoutes(router: Router) {
-    const dnlRoutes = Router();
-    dnlRoutes.get('/query', DNLController.getServerData);
+  private static steamRoutes(router: Router) {
+    const steamRoutes = Router();
+    steamRoutes.get('/dnl', SteamController.getDNLData);
+    steamRoutes.get('/ark', SteamController.getARKData);
 
     // assign to parent router
-    router.use('/dnl', dnlRoutes);
+    router.use('/steam', steamRoutes);
   }
 
 

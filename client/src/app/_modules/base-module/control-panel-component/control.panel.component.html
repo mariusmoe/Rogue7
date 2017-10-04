@@ -1,0 +1,13 @@
+
+<mat-card *ngIf="authService.getUser() | async; let user">
+  <mat-card-content>
+    <mat-nav-list ngClass="nav"  dense>
+      <a mat-list-item
+        routerLink="/user" (click)="emit()"
+        routerLinkActive="active">User Settings</a>
+      <a mat-list-item *ngIf="user?.role === 'admin'"
+        routerLink="/admin/compose" (click)="emit()"
+        routerLinkActive="active">Create Content</a>
+    </mat-nav-list>
+  </mat-card-content>
+</mat-card>

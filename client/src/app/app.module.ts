@@ -5,10 +5,11 @@ import { RouterModule, Routes } from '@angular/router';
 // Base
 import { AppComponent } from './app.component';
 
-// Modules
-import { AppRoutingModule } from './app.routing-module';
-// import { CoreModule } from './core.module';
-
+const appRoutes: Routes = [
+  // { path: 'login', component: LoginComponent },
+  { path: '', loadChildren: 'app/_modules/base-module/base.module#BaseModule' },
+  { path: '**', redirectTo: '', pathMatch: 'full' }
+];
 
 @NgModule({
   declarations: [
@@ -16,8 +17,7 @@ import { AppRoutingModule } from './app.routing-module';
   ],
   imports: [
     BrowserAnimationsModule,
-    AppRoutingModule,
-    // CoreModule,
+    RouterModule.forRoot(appRoutes)
   ],
   providers: [],
   bootstrap: [AppComponent]

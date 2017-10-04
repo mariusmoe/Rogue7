@@ -13,8 +13,9 @@ export const environment = {
       token:        'http://localhost:2000/api/auth/token',
       updatepass:   'http://localhost:2000/api/auth/updatepassword',
     },
-    dnl: {
-      query:        'http://localhost:2000/api/dnl/query',
+    steam: {
+      dnl:        'http://localhost:2000/api/steam/dnl',
+      ark:        'http://localhost:2000/api/steam/ark',
     },
     cms: {
       content:      'http://localhost:2000/api/cms',

@@ -23,16 +23,16 @@ const status: statusObj = {
   },
 
   // AUTH CODES: 20000
-  'NO_EMAIL_OR_PASSWORD': {
-    message: 'Missing email or password',
+  'NO_USERNAME_OR_PASSWORD': {
+    message: 'Missing username or password',
     status: 20000,
   },
   'NO_OR_BAD_ROLE': {
     message: 'Missing or bad role',
     status: 20001,
   },
-  'EMAIL_NOT_AVILIABLE': {
-    message: 'Email already taken',
+  'USERNAME_NOT_AVILIABLE': {
+    message: 'Username already taken',
     status: 20002,
   },
   'ACCOUNT_CREATED': {
