@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate } from '@angular/router';
 import { JwtHelper } from 'angular2-jwt';
-import { MdSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { AuthService } from '../_services/auth.service';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class AuthGuard implements CanActivate {
   private jwtHelper: JwtHelper = new JwtHelper();
 
   constructor(
-    public snackBar: MdSnackBar,
+    public snackBar: MatSnackBar,
     private router: Router,
     private authService: AuthService) { }
 

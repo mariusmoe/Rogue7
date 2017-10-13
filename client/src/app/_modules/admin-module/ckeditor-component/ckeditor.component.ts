@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, ChangeDetectionStrategy } from '@angular/core'; // Inject
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 
 import { CmsContent } from '../../../_models/cms';
 // import { DOCUMENT } from '@angular/platform-browser';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import * as CK5 from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 @Component({
   selector: 'app-ckeditor',
@@ -14,7 +14,15 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 export class CKEditorComponent implements OnInit, OnDestroy {
   @ViewChild('content') editorBox: ElementRef;
   @Input() value: string;
+  @Output() onChange = new EventEmitter<string>();
   editor: CKEditor;
+
+  settings = {
+    image: {
+      toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ],
+      styles: [ 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ]
+    }
+  };
 
   constructor() {
    }
@@ -33,16 +41,22 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this.editor.destroy();
+    // User might navigate away before the editor gets to load.
+    if (this.editor) {
+      this.editor.destroy();
+    }
   }
 
   /**
    * Loads CKEditor and sets the editor var
    */
   loadCKEditor() {
-    ClassicEditor.create(this.editorBox.nativeElement)
+    CK5.create(this.editorBox.nativeElement, this.settings)
     .then( editor => {
       this.editor = editor;
+      this.editor.listenTo(this.editor.document, 'changesDone', () => {
+        this.onChange.emit(this.editor.getData());
+      });
       if (this.value) { this.editor.setData(this.value); }
     }).catch( err => {
     });

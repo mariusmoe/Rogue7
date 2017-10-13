@@ -11,3 +11,9 @@ export interface CmsContent {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface CmsAccess {
+  verbose: string;
+  icon: string;
+  value: string;
+}

@@ -14,8 +14,8 @@ export const environment = {
       updatepass:   'http://localhost:2000/api/auth/updatepassword',
     },
     steam: {
-      dnl:        'http://localhost:2000/api/steam/dnl',
-      ark:        'http://localhost:2000/api/steam/ark',
+      dnl:          'http://localhost:2000/api/steam/dnl',
+      ark:          'http://localhost:2000/api/steam/ark',
     },
     cms: {
       content:      'http://localhost:2000/api/cms',
@@ -23,5 +23,5 @@ export const environment = {
   }
 };
 
-// reflect only required in dev mode.
+// reflect only required in jit mode.
 import 'core-js/es7/reflect';

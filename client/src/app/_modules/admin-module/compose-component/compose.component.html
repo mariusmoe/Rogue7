@@ -28,11 +28,13 @@
 
 
         <!-- ACCESS -->
-        <mat-select ngClass="field" placeholder="Access" formControlName="access" required>
-          <mat-option *ngFor="let option of accessChoices" [value]="option">
-            {{ accessVerbose[option] }}
-          </mat-option>
-        </mat-select>
+        <mat-form-field class="field">
+          <mat-select placeholder="Access" formControlName="access" required>
+            <mat-option *ngFor="let option of accessChoices" [value]="option.value">
+              {{ option.verbose }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
 
       <!-- CONTENT -->

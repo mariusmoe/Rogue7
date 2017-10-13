@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CMSService } from '../../../_services/cms.service';
 import { AuthService } from '../../../_services/auth.service';
 
-import { CmsContent } from '../../../_models/cms';
+import { CmsContent, CmsAccess } from '../../../_models/cms';
 import { CKEditorComponent } from '../ckeditor-component/ckeditor.component';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -23,8 +23,10 @@ import 'rxjs/add/operator/takeUntil';
 export class ComposeComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   contentForm: FormGroup;
-  accessChoices: string[] = ['everyone', 'user'];
-  accessVerbose = { 'everyone': 'Everyone', 'admin': 'Admins', 'user': 'Users' };
+  accessChoices: CmsAccess[] = [
+    { value: 'everyone',  verbose: 'Everyone',  icon: 'group' },
+    { value: 'user',      verbose: 'Users',     icon: 'verified_user' }
+  ];
   inputContent: CmsContent;
   @ViewChild(CKEditorComponent) editor: CKEditorComponent;
 
@@ -72,18 +74,24 @@ export class ComposeComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.authService.getUser().takeUntil(this.ngUnsubscribe).subscribe( user => {
       if (user && user.role === 'admin') {
-        this.accessChoices.push('admin');
+        this.accessChoices.push({ value: 'admin', verbose: 'Admins', icon: 'security' });
         return;
       }
     });
   }
-
-
   ngOnDestroy() {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
 
+
+  /**
+   * returns the CmsAccess value of the selected access privileges
+   * @return {CmsAccess} the selected value
+   */
+  getAccessChoice(): CmsAccess {
+    return this.accessChoices.filter(choice => this.contentForm.get('access').value === choice.value)[0];
+  }
   /**
    * Submits the form and hands it over to the cmsService
    */
