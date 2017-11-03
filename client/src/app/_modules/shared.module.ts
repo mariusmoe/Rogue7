@@ -13,10 +13,6 @@ import { MaterialModule } from './material.module';
 import { DateFnsModule } from 'ngx-date-fns';
 
 
-// Pipes
-import { KeysPipe } from '../_pipes/keys.pipe';
-// import { DatePipe } from '@angular/common';
-
 // Guards
 import { AuthGuard } from '../_guards/auth.guard';
 
@@ -24,11 +20,9 @@ import { AuthGuard } from '../_guards/auth.guard';
 
 @NgModule({
   declarations: [
-    KeysPipe,
   ],
   exports: [
     CommonModule,
-    KeysPipe,
     MaterialModule,
     ReactiveFormsModule,
     RouterModule,

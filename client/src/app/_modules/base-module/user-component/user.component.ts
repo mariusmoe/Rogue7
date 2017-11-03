@@ -15,8 +15,7 @@ import { ModalData } from '../../../_models/modalData';
   selector: 'app-user-component',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  preserveWhitespaces: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UserComponent {
   changePasswordForm: FormGroup;

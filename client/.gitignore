@@ -33,6 +33,9 @@ npm-debug.log
 testem.log
 /typings
 
+# production config
+/src/environments/environment.prod.ts
+
 # e2e
 /e2e/*.js
 /e2e/*.map

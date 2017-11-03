@@ -7,8 +7,7 @@ import { AuthService } from '../../../_services/auth.service';
   selector: 'app-control-panel-component',
   templateUrl: './control.panel.component.html',
   styleUrls: ['./control.panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  preserveWhitespaces: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControlPanelComponent {
   @Output() navigated: EventEmitter<boolean> = new EventEmitter();

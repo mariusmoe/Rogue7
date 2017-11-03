@@ -21,8 +21,7 @@ enum STATES {
   selector: 'app-login-component',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  preserveWhitespaces: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
   @Output() navigated: EventEmitter<boolean> = new EventEmitter();
@@ -73,6 +72,7 @@ export class LoginComponent {
    */
   logOut() {
     this.navigated.emit(true);
+    this.state.next(STATES.READY);
     this.authService.logOut();
   }
 }

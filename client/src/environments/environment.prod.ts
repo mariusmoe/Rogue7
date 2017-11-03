@@ -2,18 +2,18 @@ export const environment = {
   production: true,
 
   URL: {
-    base:           'http://173.212.225.7',
+    base:           'https://soting.net',
     auth: {
-      login:        'http://173.212.225.7/api/auth/login',
-      token:        'http://173.212.225.7/api/auth/token',
-      updatepass:   'http://173.212.225.7/api/auth/updatepassword',
+      login:        'https://soting.net/api/auth/login',
+      token:        'https://soting.net/api/auth/token',
+      updatepass:   'https://soting.net/api/auth/updatepassword',
     },
     steam: {
-      dnl:          'http://173.212.225.7/api/steam/dnl',
-      ark:          'http://173.212.225.7/api/steam/ark',
+      dnl:          'https://soting.net/api/steam/dnl',
+      ark:          'https://soting.net/api/steam/ark',
     },
     cms: {
-      content:      'http://173.212.225.7/api/cms',
+      content:      'https://soting.net/api/cms',
     },
   }
   // URL: {

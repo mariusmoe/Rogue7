@@ -1,34 +1,48 @@
-<div class="topHeader">
+<header class="topHeader">
   <a routerLink="/">Sotingane</a>
-</div>
+</header>
 
 <div class="wrapper">
   <!-- NAVIGATION BAR -->
-  <div class="nav left">
+  <nav class="nav left">
     <mat-card>
       <mat-card-content>
-        <mat-nav-list dense>
-          <a mat-list-item *ngFor="let navEntry of cmsService.getContentList() | async"
+        <mat-nav-list dense *ngIf="contentSubject | async as nav">
+
+          <a mat-list-item *ngFor="let navEntry of nav.rootContent"
             routerLink="/{{navEntry.route}}"
             routerLinkActive="active">{{ navEntry.title }}</a>
+
+          <ng-container *ngFor="let folderEntry of nav.folders">
+            <h2 mat-subheader>{{ folderEntry.title }}</h2>
+            <a mat-list-item *ngFor="let navEntry of folderEntry.content"
+              routerLink="/{{navEntry.route}}"
+              routerLinkActive="active"
+              ngClass="subItem">{{ navEntry.title }}</a>
+          </ng-container>
+
+
+          <h2 mat-subheader>Steam Servers</h2>
+
           <a mat-list-item *ngFor="let navEntry of defaultRoutes"
             routerLink="/{{navEntry.route}}"
-            routerLinkActive="active">{{ navEntry.title }}</a>
+            routerLinkActive="active"
+            ngClass="subItem">{{ navEntry.title }}</a>
         </mat-nav-list>
       </mat-card-content>
     </mat-card>
-  </div>
+  </nav>
 
   <!-- CONTENT -->
-  <div class="main center">
+  <main class="main center">
     <router-outlet></router-outlet>
-  </div>
+  </main>
 
 
-  <div class="user right">
+  <aside class="user right">
     <app-login-component></app-login-component>
     <app-control-panel-component></app-control-panel-component>
-  </div>
+  </aside>
 </div>
 
 

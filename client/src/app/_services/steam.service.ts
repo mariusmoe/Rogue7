@@ -7,6 +7,9 @@ import { GameDig } from './../_models/dnl';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { timeout } from 'rxjs/operators';
+
+const TIMEOUT = 5000;
 
 @Injectable()
 export class SteamService {
@@ -31,10 +34,9 @@ export class SteamService {
    * Query the server for updated DNL data
    */
   queryDNLServer() {
-    this.http.get(environment.URL.steam.dnl)
-      .map( (data: GameDig) => data)
-      .timeout(5000)
-      .subscribe(
+    this.http.get<GameDig>(environment.URL.steam.dnl).pipe(
+      timeout(TIMEOUT)
+    ).subscribe(
         data => {
           data.lastUpdate = new Date();
           const now = new Date().valueOf();
@@ -60,10 +62,9 @@ export class SteamService {
    * Query the server for updated DNL data
    */
   queryARKServer() {
-    this.http.get(environment.URL.steam.ark)
-      .map( (data: GameDig) => data)
-      .timeout(5000)
-      .subscribe(
+    this.http.get<GameDig>(environment.URL.steam.ark).pipe(
+      timeout(TIMEOUT)
+    ).subscribe(
         data => {
           data.lastUpdate = new Date();
           const now = new Date().valueOf();

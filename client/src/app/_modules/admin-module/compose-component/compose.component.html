@@ -1,7 +1,6 @@
 <mat-card>
   <mat-card-title>Compose</mat-card-title>
   <mat-card-content>
-    Fill in all required fields
     <form [formGroup]="contentForm" (ngSubmit)="submitForm()" id="contentForm">
 
       <div class="formControls">
@@ -27,8 +26,20 @@
         </mat-form-field>
 
 
+        <!-- FOLDER -->
+        <mat-form-field class="field">
+          <input matInput placeholder="Folder" type="text" formControlName="folder" autocomplete="off" [matAutocomplete]="folderAuto">
+          <mat-autocomplete #folderAuto="matAutocomplete">
+            <mat-option *ngFor="let folder of folders" [value]="folder">
+              {{ folder }}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+
         <!-- ACCESS -->
         <mat-form-field class="field">
+          <!-- <mat-icon matPrefix>{{getAccessChoice().icon}}</mat-icon> -->
           <mat-select placeholder="Access" formControlName="access" required>
             <mat-option *ngFor="let option of accessChoices" [value]="option.value">
               {{ option.verbose }}

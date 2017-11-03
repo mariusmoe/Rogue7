@@ -7,11 +7,9 @@ import { CmsContent } from '../_models/cms';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/timeout';
+import { timeout } from 'rxjs/operators';
 
-
-const TIMEOUT = 2000;
+const TIMEOUT = 5000;
 
 
 @Injectable()
@@ -38,13 +36,10 @@ export class CMSService {
    */
   getContentList(forceUpdate = false): BehaviorSubject<CmsContent[]> {
     if (forceUpdate) {
-      // console.log('forcing update....');
       const sub = this.requestContentList().subscribe(
         contentList => {
           sub.unsubscribe();
-          // console.log('nexting');
           this.listSubject.next(contentList);
-          // console.log(this.listSubject.getValue().length);
         }
       );
     }
@@ -74,9 +69,7 @@ export class CMSService {
     if (localStorage.getItem('token')) {
       headers = { headers: new HttpHeaders().set('Authorization', localStorage.getItem('token')) };
     }
-    return this.http.get(environment.URL.cms.content, headers)
-      .map( (contentList: CmsContent[]) => contentList )
-      .timeout(TIMEOUT);
+    return this.http.get<CmsContent[]>(environment.URL.cms.content, headers).pipe(timeout(TIMEOUT));
   }
 
 
@@ -89,9 +82,7 @@ export class CMSService {
     if (localStorage.getItem('token')) {
       headers = { headers: new HttpHeaders().set('Authorization', localStorage.getItem('token')) };
     }
-    return this.http.get(environment.URL.cms.content + '/' + contentUrl, headers)
-      .map( (content: CmsContent) => content)
-      .timeout(TIMEOUT);
+    return this.http.get<CmsContent>(environment.URL.cms.content + '/' + contentUrl, headers).pipe(timeout(TIMEOUT));
   }
 
   /**
@@ -103,9 +94,7 @@ export class CMSService {
         .set('Authorization', localStorage.getItem('token'))
         .set('content-type', 'application/json')
     };
-    return this.http.patch(environment.URL.cms.content + '/' + contentUrl, updatedContent, headers)
-      .map( (content: CmsContent) => content)
-      .timeout(TIMEOUT);
+    return this.http.patch<CmsContent>(environment.URL.cms.content + '/' + contentUrl, updatedContent, headers).pipe(timeout(TIMEOUT));
   }
 
   /**
@@ -116,9 +105,7 @@ export class CMSService {
     const headers = { headers: new HttpHeaders()
         .set('Authorization', localStorage.getItem('token'))
     };
-    return this.http.delete(environment.URL.cms.content + '/' + contentUrl, headers)
-      .map( (state: boolean) => state)
-      .timeout(TIMEOUT);
+    return this.http.delete<boolean>(environment.URL.cms.content + '/' + contentUrl, headers).pipe(timeout(TIMEOUT));
   }
 
 
@@ -131,8 +118,6 @@ export class CMSService {
         .set('Authorization', localStorage.getItem('token'))
         .set('content-type', 'application/json')
     };
-    return this.http.post(environment.URL.cms.content, newContent, headers)
-      .map( (content: CmsContent) => content)
-      .timeout(TIMEOUT);
+    return this.http.post<CmsContent>(environment.URL.cms.content, newContent, headers).pipe(timeout(TIMEOUT));
   }
 }

@@ -10,3 +10,8 @@ export interface UpdatePasswordUser {
   newPassword: string;
   confirm: string;
 }
+
+export interface UserToken {
+  token: string;
+  user?: User;
+}

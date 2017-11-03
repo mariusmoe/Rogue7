@@ -10,8 +10,7 @@ import { ModalData } from '../../../_models/modalData';
   selector: 'app-delete-modal',
   styleUrls: ['./modal.component.scss'],
   templateUrl: './modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  preserveWhitespaces: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModalComponent {
 

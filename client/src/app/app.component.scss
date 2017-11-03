@@ -46,14 +46,16 @@ select:-webkit-autofill {
 .content,
 .editorParent {
   blockquote {
-    border-color: map-get(nth($primary, 1), nth($primary, 2)); 
+    border-color: map-get(nth($primary, 1), nth($primary, 2));
   }
 
   figure.image {
     text-align: center;
-    clear: both;
-    margin-left: .8em;
-    margin-right: .8em;
+    clear: none !important;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+    display: inline-block;
 
     > img {
       display: block;
@@ -70,10 +72,12 @@ select:-webkit-autofill {
     &.image-style-align-left {
       float: left;
       max-width: 50%;
+      margin-right: .8em;
     }
     &.image-style-align-right {
       float: right;
       max-width: 50%;
+      margin-left: .8em;
     }
     @media (max-width: 1050px) {
       &.image-style-align-right,

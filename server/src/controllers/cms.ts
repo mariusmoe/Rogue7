@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { escape } from 'validator';
 import { user } from '../models/user';
 import { Content, content } from '../models/content';
 import { msg } from '../libs/responseMessage';
+import { escape } from 'validator';
 import { sanitize } from '../libs/sanitizer';
 
 
@@ -14,7 +14,7 @@ export class CMSController {
    * @param  {Request}      req  request
    * @param  {Response}     res  response
    * @param  {NextFunction} next next
-   * @return {Response}          server response: the content object
+   * @return {Response}          server response: a list of partial content information
    */
  public static getContentList(req: Request, res: Response, next: NextFunction) {
     const user = <user>req.user;  // undefined as of now.
@@ -26,7 +26,7 @@ export class CMSController {
       if (user.role === 'admin') { accessRights.push('admin'); }
     }
 
-    Content.find({ access: { $in: accessRights }}, { 'title': true, 'route': true, 'access': true }, (err, contentList) => {
+    Content.find({ access: { $in: accessRights }}, { 'title': true, 'route': true, 'access': true, 'folder': true }, (err, contentList) => {
       if (err) { next(err); }
       if (!contentList) {
         return res.status(404).send(msg('CMS_NO_ROUTES'));
@@ -66,7 +66,6 @@ export class CMSController {
 
 
 
-
    /**
     * Creates new content
     * @param  {Request}      req  request
@@ -78,26 +77,24 @@ export class CMSController {
     const data = <content>req.body,
           user = <user>req.user;
 
-    if (!data.route || !data.content || !data.access || !data.title) {
+    if (!data || !data.route || !data.content || !data.access || !data.title) {
         return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
     }
     if (['admin', 'user', 'everyone'].indexOf(data.access) === -1) {
       return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
     }
 
-    // Sanitize
-    data.content = sanitize(data.content);
-    data.title = sanitize(data.title);
-    data.route = escape(data.route).toLowerCase();
-
-    let content = new Content({
-      title: data.title,
-      route: data.route,
+    // insert ONLY sanitized and escaped data!
+    const content = new Content({
+      title: escape(data.title),
+      route: escape(data.route.replace(/\//g, '')).toLowerCase(),
       access: data.access,
-      content: data.content,
+      content: sanitize(data.content),
       createdBy: user._id,
       updatedBy: user._id,
     });
+    if (data.folder) { content.folder = escape(data.folder).replace(/\//g, ''); }
+
     content.save((err, success) => {
       // if (err) { next(err); }
       if (success) {
@@ -122,20 +119,17 @@ export class CMSController {
           data       = <content>req.body,
           user       = <user>req.user;
 
-    if (!data.route || !data.content || !data.access || !data.title) {
+    if (!data || !data.route || !data.content || !data.access || !data.title) {
         return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
     }
 
-    // Sanitize
-    data.content = sanitize(data.content);
-    data.title = sanitize(data.title);
-    data.route = escape(data.route).toLowerCase();
-
+    // insert ONLY sanitized and escaped data!
     Content.findOneAndUpdate({route: route }, { $set: {
-      content: data.content,
-      title: data.title,
-      route: data.route,
+      title: escape(data.title),
+      route: escape(data.route.replace(/\//g, '')).toLowerCase(),
       access: data.access,
+      content: sanitize(data.content),
+      folder: data.folder ? escape(data.folder).replace(/\//g, '') : '',
       updatedBy: user._id,
     }}, { new: true }, (err, content) => {
       // if (err) { next(err); }

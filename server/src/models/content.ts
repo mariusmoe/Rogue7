@@ -14,11 +14,6 @@ const schema = new Schema({
     unique: true,
     required: true
   },
-  route: {
-    type: String,
-    unique: true,
-    required: true
-  },
   access: {
     type: String,
     enum: ['admin', 'user', 'everyone'],
@@ -27,6 +22,15 @@ const schema = new Schema({
   content: {
     type: String, // html
     required: true
+  },
+  folder: {
+    type: String, // format: folder/subfolder/subsubfolder
+  },
+  route: {
+    type: String,
+    required: true,
+    unique: true,
+    index: { unique: true }
   },
   updatedBy: {
     type: Schema.Types.ObjectId, ref: 'User',
@@ -45,22 +49,19 @@ export interface content extends Document {
   title: string;
   route: string;
   access: string;
-  content: string;
-  updatedBy: Schema.Types.ObjectId;
-  createdBy: Schema.Types.ObjectId;
-  updatedAt: Date;
-  createdAt: Date;
+  content?: string;
+  folder?: string;
+  updatedBy?: Schema.Types.ObjectId;
+  createdBy?: Schema.Types.ObjectId;
+  updatedAt?: Date;
+  createdAt?: Date;
 }
-
-// Set indexing
-schema.index({ route: 1 }, { unique: true });
-
 
 // Before fetching one contentObject, do the following
 schema.pre('findOne', function(next: NextFunction) {
   const content: content = this;
-  content.populate({ path: 'updatedBy', select: ['username', 'role']});
-  content.populate({ path: 'createdBy', select: ['username', 'role']});
+  content.populate({ path: 'updatedBy', select: ['username', 'role'] });
+  content.populate({ path: 'createdBy', select: ['username', 'role'] });
   next();
 });
 

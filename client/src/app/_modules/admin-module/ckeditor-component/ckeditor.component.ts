@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef,
+  Input, Output, EventEmitter, ChangeDetectionStrategy, Inject } from '@angular/core';
 
 import { CmsContent } from '../../../_models/cms';
-// import { DOCUMENT } from '@angular/platform-browser';
-import * as CK5 from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import { DOCUMENT } from '@angular/platform-browser';
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+
 
 @Component({
   selector: 'app-ckeditor',
   templateUrl: './ckeditor.component.html',
   styleUrls: ['./ckeditor.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  preserveWhitespaces: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CKEditorComponent implements OnInit, OnDestroy {
   @ViewChild('content') editorBox: ElementRef;
@@ -24,19 +25,23 @@ export class CKEditorComponent implements OnInit, OnDestroy {
     }
   };
 
-  constructor() {
+  constructor(@Inject(DOCUMENT) private document: Document) {
    }
 
   ngOnInit() {
-    this.loadCKEditor();
-
-    // Load CKEditor from CDN
-    // const script = this.document.createElement('script');
-    // script.type = 'text/javascript';
-    // script.async = 'async';
-    // script.src = 'http://cdn.ckeditor.com/ckeditor5/0.11.0/classic/ckeditor.js';
-    // script.onload = () => { this.loadCKEditor(); };
-    // this.editorBox.nativeElement.parentNode.insertBefore(script, this.editorBox.nativeElement);
+    // this.loadCKEditor();
+    // Load CKEditor if it already exists
+    if (typeof ClassicEditor !== 'undefined') {
+      this.loadCKEditor();
+      return;
+    }
+    // Load from CDN
+    const script = this.document.createElement('script');
+    script.type = 'text/javascript';
+    script.async = true;
+    script.src = 'https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.1/classic/ckeditor.js';
+    script.onload = () => { this.loadCKEditor(); };
+    this.document.body.appendChild(script);
   }
 
 
@@ -51,7 +56,8 @@ export class CKEditorComponent implements OnInit, OnDestroy {
    * Loads CKEditor and sets the editor var
    */
   loadCKEditor() {
-    CK5.create(this.editorBox.nativeElement, this.settings)
+    if (this.editor) { return; }
+    ClassicEditor.create(this.editorBox.nativeElement, this.settings)
     .then( editor => {
       this.editor = editor;
       this.editor.listenTo(this.editor.document, 'changesDone', () => {
