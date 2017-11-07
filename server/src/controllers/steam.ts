@@ -69,14 +69,14 @@ export class SteamController {
     const route      = <string>req.params.route,
           data       = <steamserver>req.body;
 
-    if (!data || !data.title || !data.route || !data.type || !data.host || !data.port) {
+    if (!data || !data.title || !data.route || !data.type || !data.address || !data.port) {
       return res.status(422).send(msg('STEAM_DATA_UNPROCESSABLE'));
     }
     const server = new SteamServer({
       title: escape(data.title),
       route: escape(data.route.replace(/\//g, '')).toLowerCase(),
       type: data.type,
-      host: data.host,
+      host: data.address,
       port: data.port,
     });
     server.save((err, success) => {
@@ -100,7 +100,7 @@ export class SteamController {
       const route      = <string>req.params.route,
             data       = <steamserver>req.body;
 
-      if (!data || !data.title || !data.route || !data.type || !data.host || !data.port) {
+      if (!data || !data.title || !data.route || !data.type || !data.address || !data.port) {
         return res.status(422).send(msg('STEAM_DATA_UNPROCESSABLE'));
       }
 
@@ -109,7 +109,7 @@ export class SteamController {
         title: escape(data.title),
         route: escape(data.route.replace(/\//g, '')).toLowerCase(),
         type: data.type,
-        host: data.host,
+        host: data.address,
         port: data.port,
       }}, { new: true }, (err, server) => {
         // if (err) { next(err); }

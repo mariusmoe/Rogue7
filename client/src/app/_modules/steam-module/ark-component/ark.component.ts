@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { SteamService } from './../../../_services/steam.service';
 
-import { GameDig } from './../../../_models/dnl';
+import { GameDig } from './../../../_models/steam';
 
 import { Subject } from 'rxjs/Subject';
 import { interval } from 'rxjs/observable/interval';

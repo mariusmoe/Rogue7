@@ -24,7 +24,7 @@ const schema = new Schema({
     type: String,
     required: true
   },
-  host: {
+  address: {
     type: String,
     required: true
   },
@@ -38,7 +38,7 @@ export interface steamserver extends Document {
   title: string;
   route: string;
   type: string;
-  host: string;
+  address: string;
   port: string;
 }
 

@@ -12,7 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { DNLService } from '../../../_services/dnl.service';
 
-import { GameDig } from './../../../_models/dnl';
+import { GameDig } from './../../../_models/steam';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
 import { map, catchError, timeout } from 'rxjs/operators';
