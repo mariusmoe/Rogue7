@@ -43,7 +43,9 @@ export class SteamComponent implements OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  addServer() {
 
+  }
 
   editServer() {
 

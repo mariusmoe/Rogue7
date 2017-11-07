@@ -1,20 +1,19 @@
 <mat-card>
-  <!--
+
   <mat-card-title>Steam Servers</mat-card-title>
   <mat-card-content>
-    <form [formGroup]="contentForm" (ngSubmit)="submitForm()" id="contentForm">
-    -->
+
+    <ng-template>
       <!-- TITLE -->
-      <!-- <mat-form-field class="field">
+      <mat-form-field class="field">
         <input matInput placeholder="Title" type="text" formControlName="title" autocomplete="off" required>
         <mat-error *ngIf="contentForm.get('title').hasError('required')">
           Title is <strong>required</strong>
         </mat-error>
-      </mat-form-field> -->
-
+      </mat-form-field>
 
       <!-- ROUTE -->
-      <!-- <mat-form-field class="field">
+      <mat-form-field class="field">
         <span matPrefix> / </span>
         <input matInput placeholder="Route" type="text" formControlName="route" autocomplete="off" required>
         <mat-error *ngIf="contentForm.get('route').hasError('required')">
@@ -23,45 +22,46 @@
         <mat-error *ngIf="contentForm.get('route').hasError('routeAlreadyTaken')">
           Route is already taken! Choose another
         </mat-error>
-      </mat-form-field> -->
-
+      </mat-form-field>
 
       <!-- TYPE -->
-      <!-- <mat-form-field class="field">
+      <mat-form-field class="field">
         <mat-select placeholder="Access" formControlName="type" required>
           <mat-option value="arkse">
             arkse
           </mat-option>
         </mat-select>
-      </mat-form-field> -->
-
+      </mat-form-field>
 
       <!-- ADDRESS -->
-      <!-- <mat-form-field class="field">
+      <mat-form-field class="field">
         <input matInput placeholder="Address" type="text" formControlName="address" autocomplete="off" required>
         <mat-error *ngIf="contentForm.get('address').hasError('required')">
           Address is <strong>required</strong>
         </mat-error>
-      </mat-form-field> -->
-
+      </mat-form-field>
 
       <!-- PORT -->
-      <!-- <mat-form-field class="field">
+      <mat-form-field class="field">
         <input matInput placeholder="Port" type="text" formControlName="port" autocomplete="off" required>
         <mat-error *ngIf="contentForm.get('port').hasError('required')">
           Port is <strong>required</strong>
         </mat-error>
-      </mat-form-field> -->
+      </mat-form-field>
 
       <!-- SUBMIT BUTTON -->
-      <!-- <button mat-raised-button form="contentForm" type="submit" [disabled]="!contentForm.valid" color="primary">
+      <button mat-raised-button form="contentForm" type="submit" [disabled]="!contentForm.valid" color="primary">
         {{ inputContent ? 'Update page' : 'Create page' }}
       </button>
-    </form>
+
+    </ng-template>
+
+
+
   </mat-card-content>
   <mat-card-actions ngClass="actions">
     <button mat-raised-button (click)="addServer()" color="primary">
       Add Steam Server
     </button>
-  </mat-card-actions> -->
+  </mat-card-actions>
 </mat-card>
