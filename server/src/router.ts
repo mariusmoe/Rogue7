@@ -26,14 +26,17 @@ export class AppRouter {
     // Set up PassportConfig first
     PassportConfig.initiate();
 
+    // API routes
     const apiRoutes = Router();
-    app.use('/api', apiRoutes);
     this.authRoutes(apiRoutes);
     this.cmsRoutes(apiRoutes);
     this.steamRoutes(apiRoutes);
     // Set a common fallback for /api/*; 404 for invalid route
     apiRoutes.all('*', ErrorController.error);
 
+
+    // Assign routers to Express app
+    app.use('/api', apiRoutes);
     console.log('[Router] completed');
   }
 
@@ -88,6 +91,10 @@ export class AppRouter {
   }
 
 
+  /**
+   * Init Steam routes
+   * @param  {Router} router the parent router
+   */
   private static steamRoutes(router: Router) {
     const steamRoutes = Router();
 
