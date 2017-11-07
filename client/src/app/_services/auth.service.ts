@@ -4,19 +4,15 @@ import { JwtHelper, tokenNotExpired } from 'angular2-jwt';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 
-import { User, UpdatePasswordUser } from '../_models/user';
-import { JWT } from '../_models/jwt';
+import { User, UpdatePasswordUser, UserToken } from '../_models/user';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/observable/throw';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/timeout';
+import { map, catchError, timeout } from 'rxjs/operators';
+import { of } from 'rxjs/observable/of';
 
 
-const TIMEOUT = 2000;
+const TIMEOUT = 5000;
 
 
 @Injectable()
@@ -64,14 +60,6 @@ export class AuthService {
     return this.userSubject;
   }
 
-  /**
-   * Returns the time, in ms, until the http request is timed out.
-   * @return {number} the time, in ms.
-   */
-  getTimeout(): number {
-    return TIMEOUT;
-  }
-
   // ---------------------------------------
   // ------------- HTTP METHODS ------------
   // ---------------------------------------
@@ -83,12 +71,14 @@ export class AuthService {
    */
   login(user: User): Observable<boolean> {
     const headers = { headers: new HttpHeaders().set('content-type', 'application/json') };
-    return this.http.post(environment.URL.auth.login, JSON.stringify(user), headers)
-      .map( ( json: JWT) => {
-        localStorage.setItem('token', json.token);    // Set token
-        this.updateCurrentUserData(json.token);       // Set user data & Notify subscribers
-        return !!json.token;
-      }).timeout(TIMEOUT);
+    return this.http.post<UserToken>(environment.URL.auth.login, JSON.stringify(user), headers).pipe(
+      map( userToken => {
+        localStorage.setItem('token', userToken.token);    // Set token
+        this.updateCurrentUserData(userToken.token);       // Set user data & Notify subscribers
+        return !!userToken.token;
+      }),
+      timeout(TIMEOUT)
+    );
   }
 
 
@@ -109,11 +99,13 @@ export class AuthService {
    */
   renewToken(): Observable<boolean> {
     const headers = { headers: new HttpHeaders().set('Authorization', localStorage.getItem('token')) };
-    return this.http.get(environment.URL.auth.token, headers)
-      .map( ( json: JWT) => {
-        localStorage.setItem('token', json.token);    // Set token
-        return !!json.token;
-      }).timeout(TIMEOUT);
+    return this.http.get<UserToken>(environment.URL.auth.token, headers).pipe(
+      map( userToken => {
+        localStorage.setItem('token', userToken.token);    // Set token
+        return !!userToken.token;
+      }),
+      timeout(TIMEOUT)
+    );
   }
 
   /**
@@ -126,10 +118,11 @@ export class AuthService {
         .set('Authorization', localStorage.getItem('token'))
         .set('content-type', 'application/json')
     };
-    return this.http.post(environment.URL.auth.updatepass, user, headers)
-      .map( () => true)
-      .timeout(TIMEOUT)
-      .catch(err => Observable.of(false)); // returns message objects
+    return this.http.post<boolean>(environment.URL.auth.updatepass, user, headers).pipe(
+      map( () => true),
+      timeout(TIMEOUT),
+      catchError(err => of(false))
+    ); // returns message objects
   }
 
 

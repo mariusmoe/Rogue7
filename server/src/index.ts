@@ -33,7 +33,7 @@ class App {
 
   private boot() {
     (<any>mongoose).Promise = Promise;
-    const uri = configGet<string>('database');
+    const uri = process.argv[2] || configGet<string>('database');
     mongoose.connect(uri, { useMongoClient: true }, (error) => {
       if (error) {
         // if error is true, the problem is often with mongoDB not connection

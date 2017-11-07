@@ -14,10 +14,8 @@ import { DNLService } from '../../../_services/dnl.service';
 
 import { GameDig } from './../../../_models/dnl';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/timeout';
+import { of } from 'rxjs/observable/of';
+import { map, catchError, timeout } from 'rxjs/operators';
 import { interval } from 'rxjs/Observable/interval';
 
 import { DNLComponent } from './dnl.component';

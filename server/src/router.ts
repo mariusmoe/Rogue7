@@ -26,14 +26,17 @@ export class AppRouter {
     // Set up PassportConfig first
     PassportConfig.initiate();
 
+    // API routes
     const apiRoutes = Router();
-    app.use('/api', apiRoutes);
     this.authRoutes(apiRoutes);
     this.cmsRoutes(apiRoutes);
     this.steamRoutes(apiRoutes);
     // Set a common fallback for /api/*; 404 for invalid route
     apiRoutes.all('*', ErrorController.error);
 
+
+    // Assign routers to Express app
+    app.use('/api', apiRoutes);
     console.log('[Router] completed');
   }
 
@@ -53,10 +56,8 @@ export class AppRouter {
 
     // Login a user
     authRoutes.post('/login', PassportConfig.requireLogin, AuthController.token); // requireLogin here. Intended.
-
     // Request a new token
     authRoutes.get('/token', PassportConfig.requireAuth, AuthController.token); // requireAuth here. Intended.
-
     // Request to update password
     authRoutes.post('/updatepassword', PassportConfig.requireAuth, AuthController.updatePassword);
 
@@ -73,18 +74,14 @@ export class AppRouter {
   private static cmsRoutes(router: Router) {
     const cmsRoutes = Router();
 
-    // Get content lists
+    // Get content list
     cmsRoutes.get('/', CMSController.getContentList);
-
     // Get content
     cmsRoutes.get('/:route', CMSController.getContent);
-
     // Patch content
     cmsRoutes.patch('/:route', PassportConfig.requireAuth, CMSController.patchContent);
-
     // Delete content
     cmsRoutes.delete('/:route', PassportConfig.requireAuth, CMSController.deleteContent);
-
     // Create content
     cmsRoutes.post('/', PassportConfig.requireAuth, CMSController.createContent);
 
@@ -94,10 +91,23 @@ export class AppRouter {
   }
 
 
+  /**
+   * Init Steam routes
+   * @param  {Router} router the parent router
+   */
   private static steamRoutes(router: Router) {
     const steamRoutes = Router();
-    steamRoutes.get('/dnl', SteamController.getDNLData);
-    steamRoutes.get('/ark', SteamController.getARKData);
+
+    // Get Steam server list
+    steamRoutes.get('/', SteamController.getSteamServerList);
+    // Get Steam server DATA (GameDig)
+    steamRoutes.get('/:route', SteamController.getSteamServerData);
+    // Patch Steam server
+    steamRoutes.patch('/:route', PassportConfig.requireAuth, SteamController.patchSteamServer);
+    // Delete Steam server
+    steamRoutes.delete('/:route', PassportConfig.requireAuth, SteamController.patchSteamServer);
+    // Create content
+    steamRoutes.post('/', PassportConfig.requireAuth, SteamController.createSteamServer);
 
     // assign to parent router
     router.use('/steam', steamRoutes);

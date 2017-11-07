@@ -5,14 +5,17 @@
       <mat-card-title>{{ user.username }}</mat-card-title>
       <mat-card-subtitle>{{ user.role }}</mat-card-subtitle>
       <mat-icon mat-card-avatar color="accent">person</mat-icon>
+      <button mat-icon-button [matMenuTriggerFor]="userMenu" ngClass="userActions">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #userMenu="matMenu" xPosition="before">
+        <button mat-menu-item (click)="logOut()">
+          Log out
+        </button>
+      </mat-menu>
     </mat-card-header>
     <mat-card-content>
     </mat-card-content>
-    <mat-card-actions ngClass="actions">
-      <button mat-raised-button color="primary" (click)="logOut()">
-        Log out
-      </button>
-    </mat-card-actions>
   </ng-container>
 
 

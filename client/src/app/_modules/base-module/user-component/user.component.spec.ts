@@ -4,19 +4,17 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 // required for this specific test
-import { MaterialModule } from '../../_modules/material.module';
+import { MaterialModule } from '../../../_modules/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 
-import { AuthService } from '../../_services/auth.service';
+import { AuthService } from '../../../_services/auth.service';
 
-import { User } from './../../_models/user';
+import { User } from './../../../_models/user';
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/timeout';
+import { of } from 'rxjs/observable/of';
+
 
 import { UserComponent } from './user.component';
 
@@ -27,9 +25,9 @@ describe('UserComponent', () => {
 
   const authServiceStub = {
     getUser(): Observable<User> {
-      return Observable.of({
+      return of({
         _id: 'abcdefg',
-        email: 'me@domain',
+        username: 'testuser',
         role: 'admin',
       });
     }

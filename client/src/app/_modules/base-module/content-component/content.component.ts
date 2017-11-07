@@ -14,15 +14,14 @@ import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/takeUntil';
+import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
   selector: 'app-content-component',
   templateUrl: './content.component.html',
   styleUrls: ['./content.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  preserveWhitespaces: false,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentComponent implements OnDestroy {
   private ngUnsubscribe = new Subject();
@@ -36,7 +35,7 @@ export class ContentComponent implements OnDestroy {
     private san: DomSanitizer,
     public authService: AuthService,
     public cmsService: CMSService) {
-    route.url.takeUntil(this.ngUnsubscribe).subscribe( (url) => {
+    route.url.pipe(takeUntil(this.ngUnsubscribe)).subscribe( (url) => {
       cmsService.requestContent(url.join()).subscribe(
         c => { this.contentSubject.next(c); },
         err => { this.contentSubject.next(<CmsContent>{}); },

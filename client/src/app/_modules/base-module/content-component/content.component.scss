@@ -4,17 +4,21 @@
   display: flex;
   position: relative;
   flex-flow: column;
+  padding-bottom: 44px;
+
   .content {
     flex: 1 1;
   }
 
   .info {
-    flex: 1 1;
-    align-self: flex-end;
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
     text-align: right;
     margin-top: 10px;
     font-weight: 600;
-    font-size: 0.75em;
+    font-size: 0.7em;
+    color: rgba(0,0,0,0.6);
   }
 }
 

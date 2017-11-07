@@ -18,7 +18,8 @@ const schema = new Schema({
   username_lower: {
     type: String,
     unique: true,
-    required: true
+    required: true,
+    index: { unique: true }
   },
   password: {
     // Not in clear text
@@ -30,9 +31,6 @@ const schema = new Schema({
     default: 'user'
   },
 });
-
-// Set indexing
-schema.index({ username_lower: 1 }, { unique: true });
 
 export interface user extends Document {
   username: string;

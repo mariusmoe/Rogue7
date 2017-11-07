@@ -2,9 +2,10 @@
 @import 'theme.scss';
 @include mat-core();
 @include angular-material-theme($app-theme);
+@import 'content.scss';
 
 html {
-  background: fixed 0 0 repeat-x $background;
+  background: $background;
   // avoid bump when scrollbar appears. Fix attributed to Ayke van Laëthem,
   // then slightly altered. Original fix: margin-left: calc(100vw - 100%);
   margin-right: calc(100% - 100vw) !important;
@@ -41,31 +42,4 @@ select:-webkit-autofill {
 
 .cdk-global-scrollblock {
   overflow-y: hidden !important;
-}
-
-// CKEditor content
-.content {
-  .image {
-    text-align: center;
-    clear: both;
-
-    > img {
-      display: block;
-      margin: 0 auto;
-      max-width: 100%;
-    }
-
-    & > figcaption {
-      color: #333;
-      background-color: rgba(0,0,0,0.075) !important;
-      padding: .8em;
-      font-size: .75em;
-    }
-    &.image-style-side {
-      float: right;
-      margin-left: .8em;
-      margin-right: .8em;
-      max-width: 50%;
-    }
-  }
 }

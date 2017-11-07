@@ -19,6 +19,12 @@ mat-card.loginBox {
   justify-content: flex-end;
 }
 
+.userActions {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
 .overlay {
   position: absolute;
   top: 0;

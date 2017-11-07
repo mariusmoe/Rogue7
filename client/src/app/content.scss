@@ -1,0 +1,55 @@
+
+
+.content,
+.editorParent {
+  blockquote {
+    border-color: map-get(nth($primary, 1), nth($primary, 2));
+  }
+
+  figure.image {
+    text-align: center;
+    clear: none !important;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+
+
+    > img {
+      display: block;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    & > figcaption {
+      color: #333;
+      background-color: rgba(0,0,0,0.075) !important;
+      padding: .8em;
+      font-size: .75em;
+    }
+
+    &.image-style-align-left,
+    &.image-style-align-right {
+      display: inline-block;
+      max-width: 50%;
+    }
+
+
+    &.image-style-align-left {
+      float: left;
+      margin-right: .8em;
+    }
+    &.image-style-align-right {
+      float: right;
+      margin-left: .8em;
+    }
+    @media (max-width: 1050px) {
+      &.image-style-align-right,
+      &.image-style-align-left {
+        float: none;
+        display: block;
+        max-width: 100%;
+      }
+    }
+
+  }
+}

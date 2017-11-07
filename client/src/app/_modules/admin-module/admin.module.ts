@@ -9,12 +9,14 @@ import { SharedModule } from '../../_modules/shared.module';
 // Components
 import { ComposeComponent } from './compose-component/compose.component';
 import { CKEditorComponent } from './ckeditor-component/ckeditor.component';
+import { SteamComponent } from './steam-component/steam.component';
 
 
 @NgModule({
   declarations: [
     ComposeComponent,
-    CKEditorComponent
+    CKEditorComponent,
+    SteamComponent
   ],
   imports: [
     SharedModule,
@@ -23,7 +25,6 @@ import { CKEditorComponent } from './ckeditor-component/ckeditor.component';
   entryComponents: [
   ],
   providers: [
-    // GameService,
   ]
 })
 export class AdminModule { }

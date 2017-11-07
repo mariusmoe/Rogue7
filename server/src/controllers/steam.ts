@@ -1,68 +1,141 @@
 import { Request, Response, NextFunction } from 'express';
+import { SteamServer, steamserver } from '../models/steam';
 import { msg } from '../libs/responseMessage';
 import * as Gamedig from 'gamedig';
+import { escape } from 'validator';
+import { sanitize } from '../libs/sanitizer';
 
 
 export class SteamController {
 
   /**
-   * Queries the DNL steam server for game data.
+   * Queries a steam server for game data of a given route, declared by the param
    * @param  {Request}      req  request
    * @param  {Response}     res  response
    * @param  {NextFunction} next next
-   * @return {Response}          server response: the game data object
+   * @return {Response}          server response: the steam server data object
    */
-  public static getDNLData(req: Request, res: Response, next: NextFunction) {
-    const server: server = {
-      host: '173.212.225.7',
-      port: '27015',
-    };
-    return SteamController.getServerData(server, req, res, next);
-  }
+  public static getSteamServerData(req: Request, res: Response, next: NextFunction) {
+    const route      = <string>req.params.route;
 
-  /**
-   * Queries the ARK steam server for game data.
-   * @param  {Request}      req  request
-   * @param  {Response}     res  response
-   * @param  {NextFunction} next next
-   * @return {Response}          server response: the game data object
-   */
-  public static getARKData(req: Request, res: Response, next: NextFunction) {
-    const server: server = {
-      host: '173.212.225.7',
-      port: '27015',
-    };
-    return SteamController.getServerData(server, req, res, next);
-  }
-
-
-
-  /**
-   * Helper function. See getDNLData
-   */
-  private static getServerData(server: server, req: Request, res: Response, next: NextFunction) {
-    Gamedig.query({
-        type: 'arkse',
-        host: '173.212.225.7',
-        port: '27015',
-    }).then((state: GameDig) => {
-        return res.status(200).send(state);
-    }).catch((error: string) => {
-      if (error && error === 'UDP Watchdog Timeout') {
-        const m = <any>msg('DNL_SERVER_TIMED_OUT');
-        m.timeout = true;
-        return res.status(504).send(m);
+    SteamServer.findOne({ route: route }, (err, server) => {
+      if (!server) {
+        return res.status(422).send(msg('STEAM_SERVER_NOT_FOUND'));
       }
-      const m = <any>msg('DNL_SERVER_TIMED_OUT');
-      m.offline = true;
-      return res.status(504).send(m);
-    });
-   }
-}
 
-interface server {
-  host: string;
-  port: string;
+      Gamedig.query(server).then((state: GameDig) => {
+          return res.status(200).send(state);
+      }).catch((error: string) => {
+        if (error && error === 'UDP Watchdog Timeout') {
+          const m = <any>msg('STEAM_SERVER_TIMED_OUT');
+          m.timeout = true;
+          return res.status(504).send(m);
+        }
+        const m = <any>msg('STEAM_SERVER_TIMED_OUT');
+        m.offline = true;
+        return res.status(504).send(m);
+      });
+    });
+  }
+
+
+  /**
+   * Gets all steam server routes
+   * @param  {Request}      req  request
+   * @param  {Response}     res  response
+   * @param  {NextFunction} next next
+   * @return {Response}          server response: a list of steam servers
+   */
+ public static getSteamServerList(req: Request, res: Response, next: NextFunction) {
+
+    SteamServer.find({}, (err, serverList) => {
+      if (err) { next(err); }
+      if (!serverList) {
+        return res.status(404).send(msg('STEAM_NO_ROUTES'));
+      }
+      return res.status(200).send(serverList);
+    }).lean();
+  }
+
+
+  /**
+   * Creates a new steam server
+   * @param  {Request}      req  request
+   * @param  {Response}     res  response
+   * @param  {NextFunction} next next
+   * @return {Response}          server response: the steam server object
+   */
+  public static createSteamServer(req: Request, res: Response, next: NextFunction) {
+    const route      = <string>req.params.route,
+          data       = <steamserver>req.body;
+
+    if (!data || !data.title || !data.route || !data.type || !data.host || !data.port) {
+      return res.status(422).send(msg('STEAM_DATA_UNPROCESSABLE'));
+    }
+    const server = new SteamServer({
+      title: escape(data.title),
+      route: escape(data.route.replace(/\//g, '')).toLowerCase(),
+      type: data.type,
+      host: data.host,
+      port: data.port,
+    });
+    server.save((err, success) => {
+      // if (err) { next(err); }
+      if (success) {
+        return res.status(200).send(success);
+      }
+      return res.status(500).send(msg('STEAM_DATA_UNABLE_TO_SAVE'));
+    });
+  }
+
+
+    /**
+     * Updates a steam server
+     * @param  {Request}      req  request
+     * @param  {Response}     res  response
+     * @param  {NextFunction} next next
+     * @return {Response}          server response: the updated steam server object
+     */
+    public static patchSteamServer(req: Request, res: Response, next: NextFunction) {
+      const route      = <string>req.params.route,
+            data       = <steamserver>req.body;
+
+      if (!data || !data.title || !data.route || !data.type || !data.host || !data.port) {
+        return res.status(422).send(msg('STEAM_DATA_UNPROCESSABLE'));
+      }
+
+      // insert ONLY sanitized and escaped data!
+      SteamServer.findOneAndUpdate({route: route }, { $set: {
+        title: escape(data.title),
+        route: escape(data.route.replace(/\//g, '')).toLowerCase(),
+        type: data.type,
+        host: data.host,
+        port: data.port,
+      }}, { new: true }, (err, server) => {
+        // if (err) { next(err); }
+        if (server) {
+          return res.status(200).send(server);
+        }
+        return res.status(500).send(msg('STEAM_DATA_UNABLE_TO_SAVE'));
+      });
+    }
+
+  /**
+   * Deletes a steam server of a given route, declared by the param
+   * @param  {Request}      req  request
+   * @param  {Response}     res  response
+   * @param  {NextFunction} next next
+   * @return {Response}          server response: message declaring success or failure
+   */
+  public static deleteSteamServer(req: Request, res: Response, next: NextFunction) {
+    const route = <string>req.params.route;
+
+    SteamServer.remove({route: route}, (err) => {
+      // if (err) { next(err); }
+      if (err) { return res.status(404).send(msg('STEAM_CONTENT_NOT_FOUND')); }
+      return res.status(200).send(msg('STEAM_CONTENT_DELETED'));
+    });
+  }
 }
 
 
@@ -77,10 +150,6 @@ export interface GameDig {
     raw?: GameDigRaw;
     lastUpdate?: Date; // Added separately from GameDig
 }
-
-
-
-
 
 interface GameDigPlayer {
   name: string;
