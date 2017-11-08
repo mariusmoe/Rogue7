@@ -75,47 +75,9 @@ $sideWidth: 200px;
 .sidenavContainer {
   background: none;
   .sidenav {
-    width: 90vw;
+    width: 100vw;
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
     background: $background;
   }
 }
-
-
-
-
-
-// @media (max-width: 1300px) {
-//   .wrapper .user {
-//     display: none;
-//   }
-//   .topHeader .userMenu {
-//     display: block !important;
-//   }
-// }
-// @media (max-width: 1050px) {
-//   .wrapper {
-//     display: block;
-//     .left,
-//     .right,
-//     .center {
-//       flex: none;
-//       max-width: none;
-//     }
-//     .center.main {
-//       max-width: none;
-//     }
-//     .nav {
-//       display: none;
-//     }
-//   }
-//   .topHeader .navMenu {
-//     display: block !important;
-//   }
-// }
-// @media (max-width: 600px) {
-//   .sidebarMobile {
-//     width: 100vw;
-//   }
-// }
