@@ -7,8 +7,7 @@ import { SteamRoutingModule } from './steam.routing-module';
 import { SharedModule } from '../../_modules/shared.module';
 
 // Components
-import { DNLComponent } from './dnl-component/dnl.component';
-import { ARKComponent } from './ark-component/ark.component';
+import { ServerComponent } from './server-component/server.component';
 
 // Services
 import { SteamService } from '../../_services/steam.service';
@@ -16,8 +15,7 @@ import { SteamService } from '../../_services/steam.service';
 
 @NgModule({
   declarations: [
-    DNLComponent,
-    ARKComponent,
+    ServerComponent
   ],
   imports: [
     SteamRoutingModule,

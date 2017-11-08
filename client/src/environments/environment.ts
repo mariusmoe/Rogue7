@@ -14,8 +14,7 @@ export const environment = {
       updatepass:   'http://localhost:2000/api/auth/updatepassword',
     },
     steam: {
-      dnl:          'http://localhost:2000/api/steam/dnl',
-      ark:          'http://localhost:2000/api/steam/ark',
+      servers:          'http://localhost:2000/api/steam',
     },
     cms: {
       content:      'http://localhost:2000/api/cms',

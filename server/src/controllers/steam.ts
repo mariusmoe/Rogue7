@@ -59,6 +59,26 @@ export class SteamController {
 
 
   /**
+   * Gets a steam server
+   * @param  {Request}      req  request
+   * @param  {Response}     res  response
+   * @param  {NextFunction} next next
+   * @return {Response}          server response: the steam server object
+   */
+  public static getSteamServer(req: Request, res: Response, next: NextFunction) {
+    const route      = <string>req.params.route;
+
+    SteamServer.findOne({route: route }, (err, server) => {
+      // if (err) { next(err); }
+      if (server) {
+        return res.status(200).send(server);
+      }
+      return res.status(500).send(msg('STEAM_SERVER_NOT_FOUND'));
+    }).lean();
+  }
+
+
+  /**
    * Creates a new steam server
    * @param  {Request}      req  request
    * @param  {Response}     res  response

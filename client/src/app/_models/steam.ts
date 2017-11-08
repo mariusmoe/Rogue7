@@ -1,20 +1,25 @@
 
-
-export interface GameDig {
-    bots: [any];
-    map: string;
-    maxplayers: number;
-    name: string;
-    password: boolean;
-    players: [GameDigPlayer];
-    query?: GameDigQuery;
-    raw?: GameDigRaw;
-    lastUpdate?: Date; // Added separately from GameDig
+export interface SteamServer {
+  id?: string;
+  title: string;
+  route: string;
+  type: string;
+  address: string;
+  port: string;
 }
 
 
-
-
+export interface GameDig {
+  bots: [any];
+  map: string;
+  maxplayers: number;
+  name: string;
+  password: boolean;
+  players: [GameDigPlayer];
+  query?: GameDigQuery;
+  raw?: GameDigRaw;
+  lastUpdate?: Date; // Added separately from GameDig
+}
 
 interface GameDigPlayer {
   name: string;

@@ -3,7 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 
-import { GameDig } from './../_models/steam';
+import { GameDig, SteamServer } from './../_models/steam';
 
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -13,8 +13,8 @@ const TIMEOUT = 5000;
 
 @Injectable()
 export class SteamService {
-  private dnlData = new BehaviorSubject<GameDig>(null);
-  private arkData = new BehaviorSubject<GameDig>(null);
+  // Remembers one server at a time
+  private serverData = new BehaviorSubject<GameDig>(null);
 
 
   constructor(
@@ -23,18 +23,34 @@ export class SteamService {
   }
 
   /**
-   * Get the stored DNL data
-   * @return {BehaviorSubject<GameDig>} the stored DNL data
+   * Get the stored server data
+   * @return {BehaviorSubject<GameDig>} the stored server data
    */
-  getDNLData(): BehaviorSubject<GameDig> {
-    return this.dnlData;
+  getServerData(): BehaviorSubject<GameDig> {
+    return this.serverData;
   }
 
   /**
-   * Query the server for updated DNL data
+   * Query for all steam servers
    */
-  queryDNLServer() {
-    this.http.get<GameDig>(environment.URL.steam.dnl).pipe(
+  requestSteamServers(): Observable<SteamServer[]> {
+    return this.http.get<SteamServer[]>(environment.URL.steam.servers).pipe(timeout(TIMEOUT));
+  }
+
+  /**
+   * Query the server for updated Steam Server data
+   * @param  {string} route the route assgined for the steam server
+   */
+  requestSteamServer(route: string): Observable<SteamServer> {
+    return this.http.get<SteamServer>(environment.URL.steam.servers + '/' + route).pipe(timeout(TIMEOUT));
+  }
+
+  /**
+   * Query the server for updated Steam Server data
+   * @param  {string} route the route assgined for the steam server
+   */
+  querySteamServerData(route: string) {
+    this.http.get<GameDig>(environment.URL.steam.servers + '/' + route + '/data').pipe(
       timeout(TIMEOUT)
     ).subscribe(
         data => {
@@ -44,37 +60,9 @@ export class SteamService {
             player.timeDate = new Date(now - player.time * 1000);
           }
           console.log(data);
-          this.dnlData.next(data);
+          this.serverData.next(data);
         },
-        data => { this.dnlData.next(data); }
-    );
-  }
-
-  /**
-   * Get the stored ARK data
-   * @return {BehaviorSubject<GameDig>} the stored DNL data
-   */
-  getARKData(): BehaviorSubject<GameDig> {
-    return this.arkData;
-  }
-
-  /**
-   * Query the server for updated DNL data
-   */
-  queryARKServer() {
-    this.http.get<GameDig>(environment.URL.steam.ark).pipe(
-      timeout(TIMEOUT)
-    ).subscribe(
-        data => {
-          data.lastUpdate = new Date();
-          const now = new Date().valueOf();
-          for (const player of data.players) {
-            player.timeDate = new Date(now - player.time * 1000);
-          }
-          console.log(data);
-          this.arkData.next(data);
-        },
-        data => { this.arkData.next(data); }
+        data => { this.serverData.next(data); }
     );
   }
 }

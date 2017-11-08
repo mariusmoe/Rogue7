@@ -100,8 +100,10 @@ export class AppRouter {
 
     // Get Steam server list
     steamRoutes.get('/', SteamController.getSteamServerList);
+    // Get Steam server info
+    steamRoutes.get('/:route', SteamController.getSteamServer);
     // Get Steam server DATA (GameDig)
-    steamRoutes.get('/:route', SteamController.getSteamServerData);
+    steamRoutes.get('/:route/data', SteamController.getSteamServerData);
     // Patch Steam server
     steamRoutes.patch('/:route', PassportConfig.requireAuth, SteamController.patchSteamServer);
     // Delete Steam server

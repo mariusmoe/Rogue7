@@ -2,10 +2,13 @@ import { Component, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 
 import { AuthService } from '../../../_services/auth.service';
 import { CMSService } from '../../../_services/cms.service';
+import { SteamService } from '../../../_services/steam.service';
 
 import { CmsContent, CmsFolder } from '../../../_models/cms';
+import { SteamServer } from '../../../_models/steam';
 
 import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -16,16 +19,14 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class BaseComponent implements OnDestroy {
   private ngUnsubscribe = new Subject();
-  defaultRoutes = [
-    {'title': 'ARK Server', route: 'steam/ark' },
-    {'title': 'DNL Server', route: 'steam/dnl' },
-  ];
 
   contentSubject = new Subject();
+  steamServersSubject = new BehaviorSubject<SteamServer[]>(null);
 
   constructor(
     public authService: AuthService,
-    public cmsService: CMSService) {
+    public cmsService: CMSService,
+    public steamService: SteamService) {
 
       // https://material.angular.io/cdk/layout/overview
 
@@ -60,6 +61,12 @@ export class BaseComponent implements OnDestroy {
         rootContent: rootContent,
         folders: folders
       });
+    });
+
+    // Subscribe to steam server updates
+    steamService.requestSteamServers().pipe(takeUntil(this.ngUnsubscribe)).subscribe( serverList => {
+      if (!serverList) { return; }
+      this.steamServersSubject.next(serverList);
     });
   }
 
