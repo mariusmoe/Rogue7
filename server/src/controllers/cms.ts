@@ -137,7 +137,7 @@ export class CMSController {
         return res.status(200).send(content);
       }
       return res.status(500).send(msg('CMS_DATA_UNABLE_TO_SAVE'));
-    });
+    }).lean();
   }
 
   /**
@@ -154,7 +154,7 @@ export class CMSController {
       // if (err) { next(err); }
       if (err) { return res.status(404).send(msg('CMS_CONTENT_NOT_FOUND')); }
       return res.status(200).send(msg('CMS_CONTENT_DELETED'));
-    });
+    }).lean();
   }
 
 

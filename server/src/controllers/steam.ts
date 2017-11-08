@@ -35,7 +35,7 @@ export class SteamController {
         m.offline = true;
         return res.status(504).send(m);
       });
-    });
+    }).lean();
   }
 
 
@@ -117,7 +117,7 @@ export class SteamController {
           return res.status(200).send(server);
         }
         return res.status(500).send(msg('STEAM_DATA_UNABLE_TO_SAVE'));
-      });
+      }).lean();
     }
 
   /**
@@ -134,7 +134,7 @@ export class SteamController {
       // if (err) { next(err); }
       if (err) { return res.status(404).send(msg('STEAM_CONTENT_NOT_FOUND')); }
       return res.status(200).send(msg('STEAM_CONTENT_DELETED'));
-    });
+    }).lean();
   }
 }
 

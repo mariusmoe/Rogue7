@@ -122,6 +122,6 @@ export class AuthController {
     User.findByIdAndRemove(id, (err) => {
       if (err) { return next(err); }
       return res.status(200).send(msg('ACCOUNT_DELETED'));
-    });
+    }).lean();
   }
 }
