@@ -7,7 +7,9 @@
       "resources": {
         "files": [
           "/favicon.ico",
-          "/index.html"
+          "/assets/logo256.svg",
+          "/index.html",
+          "/manifest.json"
         ],
         "versionedFiles": [
           "/*.bundle.css",

@@ -1,4 +1,8 @@
-import { Component, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnDestroy, ViewChild } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
+import { MatIconRegistry } from '@angular/material';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Router, GuardsCheckStart } from '@angular/router';
 
 import { AuthService } from '../../../_services/auth.service';
 import { CMSService } from '../../../_services/cms.service';
@@ -20,19 +24,41 @@ import { takeUntil } from 'rxjs/operators';
 export class BaseComponent implements OnDestroy {
   private ngUnsubscribe = new Subject();
 
-  contentSubject = new Subject();
+  contentSubject = new BehaviorSubject(null);
   steamServersSubject = new BehaviorSubject<SteamServer[]>(null);
+
+  isMobile = new Subject<boolean>();
+  @ViewChild('sidenav') private sideNav: any;
 
   constructor(
     public authService: AuthService,
     public cmsService: CMSService,
-    public steamService: SteamService) {
+    public steamService: SteamService,
+    private iconRegistry: MatIconRegistry,
+    private san: DomSanitizer,
+    private breakpointObserver: BreakpointObserver,
+    private router: Router) {
+    // Register logo
+    iconRegistry.addSvgIcon('logo', san.bypassSecurityTrustResourceUrl('assets/logo256.svg'));
 
-      // https://material.angular.io/cdk/layout/overview
+    // Handle Mobile devices
+    breakpointObserver.observe([
+      Breakpoints.Handset,
+      Breakpoints.Tablet
+    ]).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
+      this.isMobile.next(result.matches);
+    });
+    router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+      // Guards check happens once, and for all routes regardless of whether or not
+      // navigation is actually truly required.
+      if (e instanceof GuardsCheckStart) {
+        this.sideNav.close();
+      }
+    });
 
-    const sortMethod = (a, b) => { if (a.title > b.title) { return 1; } if (a.title < b.title) { return -1; } return 0; };
 
     // Subscribe to content updates
+    const sortMethod = (a, b) => { if (a.title > b.title) { return 1; } if (a.title < b.title) { return -1; } return 0; };
     cmsService.getContentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe( contentList => {
       if (!contentList) { return; }
       const rootContent: CmsContent[] = [];

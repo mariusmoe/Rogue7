@@ -50,6 +50,20 @@
         max-width: 100%;
       }
     }
+  }
+}
 
+// Mobile styling
+.wrapper.mobile {
+  .content,
+  .editorParent {
+    figure.image {
+      &.image-style-align-right,
+      &.image-style-align-left {
+        float: none;
+        display: block;
+        max-width: 100%;
+      }
+    }
   }
 }

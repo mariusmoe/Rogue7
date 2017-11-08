@@ -27,7 +27,7 @@ a, a:active, a:visited, a:focus, a:hover {
   color: inherit;
 }
 .main a {
-  word-wrap: break-word;
+  word-break: break-all;
   text-decoration: underline;
   &:hover {
     color: map-get(nth($primary, 1), nth($primary, 2));

@@ -1,4 +1,4 @@
-
+@import "../../../theme.scss";
 
 $headerColor: #6b0000;
 
@@ -46,22 +46,18 @@ $sideWidth: 200px;
     text-align: center;
     font-size: 1.5em;
     margin: 0 auto;
+    .logo {
+      vertical-align: bottom;
+      margin-bottom: 2px;
+      margin-right: 1px;
+    }
   }
-
-  .userMenu,
-  .navMenu {
-    display: none;
+  .navToggle {
     position: absolute;
     top: 2px;
-  }
-  .userMenu {
-    right: 5px;
-  }
-  .navMenu {
-    left: 5px;
+    left: 2px;
   }
 }
-
 
 
 // SIDE CONTENT
@@ -76,9 +72,17 @@ $sideWidth: 200px;
   }
 }
 
-// .sidebarMobile {
-//   padding: 10px;
-// }
+.sidenavContainer {
+  background: none;
+  .sidenav {
+    width: 90vw;
+    padding: 10px 7px 4px 7px;
+    box-sizing: border-box;
+    background: $background;
+  }
+}
+
+
 
 
 
