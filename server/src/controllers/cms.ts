@@ -137,7 +137,7 @@ export class CMSController {
         return res.status(200).send(content);
       }
       return res.status(500).send(msg('CMS_DATA_UNABLE_TO_SAVE'));
-    }).lean();
+    });
   }
 
   /**

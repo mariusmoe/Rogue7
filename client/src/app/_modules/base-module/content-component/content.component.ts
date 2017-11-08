@@ -11,7 +11,6 @@ import { ModalComponent } from '../modals/modal.component';
 import { ModalData } from '../../../_models/modalData';
 
 import { Subscription } from 'rxjs/Subscription';
-import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';

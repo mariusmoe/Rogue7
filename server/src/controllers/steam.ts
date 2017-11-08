@@ -137,7 +137,7 @@ export class SteamController {
           return res.status(200).send(server);
         }
         return res.status(500).send(msg('STEAM_DATA_UNABLE_TO_SAVE'));
-      }).lean();
+      });
     }
 
   /**
