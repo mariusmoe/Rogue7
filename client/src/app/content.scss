@@ -42,14 +42,6 @@
       float: right;
       margin-left: .8em;
     }
-    @media (max-width: 1050px) {
-      &.image-style-align-right,
-      &.image-style-align-left {
-        float: none;
-        display: block;
-        max-width: 100%;
-      }
-    }
   }
 }
 

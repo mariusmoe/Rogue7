@@ -14,5 +14,11 @@
   }, {
     "src": "assets/logo256themed.svg",
     "sizes": "256x256"
+  }, {
+    "src": "assets/logo512themed.svg",
+    "sizes": "512x512"
+  }, {
+    "src": "assets/logo1024themed.svg",
+    "sizes": "1024x1024"
   }]
 }

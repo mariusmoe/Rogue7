@@ -27,9 +27,12 @@ export class BaseComponent implements OnInit, OnDestroy {
   contentSubject = new BehaviorSubject(null);
   steamServersSubject = new BehaviorSubject<SteamServer[]>(null);
 
-  isMobile = new BehaviorSubject<boolean>(false);
   @ViewChild('sidenavLeft') private sidenavLeft: any;
   @ViewChild('sidenavRight') private sidenavRight: any;
+  isMobile = new BehaviorSubject<boolean>(false);
+  private mobileDevices = [
+    Breakpoints.Handset
+  ];
 
   constructor(
     public authService: AuthService,
@@ -43,16 +46,7 @@ export class BaseComponent implements OnInit, OnDestroy {
     iconRegistry.addSvgIcon('logo', san.bypassSecurityTrustResourceUrl('assets/logo256.svg'));
 
     // Handle Mobile devices
-    const devices = [
-      Breakpoints.Handset
-    ];
-    // Register update on change
-    breakpointObserver.observe(devices).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
-      this.isMobile.next(result.matches);
-    });
-    // Update for current mobile device status
-    if (breakpointObserver.isMatched(devices)) { this.isMobile.next(true); }
-
+    if (breakpointObserver.isMatched(this.mobileDevices)) { this.isMobile.next(true); }
 
     // Subscribe to content updates
     const sortMethod = (a, b) => { if (a.title > b.title) { return 1; } if (a.title < b.title) { return -1; } return 0; };
@@ -98,6 +92,14 @@ export class BaseComponent implements OnInit, OnDestroy {
     this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
       this.sidenavLeft.close();
       this.sidenavRight.close();
+    });
+    // Handle Mobile breakpoint change
+    this.breakpointObserver.observe(this.mobileDevices).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
+      if (!result.matches) {
+        this.sidenavLeft.close();
+        this.sidenavRight.close();
+      }
+      this.isMobile.next(result.matches);
     });
   }
 

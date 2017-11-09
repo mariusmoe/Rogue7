@@ -1,10 +1,10 @@
 
 <header class="topHeader">
-  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavLeft.toggle(); sidenavRight.close()" class="navToggle">
+  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavLeft.toggle(); sidenavRight.close()" class="navToggle" aria-label="Toggle navigation">
     <mat-icon aria-label="Open Navigation">menu</mat-icon>
   </button>
   <a routerLink="/"><mat-icon svgIcon="logo" ngClass="logo"></mat-icon>otingane</a>
-  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavRight.toggle(); sidenavLeft.close()" class="navToggle right">
+  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavRight.toggle(); sidenavLeft.close()" class="navToggle right" aria-label="Toggle user panel">
     <mat-icon aria-label="Open Navigation">person</mat-icon>
   </button>
 </header>
