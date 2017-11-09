@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { JwtHelper, tokenNotExpired } from 'angular2-jwt';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 
@@ -17,7 +16,6 @@ const TIMEOUT = 5000;
 
 @Injectable()
 export class AuthService {
-  private jwtHelper: JwtHelper = new JwtHelper();
   private userSubject: BehaviorSubject<User>;
 
   constructor(
@@ -26,7 +24,7 @@ export class AuthService {
       this.userSubject = new BehaviorSubject(null);
 
       const token = localStorage.getItem('token');
-      if (!token || this.jwtHelper.isTokenExpired(token)) {
+      if (!token || this.jwtIsExpired(token)) {
         // this.logOut();
         return;
       }
@@ -43,9 +41,18 @@ export class AuthService {
    */
   private updateCurrentUserData(token: string) {
     if (!token) { return; }
-    const u: User = this.jwtHelper.decodeToken(token);
+    const u: User = this.jwtDecode(token);
     if (!u) { return; }
     this.userSubject.next(u);
+  }
+
+  /**
+   * Decodes the provided JWT
+   * @param  {string} token the JWT to decode
+   * @return {User}         The decoded token user
+   */
+  private jwtDecode(token: string): User {
+    return JSON.parse(atob(token.split('.')[1]));
   }
 
   // ---------------------------------------
@@ -60,6 +67,33 @@ export class AuthService {
     return this.userSubject;
   }
 
+  /**
+   * Returns the expiration date of a token
+   * @param  {string} token the token to get the expiration date of
+   * @return {Date}         the date the token expires
+   */
+  jwtExpirationDate(token: string): Date {
+    const user = this.jwtDecode(token);
+    if (!user || !user.hasOwnProperty('exp')) { return null; }
+
+    const date = new Date(0);
+    date.setUTCSeconds(user.exp);
+    return date;
+  }
+
+  /**
+   * Returns true if the token has expired
+   * @param  {string}  token  the token to check the expiration date of
+   * @param  {number}  offset number of seconds offset from now
+   * @return {boolean}        whether the token has expired
+   */
+  jwtIsExpired(token: string, offset?: number): boolean {
+    const date = this.jwtExpirationDate(token);
+    // if we can't get a date, we assume its best to say that it has expired.
+    if (null === date) { return true; }
+    return ((new Date().valueOf() + offset * 1000) > date.valueOf());
+  }
+
   // ---------------------------------------
   // ------------- HTTP METHODS ------------
   // ---------------------------------------
@@ -70,8 +104,7 @@ export class AuthService {
    * @return {Observable<boolean>}         Server's response, as an Observable
    */
   login(user: User): Observable<boolean> {
-    const headers = { headers: new HttpHeaders().set('content-type', 'application/json') };
-    return this.http.post<UserToken>(environment.URL.auth.login, JSON.stringify(user), headers).pipe(
+    return this.http.post<UserToken>(environment.URL.auth.login, JSON.stringify(user)).pipe(
       map( userToken => {
         localStorage.setItem('token', userToken.token);    // Set token
         this.updateCurrentUserData(userToken.token);       // Set user data & Notify subscribers
@@ -98,8 +131,7 @@ export class AuthService {
    * @return {Observable<boolean>} wether the JWT was successfully renewed
    */
   renewToken(): Observable<boolean> {
-    const headers = { headers: new HttpHeaders().set('Authorization', localStorage.getItem('token')) };
-    return this.http.get<UserToken>(environment.URL.auth.token, headers).pipe(
+    return this.http.get<UserToken>(environment.URL.auth.token).pipe(
       map( userToken => {
         localStorage.setItem('token', userToken.token);    // Set token
         return !!userToken.token;
@@ -114,11 +146,7 @@ export class AuthService {
    * @return {Observable<boolean>}      wether the password was successfully updated
    */
   updatePassword(user: UpdatePasswordUser): Observable<boolean> {
-    const headers = { headers: new HttpHeaders()
-        .set('Authorization', localStorage.getItem('token'))
-        .set('content-type', 'application/json')
-    };
-    return this.http.post<boolean>(environment.URL.auth.updatepass, user, headers).pipe(
+    return this.http.post<boolean>(environment.URL.auth.updatepass, user).pipe(
       map( () => true),
       timeout(TIMEOUT),
       catchError(err => of(false))

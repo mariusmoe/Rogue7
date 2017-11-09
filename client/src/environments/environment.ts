@@ -8,13 +8,14 @@ export const environment = {
 
   URL: {
     base:           'http://localhost:2000',
+    api:            'http://localhost:2000/api',
     auth: {
       login:        'http://localhost:2000/api/auth/login',
       token:        'http://localhost:2000/api/auth/token',
       updatepass:   'http://localhost:2000/api/auth/updatepassword',
     },
     steam: {
-      servers:          'http://localhost:2000/api/steam',
+      servers:      'http://localhost:2000/api/steam',
     },
     cms: {
       content:      'http://localhost:2000/api/cms',

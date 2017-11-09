@@ -1,10 +1,12 @@
 import { NgModule, ModuleWithProviders  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
 // services
 import { AuthService } from '../_services/auth.service';
 import { CMSService } from '../_services/cms.service';
-
+import { InterceptorService } from '../_services/interceptor.service';
 // Modules
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -28,7 +30,12 @@ import { AuthGuard } from '../_guards/auth.guard';
     RouterModule,
     HttpClientModule,
     DateFnsModule
-  ]
+  ],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: InterceptorService,
+    multi: true
+  }],
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders {
