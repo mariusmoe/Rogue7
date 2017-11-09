@@ -51,9 +51,9 @@
 
 
   <mat-sidenav #sidenavLeft mode="over" position="start" ngClass="sidenav">
-    <ng-container *ngIf="isMobile | async">
+    <nav class="nav" *ngIf="isMobile | async">
       <ng-container *ngTemplateOutlet="navigationTemplate"></ng-container>
-    </ng-container>
+    </nav>
   </mat-sidenav>
 
   <mat-sidenav #sidenavRight mode="over" position="end" ngClass="sidenav">
