@@ -28,7 +28,8 @@ export class BaseComponent implements OnInit, OnDestroy {
   steamServersSubject = new BehaviorSubject<SteamServer[]>(null);
 
   isMobile = new BehaviorSubject<boolean>(false);
-  @ViewChild('sidenav') private sideNav: any;
+  @ViewChild('sidenavLeft') private sidenavLeft: any;
+  @ViewChild('sidenavRight') private sidenavRight: any;
 
   constructor(
     public authService: AuthService,
@@ -43,8 +44,7 @@ export class BaseComponent implements OnInit, OnDestroy {
 
     // Handle Mobile devices
     const devices = [
-      Breakpoints.Handset,
-      Breakpoints.Tablet
+      Breakpoints.Handset
     ];
     // Register update on change
     breakpointObserver.observe(devices).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
@@ -96,7 +96,8 @@ export class BaseComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Close the sidenav upon navigation
     this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
-      this.sideNav.close();
+      this.sidenavLeft.close();
+      this.sidenavRight.close();
     });
   }
 

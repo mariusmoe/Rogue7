@@ -1,9 +1,12 @@
 
 <header class="topHeader">
-  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenav.toggle()" class="navToggle">
+  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavLeft.toggle(); sidenavRight.close()" class="navToggle">
     <mat-icon aria-label="Open Navigation">menu</mat-icon>
   </button>
   <a routerLink="/"><mat-icon svgIcon="logo" ngClass="logo"></mat-icon>otingane</a>
+  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavRight.toggle(); sidenavLeft.close()" class="navToggle right">
+    <mat-icon aria-label="Open Navigation">person</mat-icon>
+  </button>
 </header>
 
 <mat-sidenav-container ngClass="sidenavContainer">
@@ -47,10 +50,15 @@
   </ng-template>
 
 
-  <mat-sidenav #sidenav mode="push" position="start" ngClass="sidenav">
+  <mat-sidenav #sidenavLeft mode="over" position="start" ngClass="sidenav">
+    <ng-container *ngIf="isMobile | async">
+      <ng-container *ngTemplateOutlet="navigationTemplate"></ng-container>
+    </ng-container>
+  </mat-sidenav>
+
+  <mat-sidenav #sidenavRight mode="over" position="end" ngClass="sidenav">
     <ng-container *ngIf="isMobile | async">
       <ng-container *ngTemplateOutlet="userTemplate"></ng-container>
-      <ng-container *ngTemplateOutlet="navigationTemplate"></ng-container>
     </ng-container>
   </mat-sidenav>
 

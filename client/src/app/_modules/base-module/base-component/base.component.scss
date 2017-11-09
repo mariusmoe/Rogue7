@@ -56,6 +56,10 @@ $sideWidth: 200px;
     position: absolute;
     top: 2px;
     left: 2px;
+    &.right {
+      left: auto;
+      right: 2px;
+    }
   }
 }
 
