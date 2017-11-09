@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Router, GuardsCheckStart } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../../../_services/auth.service';
 import { CMSService } from '../../../_services/cms.service';
@@ -21,13 +21,13 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BaseComponent implements OnDestroy {
+export class BaseComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
 
   contentSubject = new BehaviorSubject(null);
   steamServersSubject = new BehaviorSubject<SteamServer[]>(null);
 
-  isMobile = new Subject<boolean>();
+  isMobile = new BehaviorSubject<boolean>(false);
   @ViewChild('sidenav') private sideNav: any;
 
   constructor(
@@ -42,19 +42,16 @@ export class BaseComponent implements OnDestroy {
     iconRegistry.addSvgIcon('logo', san.bypassSecurityTrustResourceUrl('assets/logo256.svg'));
 
     // Handle Mobile devices
-    breakpointObserver.observe([
+    const devices = [
       Breakpoints.Handset,
       Breakpoints.Tablet
-    ]).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
+    ];
+    // Register update on change
+    breakpointObserver.observe(devices).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
       this.isMobile.next(result.matches);
     });
-    router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
-      // Guards check happens once, and for all routes regardless of whether or not
-      // navigation is actually truly required.
-      if (e instanceof GuardsCheckStart) {
-        this.sideNav.close();
-      }
-    });
+    // Update for current mobile device status
+    if (breakpointObserver.isMatched(devices)) { this.isMobile.next(true); }
 
 
     // Subscribe to content updates
@@ -93,6 +90,13 @@ export class BaseComponent implements OnDestroy {
     steamService.requestSteamServers().pipe(takeUntil(this.ngUnsubscribe)).subscribe( serverList => {
       if (!serverList) { return; }
       this.steamServersSubject.next(serverList);
+    });
+  }
+
+  ngOnInit() {
+    // Close the sidenav upon navigation
+    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+      this.sideNav.close();
     });
   }
 
