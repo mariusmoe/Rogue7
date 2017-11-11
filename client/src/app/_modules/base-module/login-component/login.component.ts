@@ -1,4 +1,4 @@
-import { Component, OnChanges, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,6 +9,8 @@ import { AuthService } from '../../../_services/auth.service';
 
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 enum STATES {
   READY,
@@ -24,7 +26,7 @@ enum STATES {
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-  @Output() navigated: EventEmitter<boolean> = new EventEmitter();
+  private ngUnsubscribe = new Subject();
   public loginForm: FormGroup;
   STATES = STATES;
   public state = new BehaviorSubject<STATES>(STATES.READY);
@@ -36,6 +38,9 @@ export class LoginComponent {
     this.loginForm = fb.group({
       'username': ['', Validators.required],
       'password': ['', Validators.required]
+    });
+    authService.getUser().pipe(takeUntil(this.ngUnsubscribe)).subscribe( user => {
+      if (!user) { this.state.next(STATES.READY); }
     });
   }
 
@@ -50,7 +55,6 @@ export class LoginComponent {
       (loggedIn) => {
         sub.unsubscribe();
         if (loggedIn) {
-          this.navigated.emit(true);
           this.router.navigate(['/']);
           return;
         }
@@ -71,8 +75,6 @@ export class LoginComponent {
    * Sends a request to the auth service to log out the user
    */
   logOut() {
-    this.navigated.emit(true);
-    this.state.next(STATES.READY);
     this.authService.logOut();
   }
 }

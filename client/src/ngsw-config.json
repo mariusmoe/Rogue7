@@ -1,5 +1,5 @@
 {
-  "index": "/index.html",
+  "index": "/",
   "assetGroups": [
     {
       "name": "app",
@@ -8,7 +8,7 @@
         "files": [
           "/favicon.ico",
           "/assets/logo256.svg",
-          "/index.html",
+          "!/ngsw-worker.js",
           "/manifest.json"
         ],
         "versionedFiles": [
@@ -42,25 +42,26 @@
     {
       "name": "api-freshness",
       "urls": [
-        "/api/steam/**",
-        "/api/cms/**",
-        "/api/cms"
       ],
       "cacheConfig": {
         "strategy": "freshness",
         "maxSize": 100,
-        "maxAge": "3d",
+        "maxAge": "1d",
         "timeout": "10s"
       }
     },
     {
       "name": "api-performance",
       "urls": [
+        "/api/cms/**",
+        "/api/cms",
+        "/api/steam",
+        "/api/steam/**"
       ],
       "cacheConfig": {
         "strategy": "performance",
         "maxSize": 100,
-        "maxAge": "3d"
+        "maxAge": "2m"
       }
     }
   ]

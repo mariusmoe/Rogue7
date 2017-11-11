@@ -1,5 +1,5 @@
 
-<header class="topHeader">
+<header class="topHeader" [ngClass]="{ mobile: (isMobile | async) }">
   <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavLeft.toggle(); sidenavRight.close()" class="navToggle" aria-label="Toggle navigation">
     <mat-icon aria-label="Open Navigation">menu</mat-icon>
   </button>

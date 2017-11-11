@@ -9,8 +9,6 @@ import { SharedModule } from '../../_modules/shared.module';
 // Components
 import { ServerComponent } from './server-component/server.component';
 
-// Services
-import { SteamService } from '../../_services/steam.service';
 
 
 @NgModule({
@@ -19,13 +17,7 @@ import { SteamService } from '../../_services/steam.service';
   ],
   imports: [
     SteamRoutingModule,
-    SharedModule,
-  ],
-  entryComponents: [
-
-  ],
-  providers: [
-    SteamService,
+    SharedModule
   ]
 })
 export class SteamModule { }

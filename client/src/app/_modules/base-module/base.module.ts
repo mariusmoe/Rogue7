@@ -15,8 +15,6 @@ import { FooterComponent } from './footer-component/footer.component';
 import { ContentComponent } from './content-component/content.component';
 import { ModalComponent } from './modals/modal.component';
 
-// Services
-import { SteamService } from '../../_services/steam.service';
 
 @NgModule({
   declarations: [
@@ -34,9 +32,6 @@ import { SteamService } from '../../_services/steam.service';
   ],
   entryComponents: [
     ModalComponent
-  ],
-  providers: [
-    SteamService
   ]
 })
 export class BaseModule { }

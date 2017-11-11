@@ -1,6 +1,6 @@
 @import "../../../theme.scss";
 
-$headerColor: #6b0000;
+$headerColor: map-get(nth($primary, 1), nth($primary, 2));
 
 $contentBG: rgba(255,255,255,0.8);
 $border: 1px solid #666;
@@ -18,16 +18,13 @@ $sideWidth: 200px;
   justify-content: center;
   align-items: stretch;
 
-  .left,
-  .right,
-  .center {
+  .left, .right, .center {
     flex: 1 1;
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
   }
 
-  .left,
-  .right {
+  .left, .right {
     max-width: $sideWidth;
   }
   .center.main {
@@ -42,6 +39,13 @@ $sideWidth: 200px;
   justify-content: center;
   padding: 0.5em;
   color: #fff;
+
+  &.mobile {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
   a {
     text-align: center;
     font-size: 1.5em;
@@ -78,10 +82,16 @@ $sideWidth: 200px;
 
 .sidenavContainer {
   background: none;
+
   .sidenav {
     width: 100vw;
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
     background: $background;
+
+    position: fixed;
+    top: 0;
+    padding-top: 54px; // 44 + 10
+    height: 100vh;
   }
 }
