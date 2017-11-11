@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { msg } from '../libs/responseMessage';
+import { status, ROUTE_STATUS } from '../libs/responseMessage';
 
 
 export class ErrorController {
@@ -12,6 +12,6 @@ export class ErrorController {
    * @return {Response}          server response: route invalid
    */
   public static error(req: Request, res: Response, next: NextFunction) {
-    return res.status(404).send(msg('ROUTE_INVALID'));
+    return res.status(404).send(status(ROUTE_STATUS.INVALID));
   }
 }

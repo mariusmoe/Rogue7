@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { SteamServer, steamserver } from '../models/steam';
-import { msg } from '../libs/responseMessage';
+import { status, ROUTE_STATUS, STEAM_STATUS } from '../libs/responseMessage';
 import * as Gamedig from 'gamedig';
 import { escape } from 'validator';
 import { sanitize } from '../libs/sanitizer';
@@ -20,20 +20,20 @@ export class SteamController {
 
     SteamServer.findOne({ route: route }, (err, server) => {
       if (!server) {
-        return res.status(422).send(msg('STEAM_SERVER_NOT_FOUND'));
+        return res.status(422).send(status(STEAM_STATUS.SERVER_NOT_FOUND));
       }
 
       Gamedig.query(server).then((state: GameDig) => {
           return res.status(200).send(state);
       }).catch((error: string) => {
+        const steam_response = <any>status(STEAM_STATUS.SERVER_TIMED_OUT);
+
         if (error && error === 'UDP Watchdog Timeout') {
-          const m = <any>msg('STEAM_SERVER_TIMED_OUT');
-          m.timeout = true;
-          return res.status(504).send(m);
+          steam_response.timeout = true;
+          return res.status(504).send(steam_response);
         }
-        const m = <any>msg('STEAM_SERVER_TIMED_OUT');
-        m.offline = true;
-        return res.status(504).send(m);
+        steam_response.offline = true;
+        return res.status(504).send(steam_response);
       });
     }).lean();
   }
@@ -51,7 +51,7 @@ export class SteamController {
     SteamServer.find({}, (err, serverList) => {
       if (err) { next(err); }
       if (!serverList) {
-        return res.status(404).send(msg('STEAM_NO_ROUTES'));
+        return res.status(404).send(status(STEAM_STATUS.NO_ROUTES));
       }
       return res.status(200).send(serverList);
     }).lean();
@@ -73,7 +73,7 @@ export class SteamController {
       if (server) {
         return res.status(200).send(server);
       }
-      return res.status(500).send(msg('STEAM_SERVER_NOT_FOUND'));
+      return res.status(500).send(status(STEAM_STATUS.SERVER_NOT_FOUND));
     }).lean();
   }
 
@@ -90,7 +90,7 @@ export class SteamController {
           data       = <steamserver>req.body;
 
     if (!data || !data.title || !data.route || !data.type || !data.address || !data.port) {
-      return res.status(422).send(msg('STEAM_DATA_UNPROCESSABLE'));
+      return res.status(422).send(status(STEAM_STATUS.DATA_UNPROCESSABLE));
     }
     const server = new SteamServer({
       title: escape(data.title),
@@ -99,12 +99,12 @@ export class SteamController {
       host: data.address,
       port: data.port,
     });
-    server.save((err, success) => {
+    server.save((err, savedServer) => {
       // if (err) { next(err); }
-      if (success) {
-        return res.status(200).send(success);
+      if (savedServer) {
+        return res.status(200).send(savedServer);
       }
-      return res.status(500).send(msg('STEAM_DATA_UNABLE_TO_SAVE'));
+      return res.status(500).send(status(STEAM_STATUS.DATA_UNABLE_TO_SAVE));
     });
   }
 
@@ -121,7 +121,7 @@ export class SteamController {
             data       = <steamserver>req.body;
 
       if (!data || !data.title || !data.route || !data.type || !data.address || !data.port) {
-        return res.status(422).send(msg('STEAM_DATA_UNPROCESSABLE'));
+        return res.status(422).send(status(STEAM_STATUS.DATA_UNPROCESSABLE));
       }
 
       // insert ONLY sanitized and escaped data!
@@ -136,7 +136,7 @@ export class SteamController {
         if (server) {
           return res.status(200).send(server);
         }
-        return res.status(500).send(msg('STEAM_DATA_UNABLE_TO_SAVE'));
+        return res.status(500).send(status(STEAM_STATUS.DATA_UNABLE_TO_SAVE));
       });
     }
 
@@ -152,8 +152,8 @@ export class SteamController {
 
     SteamServer.remove({route: route}, (err) => {
       // if (err) { next(err); }
-      if (err) { return res.status(404).send(msg('STEAM_CONTENT_NOT_FOUND')); }
-      return res.status(200).send(msg('STEAM_CONTENT_DELETED'));
+      if (err) { return res.status(404).send(status(STEAM_STATUS.CONTENT_NOT_FOUND)); }
+      return res.status(200).send(status(STEAM_STATUS.CONTENT_DELETED));
     }).lean();
   }
 }

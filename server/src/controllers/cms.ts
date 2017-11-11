@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { user } from '../models/user';
 import { Content, content } from '../models/content';
-import { msg } from '../libs/responseMessage';
+import { status, ROUTE_STATUS, CMS_STATUS } from '../libs/responseMessage';
 import { escape } from 'validator';
 import { sanitize } from '../libs/sanitizer';
 
@@ -29,7 +29,7 @@ export class CMSController {
     Content.find({ access: { $in: accessRights }}, { 'title': true, 'route': true, 'access': true, 'folder': true }, (err, contentList) => {
       if (err) { next(err); }
       if (!contentList) {
-        return res.status(404).send(msg('CMS_NO_ROUTES'));
+        return res.status(404).send(status(CMS_STATUS.NO_ROUTES));
       }
       return res.status(200).send(contentList);
     }).lean();
@@ -50,14 +50,14 @@ export class CMSController {
     Content.findOne({ route: route }, (err, content) => {
       if (err) { next(err); }
       if (!content) {
-        return res.status(404).send(msg('CMS_CONTENT_NOT_FOUND'));
+        return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
       }
       let access = content.access === 'everyone' ||
                    (user && user.role === 'admin') ||
                    (user && user.role === content.access);
 
       if (!access) {
-        return res.status(401).send(msg('ROUTE_UNAUTHORISED'));
+        return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
       }
       return res.status(200).send(content);
     }).lean();
@@ -78,10 +78,10 @@ export class CMSController {
           user = <user>req.user;
 
     if (!data || !data.route || !data.content || !data.access || !data.title) {
-        return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
+        return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
     }
     if (['admin', 'user', 'everyone'].indexOf(data.access) === -1) {
-      return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
+      return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
     }
 
     // insert ONLY sanitized and escaped data!
@@ -100,7 +100,7 @@ export class CMSController {
       if (success) {
         return res.status(200).send(success);
       }
-      return res.status(500).send(msg('CMS_DATA_UNABLE_TO_SAVE'));
+      return res.status(500).send(status(CMS_STATUS.DATA_UNABLE_TO_SAVE));
     });
   }
 
@@ -120,7 +120,7 @@ export class CMSController {
           user       = <user>req.user;
 
     if (!data || !data.route || !data.content || !data.access || !data.title) {
-        return res.status(422).send(msg('CMS_DATA_UNPROCESSABLE'));
+        return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
     }
 
     // insert ONLY sanitized and escaped data!
@@ -136,7 +136,7 @@ export class CMSController {
       if (content) {
         return res.status(200).send(content);
       }
-      return res.status(500).send(msg('CMS_DATA_UNABLE_TO_SAVE'));
+      return res.status(500).send(status(CMS_STATUS.DATA_UNABLE_TO_SAVE));
     });
   }
 
@@ -152,8 +152,8 @@ export class CMSController {
 
     Content.remove({route: route}, (err) => {
       // if (err) { next(err); }
-      if (err) { return res.status(404).send(msg('CMS_CONTENT_NOT_FOUND')); }
-      return res.status(200).send(msg('CMS_CONTENT_DELETED'));
+      if (err) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
+      return res.status(200).send(status(CMS_STATUS.CONTENT_DELETED));
     }).lean();
   }
 

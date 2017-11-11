@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { isEmpty } from 'validator';
 import { User, user } from '../models/user';
 import { get as configGet } from 'config';
-import { msg } from '../libs/responseMessage';
+import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
 import { sign } from 'jsonwebtoken';
 
 const userTypes = ['admin', 'member'];
@@ -20,7 +20,7 @@ export class AuthController {
   public static token(req: Request, res: Response, next: NextFunction) {
     let user = <user>{ _id: req.user._id, username: req.user.username, role: req.user.role };
     return res.status(200).json({
-      token: 'bearer ' + sign(user, configGet<string>('secret'), { expiresIn: 10080 }), // expiresIn in seconds
+      token: 'bearer ' + sign(user, configGet<string>('secret'), { expiresIn: 10800 }), // expiresIn in seconds ( = 3hours)
       user: user
     });
   }
@@ -39,10 +39,10 @@ export class AuthController {
           username        = <string>req.body.username;
 
     if (isEmpty(username) || isEmpty(password)) {
-      return res.status(400).send(msg('NO_USERNAME_OR_PASSWORD'));
+      return res.status(400).send(status(AUTH_STATUS.NO_USERNAME_OR_PASSWORD));
     }
     if (isEmpty(role) || (userTypes.indexOf(role) === -1) ) {
-      return res.status(400).send(msg('NO_OR_BAD_ROLE'));
+      return res.status(400).send(status(AUTH_STATUS.NO_OR_BAD_ROLE));
     }
 
     User.findOne({ username_lower: username.toLowerCase() }, (err1, userAlreadyExists) => {
@@ -50,7 +50,7 @@ export class AuthController {
 
       // check if the email is already in use first
       if (userAlreadyExists) {
-        return res.status(409).send(msg('USERNAME_NOT_AVILIABLE'));
+        return res.status(409).send(status(AUTH_STATUS.USERNAME_NOT_AVILIABLE));
       }
 
       let user = new User({
@@ -60,7 +60,7 @@ export class AuthController {
         role:       role,
       }).save((err2, newUser) => {
         if (err2) { return next(err2); }
-        return res.status(200).send(msg('ACCOUNT_CREATED'));
+        return res.status(200).send(status(AUTH_STATUS.ACCOUNT_CREATED));
       });
     }).lean();
   }
@@ -81,22 +81,22 @@ export class AuthController {
 
 
     if (isEmpty(currentPassword) || isEmpty(password) || isEmpty(confirm)) {
-      return res.status(400).send(msg('NO_PASSWORD_OR_NEW_PASSWORDS'));
+      return res.status(400).send(status(AUTH_STATUS.NO_PASSWORD_OR_NEW_PASSWORDS));
     }
 
     if (password !== confirm) {
-      return res.status(400).send(msg('PASSWORD_AND_CONFIRM_NOT_EQUAL'));
+      return res.status(400).send(status(AUTH_STATUS.PASSWORD_AND_CONFIRM_NOT_EQUAL));
     }
 
     user.comparePassword(currentPassword, (x, isMatch) => {
       if (!isMatch) {
-        return res.status(400).send(msg('PASSWORD_DID_NOT_MATCH'));
+        return res.status(400).send(status(AUTH_STATUS.PASSWORD_DID_NOT_MATCH));
       }
       user.password = password;
       user.save((err2, updatedUser) => {
         if (err2) { next(err2); }
 
-        return res.status(200).send(msg('PASSWORD_UPDATED'));
+        return res.status(200).send(status(AUTH_STATUS.PASSWORD_UPDATED));
       });
     });
   }
@@ -114,14 +114,14 @@ export class AuthController {
           user  = <user>req.user;
 
     if (user.role !== userTypes[0]) {
-      return res.status(401).send(msg('ROUTE_UNAUTHORISED'));
+      return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
     }
     if (!id) {
-      return res.status(400).send(msg('USER_NOT_FOUND'));
+      return res.status(400).send(status(AUTH_STATUS.USER_ID_NOT_FOUND));
     }
     User.findByIdAndRemove(id, (err) => {
       if (err) { return next(err); }
-      return res.status(200).send(msg('ACCOUNT_DELETED'));
+      return res.status(200).send(status(AUTH_STATUS.ACCOUNT_DELETED));
     }).lean();
   }
 }

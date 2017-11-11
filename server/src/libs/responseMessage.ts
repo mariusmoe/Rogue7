@@ -1,120 +1,47 @@
 
-
-export let msg = (value: string) => {
-  return {
-    'message': status[value].message,
-    'status': status[value].status,
-  };
-};
-
-interface statusObj {
-    [key: string]: { message: string, status: number };
+interface StatusMessage {
+  message: string;
 }
 
-const status: statusObj = {
-  // ROUTER CODES: 10000
-  'ROUTE_INVALID': {
-    message: 'The requested route does not exist. Did you forget a param?',
-    status: 10000,
-  },
-  'ROUTE_UNAUTHORISED': {
-    message: 'The requested route does not exist. Did you forget a param?',
-    status: 10000,
-  },
-
-  // AUTH CODES: 20000
-  'NO_USERNAME_OR_PASSWORD': {
-    message: 'Missing username or password',
-    status: 20000,
-  },
-  'NO_OR_BAD_ROLE': {
-    message: 'Missing or bad role',
-    status: 20001,
-  },
-  'USERNAME_NOT_AVILIABLE': {
-    message: 'Username already taken',
-    status: 20002,
-  },
-  'ACCOUNT_CREATED': {
-    message: 'Account created',
-    status: 20003,
-  },
-  'ACCOUNT_DELETED': {
-    message: 'Account successfully deleted',
-    status: 20004,
-  },
-  'NO_PASSWORD_OR_NEW_PASSWORDS': {
-    message: 'Missing password, newPassword or confirm',
-    status: 20005,
-  },
-  'PASSWORD_AND_CONFIRM_NOT_EQUAL': {
-    message: 'newPassword and confirm are not equal',
-    status: 20006,
-  },
-  'PASSWORD_DID_NOT_MATCH': {
-    message: 'Password did not match the current password',
-    status: 20007,
-  },
-  'PASSWORD_UPDATED': {
-    message: 'Password has been successfully updated',
-    status: 20008,
-  },
-
-
-  // CMS CODES: 30000
-  'CMS_NO_ROUTES': {
-    message: 'No routes were found',
-    status: 30000,
-  },
-  'CMS_CONTENT_NOT_FOUND': {
-    message: 'Could not retrieve content for the provided route',
-    status: 30001,
-  },
-  'CMS_DATA_UNPROCESSABLE': {
-    message: 'The provided data could not be processed',
-    status: 30002,
-  },
-  'CMS_DATA_UNABLE_TO_SAVE': {
-    message: 'Could not save. Internal server error',
-    status: 30003,
-  },
-  'CMS_CONTENT_DELETED': {
-    message: 'Content was successfully deleted',
-    status: 30004,
-  },
-
-
-  // STEAM CODES: 40000
-  'STEAM_SERVER_ONLINE': {
-    message: 'Steam server is online',
-    status: 40000,
-  },
-  'STEAM_SERVER_OFFLINE': {
-    message: 'Steam server is offline',
-    status: 40001,
-  },
-  'STEAM_SERVER_TIMED_OUT': {
-    message: 'Steam server request timed out',
-    status: 40002,
-  },
-  'STEAM_NO_ROUTES': {
-    message: 'No routes were found',
-    status: 40003,
-  },
-  'STEAM_SERVER_NOT_FOUND': {
-    message: 'Could not retrieve server data for the provided route',
-    status: 40004,
-  },
-  'STEAM_DATA_UNPROCESSABLE': {
-    message: 'The provided data could not be processed',
-    status: 40005,
-  },
-  'STEAM_DATA_UNABLE_TO_SAVE': {
-    message: 'Could not save. Internal server error',
-    status: 40006,
-  },
-  'STEAM_CONTENT_DELETED': {
-    message: 'Server data was successfully deleted',
-    status: 40007,
-  },
+export const status = (value: string): StatusMessage => {
+  return { 'message': value };
 };
+
+
+export const enum ROUTE_STATUS {
+  INVALID                         = 'The requested route does not exist. Did you forget a param?',
+  UNAUTHORISED                    = 'Unauthorized'
+}
+
+export const enum AUTH_STATUS {
+  NO_USERNAME_OR_PASSWORD         = 'Missing username or password',
+  NO_OR_BAD_ROLE                  = 'Missing or bad role',
+  USERNAME_NOT_AVILIABLE          = 'Username already taken',
+  USER_ID_NOT_FOUND               = 'The provided ID doesn\'t exist',
+  ACCOUNT_CREATED                 = 'Account created',
+  ACCOUNT_DELETED                 = 'Account successfully deleted',
+  NO_PASSWORD_OR_NEW_PASSWORDS    = 'Missing password, newPassword or confirm',
+  PASSWORD_AND_CONFIRM_NOT_EQUAL  = 'newPassword and confirm are not equal',
+  PASSWORD_DID_NOT_MATCH          = 'Password did not match the current password',
+  PASSWORD_UPDATED                = 'Password has been successfully updated',
+}
+
+export const enum CMS_STATUS {
+  NO_ROUTES                       = 'No routes were found',
+  CONTENT_NOT_FOUND               = 'Could not retrieve content for the provided route',
+  DATA_UNPROCESSABLE              = 'The provided data could not be processed',
+  DATA_UNABLE_TO_SAVE             = 'Could not save. Internal server error',
+  CONTENT_DELETED                 = 'Content was successfully deleted',
+}
+
+export const enum STEAM_STATUS {
+  NO_ROUTES                       = 'No routes were found',
+  SERVER_ONLINE                   = 'Steam server is online',
+  SERVER_OFFLINE                  = 'Steam server is offline',
+  SERVER_TIMED_OUT                = 'Steam server request timed out',
+  SERVER_NOT_FOUND                = 'Could not retrieve server data for the provided route',
+  DATA_UNPROCESSABLE              = 'The provided data could not be processed',
+  DATA_UNABLE_TO_SAVE             = 'Could not save. Internal server error',
+  CONTENT_DELETED                 = 'Server data was successfully deleted',
+  CONTENT_NOT_FOUND               = 'Could not find the server content requested',
+}
