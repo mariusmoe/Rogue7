@@ -1,11 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
-import { isEmpty } from 'validator';
 import { User, user } from '../models/user';
 import { get as configGet } from 'config';
 import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
 import { sign } from 'jsonwebtoken';
 
 const userTypes = ['admin', 'member'];
+
+export interface tokenResponse {
+  token: string;
+  user: user;
+}
 
 export class AuthController {
 
@@ -17,8 +21,8 @@ export class AuthController {
     * @param  {NextFunction} next next
     * @return {Response}          server response: object containing token and user
     */
-  public static token(req: Request, res: Response, next: NextFunction) {
-    let user = <user>{ _id: req.user._id, username: req.user.username, role: req.user.role };
+  public static token(req: Request, res: Response) {
+    const user = <user>{ _id: req.user._id, username: req.user.username, role: req.user.role };
     return res.status(200).json({
       token: 'bearer ' + sign(user, configGet<string>('secret'), { expiresIn: 10800 }), // expiresIn in seconds ( = 3hours)
       user: user
@@ -38,10 +42,10 @@ export class AuthController {
           role            = <string>req.body.role,
           username        = <string>req.body.username;
 
-    if (isEmpty(username) || isEmpty(password)) {
+    if (!username || !password) {
       return res.status(400).send(status(AUTH_STATUS.NO_USERNAME_OR_PASSWORD));
     }
-    if (isEmpty(role) || (userTypes.indexOf(role) === -1) ) {
+    if (!role || (userTypes.indexOf(role) === -1) ) {
       return res.status(400).send(status(AUTH_STATUS.NO_OR_BAD_ROLE));
     }
 
@@ -53,7 +57,7 @@ export class AuthController {
         return res.status(409).send(status(AUTH_STATUS.USERNAME_NOT_AVILIABLE));
       }
 
-      let user = new User({
+      new User({
         username:   username,
         username_lower: username.toLowerCase(),
         password:   password,
@@ -79,8 +83,7 @@ export class AuthController {
           confirm         = <string>req.body.confirm,
           user            = <user>req.user;
 
-
-    if (isEmpty(currentPassword) || isEmpty(password) || isEmpty(confirm)) {
+    if (!currentPassword || !password || !confirm) {
       return res.status(400).send(status(AUTH_STATUS.NO_PASSWORD_OR_NEW_PASSWORDS));
     }
 
@@ -88,9 +91,9 @@ export class AuthController {
       return res.status(400).send(status(AUTH_STATUS.PASSWORD_AND_CONFIRM_NOT_EQUAL));
     }
 
-    user.comparePassword(currentPassword, (x, isMatch) => {
+    user.comparePassword(currentPassword, (err, isMatch) => {
       if (!isMatch) {
-        return res.status(400).send(status(AUTH_STATUS.PASSWORD_DID_NOT_MATCH));
+        return res.status(401).send(status(AUTH_STATUS.PASSWORD_DID_NOT_MATCH));
       }
       user.password = password;
       user.save((err2, updatedUser) => {

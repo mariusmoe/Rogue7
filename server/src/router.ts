@@ -37,7 +37,6 @@ export class AppRouter {
 
     // Assign routers to Express app
     app.use('/api', apiRoutes);
-    console.log('[Router] completed');
   }
 
 
@@ -76,14 +75,14 @@ export class AppRouter {
 
     // Get content list
     cmsRoutes.get('/', CMSController.getContentList);
+    // Create content
+    cmsRoutes.post('/', PassportConfig.requireAuth, CMSController.createContent);
     // Get content
     cmsRoutes.get('/:route', CMSController.getContent);
     // Patch content
     cmsRoutes.patch('/:route', PassportConfig.requireAuth, CMSController.patchContent);
     // Delete content
     cmsRoutes.delete('/:route', PassportConfig.requireAuth, CMSController.deleteContent);
-    // Create content
-    cmsRoutes.post('/', PassportConfig.requireAuth, CMSController.createContent);
 
 
     // assign to parent router

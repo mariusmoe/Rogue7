@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 
 
 const appRoutes: Routes = [
-  { path: '', loadChildren: 'app/_modules/base-module/base.module#BaseModule' },
+  { path: '', loadChildren: 'app/modules/base-module/base.module#BaseModule' },
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 

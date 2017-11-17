@@ -34,7 +34,7 @@ export class Setup {
     // Logging
     if (configUtil.getEnv('NODE_ENV') !== 'test') {
         //use morgan to log at command line
-        app.use(logger('dev')); //'combined' outputs the Apache style LOGs
+        app.use(logger(configGet<string>('loggingMode')));
     }
 
     // Headers (CORS)
@@ -51,7 +51,5 @@ export class Setup {
 
     // Method override
     app.use(methodOverride());
-
-    console.log('[Setup] completed');
   }
 }

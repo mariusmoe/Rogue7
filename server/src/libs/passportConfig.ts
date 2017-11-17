@@ -33,8 +33,6 @@ export class PassportConfig {
     this.requireLogin   = authenticate('local',           { session: false });
     this.requireAuth    = authenticate('requireAuth',     { session: false });
     this.requireAccess  = authenticate('requireAccess',   { session: false });
-
-    console.log('[PassportConfig] completed');
   }
 }
 
@@ -49,9 +47,7 @@ const localLogin = new LocalStrategy(localOptions, (username, password, done) =>
 
     user.comparePassword(password, (err2, isMatch) => {
       if (err2) { return done(err2); }
-      if (!isMatch) { return done(null, false);
-      }
-
+      if (!isMatch) { return done(null, false); }
       return done(null, user);
     });
   });

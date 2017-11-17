@@ -1,5 +1,3 @@
 {
-  "secret": "testtesttesttesttesttesttesttesttesttest",
-  "database": "mongodb://localhost/sotingtest",
   "port": 2000
 }

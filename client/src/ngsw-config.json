@@ -36,6 +36,14 @@
           "https://fonts.gstatic.com/**"
         ]
       }
+    },
+    {
+      "name": "libs",
+      "resources": {
+        "urls": [
+          "https://cdn.ckeditor.com/**"
+        ]
+      }
     }
   ],
   "dataGroups": [

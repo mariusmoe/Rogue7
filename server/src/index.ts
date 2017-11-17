@@ -9,7 +9,7 @@ import { AppRouter } from './router';
 
 // boot
 import * as mongoose from 'mongoose';
-import * as http from 'http';
+import { createServer, Server } from 'http';
 // import * as https from 'https';
 import { readFileSync } from 'fs';
 
@@ -18,6 +18,7 @@ class App {
   public app: express.Express;
 
   constructor() {
+    console.time('Launch time');
     this.app = express();
     console.log('Launching Node REST API for ' + configUtil.getEnv('NODE_ENV') + '..');
 
@@ -29,6 +30,7 @@ class App {
 
     // BOOT
     this.boot();
+    console.timeEnd('Launch time');
   }
 
   private boot() {
@@ -40,19 +42,19 @@ class App {
         console.log('ERROR can\'t connect to mongoDB. Did you forgot to run mongod?');
       }
     }).then( () => {
-      let server: http.Server;
+      let server: Server;
       if (configUtil.getEnv('NODE_ENV') === 'production') {
         // PRODUCTION
         var options = {
-          // cert: readFileSync('/etc/letsencrypt/live/vitensurvey.party/fullchain.pem'),
-          // key: readFileSync('/etc/letsencrypt/live/vitensurvey.party/privkey.pem')
+          // cert: readFileSync('/path/to/cert'),
+          // key: readFileSync('/path/to/privkey')
         };
         // var server = https.createServer(options, app);
-        server = http.createServer(this.app);
+        server = createServer(this.app);
 
       } else {
         // DEVELOPMENT
-        server = http.createServer(this.app);
+        server = createServer(this.app);
       }
       server.listen(this.app.get('port'), () => {
         if (configUtil.getEnv('NODE_ENV') !== 'test') {

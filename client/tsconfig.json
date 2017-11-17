@@ -10,7 +10,12 @@
     "target": "es2015",
     "typeRoots": [
       "node_modules/@types"
-    ]
+    ],
+    "baseUrl": "src",
+    "paths": {
+      "@app/*": ["app/*"],
+      "@env": ["environments/environment"]
+    }
   },
   "angularCompilerOptions": {
     "preserveWhitespaces": false
