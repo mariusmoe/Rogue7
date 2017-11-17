@@ -74,11 +74,11 @@ export class AppRouter {
     const cmsRoutes = Router();
 
     // Get content list
-    cmsRoutes.get('/', CMSController.getContentList);
+    cmsRoutes.get('/', PassportConfig.configureForUser, CMSController.getContentList);
     // Create content
     cmsRoutes.post('/', PassportConfig.requireAuth, CMSController.createContent);
     // Get content
-    cmsRoutes.get('/:route', CMSController.getContent);
+    cmsRoutes.get('/:route', PassportConfig.configureForUser, CMSController.getContent);
     // Patch content
     cmsRoutes.patch('/:route', PassportConfig.requireAuth, CMSController.patchContent);
     // Delete content

@@ -1,9 +1,11 @@
 import { get as configGet } from 'config';
 import { ExtractJwt, Strategy as JwtStrategy, StrategyOptions as jwtOptions, VerifiedCallback } from 'passport-jwt';
+import { verify } from 'jsonwebtoken';
 import { Strategy as LocalStrategy, IStrategyOptions as localOptions } from 'passport-local';
 import { User, user } from '../models/user';
-import { use as passportUse, authenticate,  } from 'passport';
+import { use as passportUse, authenticate, Strategy } from 'passport';
 import { Handler } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
 // JwtStrategy = require('passport-jwt').Strategy,
 // ExtractJwt = require('passport-jwt').ExtractJwt,
@@ -22,24 +24,23 @@ const jwtOptions: jwtOptions = {
 export class PassportConfig {
   public static requireLogin: Handler;
   public static requireAuth: Handler;
-  public static requireAccess: Handler;
+  public static configureForUser: Handler;
 
   public static initiate() {
     // apply passport settings
-    passportUse('requireAuth', fullAuth);
-    passportUse('requireAccess', cmsAccessAuth);
-    passportUse(localLogin);
+    passportUse(requireLogin);
+    passportUse('requireAuth', requireAuth); // So long you're logged in access will be granted
 
-    this.requireLogin   = authenticate('local',           { session: false });
-    this.requireAuth    = authenticate('requireAuth',     { session: false });
-    this.requireAccess  = authenticate('requireAccess',   { session: false });
+    this.requireLogin       = authenticate('local',           { session: false });
+    this.requireAuth        = authenticate('requireAuth',     { session: false });
+    this.configureForUser   = configureForUser;
   }
 }
 
 
 
 // Setting up local login strategy
-const localLogin = new LocalStrategy(localOptions, (username, password, done) => {
+const requireLogin = new LocalStrategy(localOptions, (username, password, done) => {
   User.findOne({ username_lower: username.toLowerCase() }, (err, user) => {
     if (err) { return done(err); }
 
@@ -56,7 +57,7 @@ const localLogin = new LocalStrategy(localOptions, (username, password, done) =>
 
 
 // Setting up JWT login strategies
-const fullAuth = new JwtStrategy(jwtOptions, function(payload: any, done: VerifiedCallback): void {
+const requireAuth = new JwtStrategy(jwtOptions, function(payload: any, done: VerifiedCallback): void {
   User.findById(payload._id, function(err: Error, user: user) {
     if (err) { return done(err, false); }
 
@@ -67,12 +68,15 @@ const fullAuth = new JwtStrategy(jwtOptions, function(payload: any, done: Verifi
     }
   });
 });
-const cmsAccessAuth = new JwtStrategy(jwtOptions, function(payload: any, done: VerifiedCallback) {
-  console.log(payload);
-  // returns true regardless; supplies the user if it exists.
-  // Its up to the CONTROLLER to handle access!!
-  User.findById(payload._id, function(err: Error, user: user) {
-    if (err) { return done(null, true); }
-    if (user) { done(null, user); } else { done(null, true); }
+
+
+const configureForUser = (req: Request, res: Response, next: NextFunction) => {
+  const token = jwtOptions.jwtFromRequest(req);
+  verify(token, jwtOptions.secretOrKey, jwtOptions, (err, tokenPayload: any) => {
+    if (err) { return next(); }
+    User.findById(tokenPayload._id, (err, user) => {
+      req.user = user;
+      next();
+    });
   });
-});
+};

@@ -36,7 +36,7 @@ export interface user extends Document {
   username: string;
   username_lower: string;
   password: string;
-  role: string;
+  role: 'admin' | 'user';
   comparePassword: (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void ) => null;
 }
 

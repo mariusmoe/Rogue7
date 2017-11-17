@@ -17,8 +17,7 @@ export class CMSController {
    * @return {Response}          server response: a list of partial content information
    */
  public static getContentList(req: Request, res: Response, next: NextFunction) {
-    const user = <user>req.user;  // undefined as of now.
-
+    const user = <user>req.user;
 
     const accessRights = ['everyone'];
     if (user) {
@@ -45,14 +44,14 @@ export class CMSController {
    */
  public static getContent(req: Request, res: Response, next: NextFunction) {
     const route      = <string>req.params.route,
-          user       = <user>req.user; // undefined as of now.
+          user       = <user>req.user;
 
     Content.findOne({ route: route }, (err, content) => {
       if (err) { next(err); }
       if (!content) {
         return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
       }
-      let access = content.access === 'everyone' ||
+      const access = content.access === 'everyone' ||
                    (user && user.role === 'admin') ||
                    (user && user.role === content.access);
 

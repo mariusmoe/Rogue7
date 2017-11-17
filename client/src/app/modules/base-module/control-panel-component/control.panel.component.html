@@ -3,10 +3,10 @@
   <mat-card-content>
     <mat-nav-list ngClass="nav"  dense>
       <a mat-list-item
-        routerLink="/user" (click)="emit()"
+        routerLink="/user"
         routerLinkActive="active">User Settings</a>
       <a mat-list-item *ngIf="user?.role === 'admin'"
-        routerLink="/admin/compose" (click)="emit()"
+        routerLink="/admin/compose"
         routerLinkActive="active">Create Content</a>
     </mat-nav-list>
   </mat-card-content>

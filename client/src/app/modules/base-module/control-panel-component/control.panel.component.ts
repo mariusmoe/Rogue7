@@ -1,5 +1,4 @@
-import { Component, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '@app/services';
 
 
@@ -10,14 +9,5 @@ import { AuthService } from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControlPanelComponent {
-  @Output() navigated: EventEmitter<boolean> = new EventEmitter();
-
   constructor(public authService: AuthService) {}
-
-  /**
-   * Emits upon navigation
-   */
-  emit(): void {
-    this.navigated.emit(true);
-  }
 }
