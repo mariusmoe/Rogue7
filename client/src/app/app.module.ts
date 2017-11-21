@@ -20,7 +20,7 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserAnimationsModule,
-    // environment.production ? ServiceWorkerModule.register('/ngsw-worker.js') : [],
+    environment.production ? ServiceWorkerModule.register('/ngsw-worker.js') : [],
     RouterModule.forRoot(appRoutes)
   ],
   bootstrap: [AppComponent]
