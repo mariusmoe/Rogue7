@@ -1,0 +1,16 @@
+@import "../../../theme.scss";
+
+nav {
+  padding-top: 0;
+  a.active {
+    background: rgba(0,0,0,0.10);
+  }
+  .subItem {
+    margin-left: 14px;
+  }
+  .mat-subheader {
+    color: $primary;
+    font-weight: bold;
+    margin-top: 1.2em;
+  }
+}

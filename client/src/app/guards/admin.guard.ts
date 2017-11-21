@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate } from '@angular/router';
+import { CanActivate } from '@angular/router';
 import { AuthService } from '@app/services';
+import { AccessRoles } from '@app/models';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
 
   constructor(private authService: AuthService) { }
 
@@ -13,9 +14,8 @@ export class AuthGuard implements CanActivate {
    * @return {boolean} whether access is granted
    */
   canActivate() {
-    const user = this.authService.getUser().getValue();
     const isExpired = this.authService.jwtIsExpired(localStorage.getItem('token'));
-    return user && !isExpired;
+    return !isExpired && this.authService.isUserOfRole(AccessRoles.admin);
   }
 
 }

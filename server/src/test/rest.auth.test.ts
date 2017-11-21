@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { TestBed } from './TestBed';
 
-import { User, user } from '../models/user';
+import { User, user, accessRoles } from '../models/user';
 import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
 import { tokenResponse } from '../controllers/auth';
 
@@ -91,7 +91,7 @@ describe('REST: Authorization', () => {
       const user: Partial<user> = {
         username: TestBed.fakeUser.username + '2',
         password: TestBed.fakeUser.password + '2',
-        role: 'member'
+        role: accessRoles.user
       };
 
       let res = await TestBed.http.post('/api/auth/register').send(user);
@@ -104,10 +104,10 @@ describe('REST: Authorization', () => {
 
 
     it('POST /api/auth/register 400', async () => {
-      const noUsername: Partial<user> = { password: TestBed.fakeUser.password + '2', role: 'member' };
-      const noPassword: Partial<user> = { username: TestBed.fakeUser.username + '2', role: 'member' };
+      const noUsername: Partial<user> = { password: TestBed.fakeUser.password + '2', role: accessRoles.user };
+      const noPassword: Partial<user> = { username: TestBed.fakeUser.username + '2', role: accessRoles.user };
       const noRole: Partial<user> = { username: TestBed.fakeUser.username + '2', password: TestBed.fakeUser.password + '2' };
-      const badRole: Partial<user> = { username: TestBed.fakeUser.username + '2', password: TestBed.fakeUser.password + '2', role: 'bad' };
+      const badRole: Partial<user> = { username: TestBed.fakeUser.username + '2', password: TestBed.fakeUser.password + '2', role: <any>'bad' };
 
       let [noUsernameRes, noPasswordRes, noRoleRes, badRoleRes] = await Promise.all([
         TestBed.http.post('/api/auth/register').send(noUsername),
@@ -146,7 +146,7 @@ describe('REST: Authorization', () => {
       const user: Partial<user> = {
         username: TestBed.fakeUser.username,
         password: TestBed.fakeUser.password,
-        role: 'admin'
+        role: accessRoles.admin
       };
 
       let res = await TestBed.http.post('/api/auth/register').send(user);

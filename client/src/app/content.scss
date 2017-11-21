@@ -1,9 +1,48 @@
-
+@import 'theme.scss';
 
 .content,
 .editorParent {
+  a {
+    word-break: break-all;
+    text-decoration: underline;
+    &:hover {
+      text-decoration: underline;
+      color: $primary;
+    }
+  }
   blockquote {
-    border-color: map-get(nth($primary, 1), nth($primary, 2));
+    border-left: none;
+
+    padding: 0.9em 0 0 3em;
+    margin: 0 0 20px;
+    position: relative;
+    font-style: italic;
+    p, h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+    }
+
+    &::before {
+      content: "\201C"; // left doublequote
+      font-family: Georgia, serif;
+      font-size: 5em;
+      font-weight: bold;
+      color: #999;
+
+      position: absolute;
+      left: 0;
+      top: -0.2em;
+    }
+    &::after {
+      content: attr(cite);
+      font-size: 0.75em;
+    }
+  }
+
+  ul, ol {
+    padding-left: 2em;
+    li {
+      padding: 0.3em 0;
+    }
   }
 
   figure.image {
@@ -31,6 +70,7 @@
     &.image-style-align-right {
       display: inline-block;
       max-width: 50%;
+      margin-top: 0;
     }
 
 
@@ -55,6 +95,8 @@
         float: none;
         display: block;
         max-width: 100%;
+        margin-left: .8em;
+        margin-right: .8em;
       }
     }
   }

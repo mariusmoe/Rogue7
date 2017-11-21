@@ -5,6 +5,7 @@ import { CmsContent } from '@app/models';
 import { DOCUMENT } from '@angular/platform-browser';
 // import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
   selector: 'app-ckeditor',
@@ -16,7 +17,9 @@ export class CKEditorComponent implements OnInit, OnDestroy {
   @ViewChild('content') editorBox: ElementRef;
   @Input() value: string;
   @Output() onChange = new EventEmitter<string>();
-  editor: CKEditor;
+
+  private editor: CKEditor;
+  private hasLoaded = new BehaviorSubject<boolean>(false);
 
   settings = {
     image: {
@@ -55,7 +58,7 @@ export class CKEditorComponent implements OnInit, OnDestroy {
   /**
    * Loads CKEditor and sets the editor var
    */
-  loadCKEditor() {
+  private loadCKEditor() {
     if (this.editor) { return; }
     ClassicEditor.create(this.editorBox.nativeElement, this.settings)
     .then( editor => {
@@ -64,6 +67,8 @@ export class CKEditorComponent implements OnInit, OnDestroy {
         this.onChange.emit(this.editor.getData());
       });
       if (this.value) { this.editor.setData(this.value); }
+      // notify loaded
+      this.hasLoaded.next(true);
     }).catch( err => {
     });
   }
@@ -87,5 +92,13 @@ export class CKEditorComponent implements OnInit, OnDestroy {
       return;
     }
     this.editor.setData(value);
+  }
+
+  /**
+   * Get wether the editor has loaded and any value has been set.
+   * @return {BehaviorSubject<boolean>} [description]
+   */
+  public loadStatus(): BehaviorSubject<boolean> {
+    return this.hasLoaded;
   }
 }

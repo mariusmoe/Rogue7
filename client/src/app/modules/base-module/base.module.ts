@@ -13,6 +13,7 @@ import { ControlPanelComponent } from './control-panel-component/control.panel.c
 import { UserComponent } from './user-component/user.component';
 import { FooterComponent } from './footer-component/footer.component';
 import { ContentComponent } from './content-component/content.component';
+import { NavComponent } from './nav-component/nav.component';
 import { ModalComponent } from './modals/modal.component';
 
 
@@ -24,7 +25,8 @@ import { ModalComponent } from './modals/modal.component';
     UserComponent,
     FooterComponent,
     ContentComponent,
-    ModalComponent,
+    NavComponent,
+    ModalComponent
   ],
   imports: [
     SharedModule.forRoot(),

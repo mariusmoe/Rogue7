@@ -19,8 +19,7 @@ export class CMSService {
 
   constructor(
     private http: HttpClient,
-    private router: Router ) {
-      this.getContentList(true);
+    private router: Router) {
   }
 
 

@@ -1,5 +1,6 @@
 import { Document, model, Model, Schema } from 'mongoose';
 import { NextFunction } from 'express';
+import { accessRoles } from './user';
 
 
 /*
@@ -48,7 +49,7 @@ const schema = new Schema({
 export interface content extends Document {
   title: string;
   route: string;
-  access: string;
+  access: accessRoles;
   content?: string;
   folder?: string;
   updatedBy?: Schema.Types.ObjectId;

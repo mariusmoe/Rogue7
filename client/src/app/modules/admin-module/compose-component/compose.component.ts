@@ -1,9 +1,13 @@
-import { Component, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 
+import { ModalData } from '@app/models';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { ModalComponent } from '@app/modules/base-module/modals/modal.component';
+
 import { CMSService, AuthService } from '@app/services';
-import { CmsContent, CmsAccess } from '@app/models';
+import { CmsContent, CmsAccess, AccessRoles } from '@app/models';
 
 import { CKEditorComponent } from '../ckeditor-component/ckeditor.component';
 
@@ -19,17 +23,23 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./compose.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ComposeComponent implements OnDestroy {
+export class ComposeComponent implements OnInit, OnDestroy {
+  @ViewChild(CKEditorComponent) editor: CKEditorComponent;
+  AccessRoles = AccessRoles;
+
+  public inputContent: CmsContent; // http input
+
   private ngUnsubscribe = new Subject();
+  private hasSaved = false;
+  private initialEditorValue: string; // used for canDeactivate
+
   contentForm: FormGroup;
   accessChoices: CmsAccess[] = [
-    { value: 'everyone',  verbose: 'Everyone',  icon: 'group' },
-    { value: 'user',      verbose: 'Users',     icon: 'verified_user' }
+    { value: AccessRoles.everyone,  verbose: 'Everyone',  icon: 'group' },
+    { value: AccessRoles.user,      verbose: 'Users',     icon: 'verified_user' },
+    { value: AccessRoles.admin,     verbose: 'Admins',    icon: 'security' }
   ];
-  inputContent: CmsContent;
-  @ViewChild(CKEditorComponent) editor: CKEditorComponent;
 
-  // folders: Set<string> = new Set();
   folders: string[] = [];
 
 
@@ -47,6 +57,7 @@ export class ComposeComponent implements OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
+    private dialog: MatDialog,
     public cmsService: CMSService,
     public authService: AuthService) {
 
@@ -55,15 +66,10 @@ export class ComposeComponent implements OnDestroy {
       'route': ['', ComposeComponent.disallowedRoutes(cmsService.getContentList())],
       'title': ['', Validators.required],
       'folder': [''],
-      'access': ['everyone', Validators.required],
+      'access': [AccessRoles.everyone, Validators.required],
     });
 
-    // Admin as access choice
-    const user = this.authService.getUser().getValue();
-    if (user && user.role === 'admin') {
-      this.accessChoices.push({ value: 'admin', verbose: 'Admins', icon: 'security' });
-    }
-
+    // Create Folder autocomplete list
     this.cmsService.getContentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe( contentList => {
       if (!contentList) { return; }
       const folders: string[] = [];
@@ -85,9 +91,21 @@ export class ComposeComponent implements OnDestroy {
       this.contentForm.get('title').setValue(data.title);
       this.contentForm.get('folder').setValue(data.folder);
       this.contentForm.get('access').setValue(data.access);
-      if (this.editor) { this.editor.setValue(data.content); }
+      if (this.editor.loadStatus().getValue()) {
+        this.editor.setValue(data.content);
+        this.initialEditorValue = this.editor.getValue();
+      }
     }, err => {
       router.navigateByUrl('/admin/compose');
+    });
+  }
+
+  ngOnInit() {
+    this.editor.loadStatus().pipe(takeUntil(this.ngUnsubscribe)).subscribe( hasLoaded => {
+      if (hasLoaded) {
+        if (this.inputContent) { this.editor.setValue(this.inputContent.content); }
+        this.initialEditorValue = this.editor.getValue();
+      }
     });
   }
 
@@ -96,14 +114,38 @@ export class ComposeComponent implements OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  // ---------------------------------------
+  // -------------- UTILITIES --------------
+  // ---------------------------------------
 
-  /**
-   * returns the CmsAccess value of the selected access privileges
-   * @return {CmsAccess} the selected value
-   */
-  getAccessChoice(): CmsAccess {
-    return this.accessChoices.find(choice => this.contentForm.get('access').value === choice.value);
+
+  canDeactivate() {
+    // if we've saved, we're fine deactivating!
+    if (this.hasSaved) { return true; }
+
+    // Check if we're changing an existing content entry
+    const isDirty = (this.editor.getValue() !== this.initialEditorValue) || this.contentForm.dirty;
+
+    // if we're not dirty, we can also deactivate
+    if (!isDirty) { return true; }
+
+    const answer = new Subject<boolean>();
+
+    const data: ModalData = {
+      headerText: 'Unsaved work!',
+      bodyText: 'Do you wish to proceed without saving?',
+      proceedColor: 'accent',   proceedText: 'Proceed',
+      cancelColor: 'primary',   cancelText: 'Cancel',
+      includeCancel: true,
+
+      proceed: () => answer.next(true),
+      cancel: () => answer.next(false),
+    };
+    this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
+
+    return answer;
   }
+
   /**
    * Submits the form and hands it over to the cmsService
    */
@@ -121,15 +163,17 @@ export class ComposeComponent implements OnDestroy {
     this.onSubmit(this.cmsService.createContent(content));
   }
 
-  /**
-   * Helper function
-   */
+  // ---------------------------------------
+  // --------------- HELPERS ---------------
+  // ---------------------------------------
+
   private onSubmit(obs: Observable<CmsContent>) {
     const sub = obs.subscribe(
       newContent => {
         sub.unsubscribe();
         if (newContent) {
           this.cmsService.getContentList(true);
+          this.hasSaved = true;
           this.router.navigate([newContent.route]);
         }
       },
@@ -137,5 +181,13 @@ export class ComposeComponent implements OnDestroy {
         sub.unsubscribe();
       },
     );
+  }
+
+  /**
+   * returns the CmsAccess value of the selected access privileges
+   * @return {CmsAccess} the selected value
+   */
+  getAccessChoice(): CmsAccess {
+    return this.accessChoices.find(choice => this.contentForm.get('access').value === choice.value);
   }
 }

@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { CMSService, AuthService } from '@app/services';
-import { ModalData, CmsContent } from '@app/models';
+import { ModalData, CmsContent, AccessRoles } from '@app/models';
 
 import { ModalComponent } from '../modals/modal.component';
 
@@ -21,6 +21,7 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentComponent implements OnDestroy {
+  AccessRoles = AccessRoles;
   private ngUnsubscribe = new Subject();
   public contentSubject = new BehaviorSubject<CmsContent>(null);
 

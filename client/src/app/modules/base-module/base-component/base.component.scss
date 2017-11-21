@@ -1,6 +1,5 @@
 @import "../../../theme.scss";
 
-$headerColor: map-get(nth($primary, 1), nth($primary, 2));
 
 $contentBG: rgba(255,255,255,0.8);
 $border: 1px solid #666;
@@ -30,23 +29,28 @@ $sideWidth: 250px;
   .center.main {
     max-width: $contentWidth;
   }
+  &.mobile {
+    padding-top: 44px;
+  }
 }
 
 // HEADER
 .topHeader {
-  background: $headerColor;
+  background: $primary;
   display: flex;
   justify-content: center;
   padding: 0.5em;
   color: #fff;
 
   &.mobile {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 10;
   }
 
-  a {
+  a.title {
     text-align: center;
     font-size: 1.5em;
     margin: 0 auto;
@@ -64,34 +68,5 @@ $sideWidth: 250px;
       left: auto;
       right: 2px;
     }
-  }
-}
-
-
-// SIDE CONTENT
-
-.nav {
-  padding-top: 0;
-  a.active {
-    background: rgba(0,0,0,0.10);
-  }
-  .subItem {
-    margin-left: 14px;
-  }
-}
-
-.sidenavContainer {
-  background: none;
-
-  .sidenav {
-    width: 100vw;
-    padding: 10px 7px 4px 7px;
-    box-sizing: border-box;
-    background: $background;
-
-    position: fixed;
-    top: 0;
-    padding-top: 54px; // 44 + 10
-    height: 100vh;
   }
 }

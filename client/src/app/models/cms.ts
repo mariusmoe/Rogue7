@@ -1,9 +1,9 @@
-
+import { AccessRoles } from '@app/models/user';
 
 export interface CmsContent {
   _id?: string;
   title: string;
-  access: string;
+  access: AccessRoles;
   route: string;
   folder?: string;
   content?: string;

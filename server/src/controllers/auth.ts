@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { User, user } from '../models/user';
+import { User, user, accessRoles } from '../models/user';
 import { get as configGet } from 'config';
 import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
 import { sign } from 'jsonwebtoken';
 
-const userTypes = ['admin', 'member'];
+const userTypes: accessRoles[] = [ accessRoles.admin, accessRoles.user ];
 
 export interface tokenResponse {
   token: string;
@@ -39,7 +39,7 @@ export class AuthController {
    */
   public static register(req: Request, res: Response, next: NextFunction): Response {
     const password        = <string>req.body.password,
-          role            = <string>req.body.role,
+          role            = <accessRoles>req.body.role,
           username        = <string>req.body.username;
 
     if (!username || !password) {
@@ -58,10 +58,10 @@ export class AuthController {
       }
 
       new User({
-        username:   username,
+        username:       username,
         username_lower: username.toLowerCase(),
-        password:   password,
-        role:       role,
+        password:       password,
+        role:           role,
       }).save((err2, newUser) => {
         if (err2) { return next(err2); }
         return res.status(200).send(status(AUTH_STATUS.ACCOUNT_CREATED));
@@ -116,7 +116,7 @@ export class AuthController {
     const id    = <string>req.body.id,
           user  = <user>req.user;
 
-    if (user.role !== userTypes[0]) {
+    if (user.role !== accessRoles.admin) {
       return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
     }
     if (!id) {

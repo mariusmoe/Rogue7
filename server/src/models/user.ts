@@ -36,8 +36,14 @@ export interface user extends Document {
   username: string;
   username_lower: string;
   password: string;
-  role: 'admin' | 'user';
+  role: accessRoles.admin | accessRoles.user;
   comparePassword: (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void ) => null;
+}
+
+export enum accessRoles {
+  admin = 'admin',
+  user = 'user',
+  everyone = 'everyone'
 }
 
 

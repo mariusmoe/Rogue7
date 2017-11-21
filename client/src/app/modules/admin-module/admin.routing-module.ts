@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuard } from '@app/guards';
+import { AdminGuard, DeactivateGuard } from '@app/guards';
 import { ComposeComponent } from './compose-component/compose.component';
 
 
 const routes: Routes = [
-  { path: 'compose' , component: ComposeComponent, canActivate: [AuthGuard], pathMatch: 'full' },
-  { path: 'compose/:route', component: ComposeComponent, canActivate: [AuthGuard] },
+  { path: 'compose' , component: ComposeComponent, canActivate: [AdminGuard], canDeactivate: [DeactivateGuard], pathMatch: 'full' },
+  { path: 'compose/:route', component: ComposeComponent, canActivate: [AdminGuard], canDeactivate: [DeactivateGuard] },
 ];
 
 

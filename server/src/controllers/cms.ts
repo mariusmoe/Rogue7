@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { user } from '../models/user';
+import { user, accessRoles } from '../models/user';
 import { Content, content } from '../models/content';
 import { status, ROUTE_STATUS, CMS_STATUS } from '../libs/responseMessage';
 import { escape } from 'validator';
@@ -19,10 +19,10 @@ export class CMSController {
  public static getContentList(req: Request, res: Response, next: NextFunction) {
     const user = <user>req.user;
 
-    const accessRights = ['everyone'];
+    const accessRights: accessRoles[] = [accessRoles.everyone];
     if (user) {
-      accessRights.push('user');
-      if (user.role === 'admin') { accessRights.push('admin'); }
+      accessRights.push(accessRoles.user);
+      if (user.role === accessRoles.admin) { accessRights.push(accessRoles.admin); }
     }
 
     Content.find({ access: { $in: accessRights }}, { 'title': true, 'route': true, 'access': true, 'folder': true }, (err, contentList) => {
@@ -51,8 +51,8 @@ export class CMSController {
       if (!content) {
         return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
       }
-      const access = content.access === 'everyone' ||
-                   (user && user.role === 'admin') ||
+      const access = content.access === accessRoles.everyone ||
+                   (user && user.role === accessRoles.admin) ||
                    (user && user.role === content.access);
 
       if (!access) {
@@ -79,7 +79,7 @@ export class CMSController {
     if (!data || !data.route || !data.content || !data.access || !data.title) {
         return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
     }
-    if (['admin', 'user', 'everyone'].indexOf(data.access) === -1) {
+    if ([accessRoles.admin, accessRoles.user, accessRoles.everyone].indexOf(data.access) === -1) {
       return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
     }
 

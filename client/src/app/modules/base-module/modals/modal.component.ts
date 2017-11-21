@@ -16,23 +16,30 @@ export class ModalComponent {
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ModalData) {
+
+
+    dialogRef.afterClosed().subscribe( proceeding => {
+      if (proceeding) {
+        this.data.proceed();
+      } else {
+        if (this.data.includeCancel) {
+          this.data.cancel();
+        }
+      }
+    });
   }
 
   /**
    * Proceeds with the task and closes the modal.
    */
   proceed(): void {
-    this.data.proceed();
-    this.dialogRef.close();
+    this.dialogRef.close(true);
   }
 
   /**
    * Closes the modal without proceeding.
    */
   cancel(): void {
-    if (this.data.includeCancel) {
-      this.data.cancel();
-    }
-    this.dialogRef.close();
+    this.dialogRef.close(false);
   }
 }

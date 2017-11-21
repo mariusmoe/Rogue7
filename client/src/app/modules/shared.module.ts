@@ -8,7 +8,8 @@ import {
   AuthService,
   CMSService,
   InterceptorService,
-  SteamService
+  SteamService,
+  MobileService
 } from '@app/services';
 
 // Modules
@@ -19,8 +20,12 @@ import { MaterialModule } from './material.module';
 import { DateFnsModule } from 'ngx-date-fns';
 
 // Guards
-import { AuthGuard } from '@app/guards';
-
+import {
+  AuthGuard,
+  AdminGuard,
+  CMSGuard,
+  MobileGuard
+} from '@app/guards';
 
 
 @NgModule({
@@ -48,7 +53,11 @@ export class SharedModule {
         AuthService,
         CMSService,
         SteamService,
-        AuthGuard
+        AuthGuard,
+        AdminGuard,
+        MobileService,
+        CMSGuard,
+        MobileGuard
       ],
     };
   }

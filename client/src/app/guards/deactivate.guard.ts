@@ -1,0 +1,17 @@
+import { Injectable } from '@angular/core';
+import { CanDeactivate } from '@angular/router';
+
+import { ComposeComponent } from '@app/modules/admin-module/compose-component/compose.component';
+
+
+@Injectable()
+export class DeactivateGuard implements CanDeactivate<ComposeComponent> {
+
+  /**
+   * Dictates the access rights to a given route
+   * @return {boolean|Subject<boolean>} whether access is granted
+   */
+  canDeactivate(comp: ComposeComponent) {
+    return comp.canDeactivate();
+  }
+}

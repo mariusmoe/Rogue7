@@ -11,6 +11,8 @@ import { ComposeComponent } from './compose-component/compose.component';
 import { CKEditorComponent } from './ckeditor-component/ckeditor.component';
 import { SteamComponent } from './steam-component/steam.component';
 
+// Guards
+import { DeactivateGuard } from '@app/guards';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,9 @@ import { SteamComponent } from './steam-component/steam.component';
   imports: [
     SharedModule,
     AdminRoutingModule,
+  ],
+  providers: [
+    DeactivateGuard
   ]
 })
 export class AdminModule { }

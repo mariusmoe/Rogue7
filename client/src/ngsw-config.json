@@ -36,20 +36,14 @@
           "https://fonts.gstatic.com/**"
         ]
       }
-    },
-    {
-      "name": "libs",
-      "resources": {
-        "urls": [
-          "https://cdn.ckeditor.com/**"
-        ]
-      }
     }
   ],
   "dataGroups": [
     {
       "name": "api-freshness",
       "urls": [
+        "/api/cms$",
+        "/api/steam$"
       ],
       "cacheConfig": {
         "strategy": "freshness",
@@ -62,8 +56,6 @@
       "name": "api-performance",
       "urls": [
         "/api/cms/**",
-        "/api/cms",
-        "/api/steam",
         "/api/steam/**"
       ],
       "cacheConfig": {

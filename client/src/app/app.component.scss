@@ -17,20 +17,15 @@ body, html {
   margin: 0;
   font-family: Roboto,"Helvetica Neue",sans-serif;
 }
-
 h1, h2, h3, h4, h5, h6 {
   font-weight: 400;
 }
-
-a, a:active, a:visited, a:focus, a:hover {
-  text-decoration: none;
+a {
   color: inherit;
-}
-.main a {
-  word-break: break-all;
-  text-decoration: underline;
-  &:hover {
-    color: map-get(nth($primary, 1), nth($primary, 2));
+  text-decoration: none;
+  &:active, &:visited, &:focus, &:hover {
+    text-decoration: none;
+    color: inherit;
   }
 }
 

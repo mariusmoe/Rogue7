@@ -2,12 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { environment } from '@env';
-import { User, UpdatePasswordUser, UserToken } from '@app/models';
+import { MatSnackBar } from '@angular/material';
 
+import { environment } from '@env';
+import { User, UpdatePasswordUser, UserToken, AccessRoles } from '@app/models';
+
+import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
-import { map, catchError, timeout } from 'rxjs/operators';
+import { map, catchError, timeout, takeUntil } from 'rxjs/operators';
+import { timer } from 'rxjs/observable/timer';
 import { of } from 'rxjs/observable/of';
 
 
@@ -16,19 +20,21 @@ const TIMEOUT = 5000;
 
 @Injectable()
 export class AuthService {
-  private userSubject: BehaviorSubject<User>;
+  private userSubject = new BehaviorSubject(null);
+  private renewalSub: Subscription;
 
   constructor(
+    private snackBar: MatSnackBar,
     private http: HttpClient,
     private router: Router ) {
-      this.userSubject = new BehaviorSubject(null);
 
       const token = localStorage.getItem('token');
       if (!token || this.jwtIsExpired(token)) {
-        // this.logOut();
+        localStorage.removeItem('token');
         return;
       }
       this.updateCurrentUserData(token);
+      this.engageRenewTokenTimer(token);
   }
 
   // ---------------------------------------
@@ -41,7 +47,7 @@ export class AuthService {
    */
   private updateCurrentUserData(token: string) {
     if (!token) { return; }
-    const u: User = this.jwtDecode(token);
+    const u = this.jwtDecode(token);
     if (!u) { return; }
     this.userSubject.next(u);
   }
@@ -53,6 +59,41 @@ export class AuthService {
    */
   private jwtDecode(token: string): User {
     return JSON.parse(atob(token.split('.')[1]));
+  }
+
+  /**
+   * Opens a snackbar with the given message and action message
+   * @param  {string} message The message that is to be displayed
+   * @param  {string} action  the action message that is to be displayed
+   */
+  private openSnackBar(message: string, action: string) {
+    this.snackBar.open(message, action, {
+      duration: 5000,
+    });
+  }
+
+  /**
+   * Starts a timer to renew the jwt before it exires
+   * @param  {string}       token token to base the renewal timer on
+   */
+  private engageRenewTokenTimer(token: string) {
+    // cancel any ongoing timers
+    if (this.renewalSub) { this.renewalSub.unsubscribe(); }
+    // Log out the user if it is too late to renew.
+    if (this.jwtIsExpired(token)) {  this.logOut(); return; }
+    // Engage a new timer to go off 20 minutes before expiration token
+    const renewalDate = new Date(this.jwtExpirationDate(token).getTime() - 1000 * 60 * 20);
+    this.renewalSub = timer(renewalDate).subscribe( time => {
+      const sub = this.renewToken().subscribe(userToken => {
+        sub.unsubscribe();
+        if (userToken.token) {
+          this.engageRenewTokenTimer(userToken.token);
+          return;
+        }
+        this.openSnackBar('Session expired', '');
+        this.logOut();
+      });
+    });
   }
 
   // ---------------------------------------
@@ -87,11 +128,21 @@ export class AuthService {
    * @param  {number}  offset number of seconds offset from now
    * @return {boolean}        whether the token has expired
    */
-  jwtIsExpired(token: string, offset?: number): boolean {
+  jwtIsExpired(token: string, offset: number = 0): boolean {
     const date = this.jwtExpirationDate(token);
     // if we can't get a date, we assume its best to say that it has expired.
     if (null === date) { return true; }
     return ((new Date().valueOf() + offset * 1000) > date.valueOf());
+  }
+
+  /**
+   * Returns true if the user is of the given role
+   * @param  {AccessRoles}      role The role to compare against
+   * @return {boolean}          whether the user is of the given role
+   */
+  isUserOfRole(role: AccessRoles): boolean {
+    const user = this.getUser().getValue();
+    return user && user.role === role;
   }
 
   // ---------------------------------------
@@ -106,8 +157,12 @@ export class AuthService {
   login(user: User): Observable<boolean> {
     return this.http.post<UserToken>(environment.URL.auth.login, user).pipe(
       map( userToken => {
-        localStorage.setItem('token', userToken.token);    // Set token
-        this.updateCurrentUserData(userToken.token);       // Set user data & Notify subscribers
+        // Set token
+        localStorage.setItem('token', userToken.token);
+        // Engage token renewal timer
+        this.engageRenewTokenTimer(userToken.token);
+        // Set user data & Notify subscribers
+        this.updateCurrentUserData(userToken.token);
         return !!userToken.token;
       }),
       timeout(TIMEOUT)
@@ -120,6 +175,7 @@ export class AuthService {
    */
   logOut() {
     localStorage.removeItem('token');
+    if (this.renewalSub) { this.renewalSub.unsubscribe(); }
     this.userSubject.next(null);
     this.router.navigate(['/']);
   }
@@ -130,11 +186,11 @@ export class AuthService {
    * Attempt to renew JWT token
    * @return {Observable<boolean>} wether the JWT was successfully renewed
    */
-  renewToken(): Observable<boolean> {
+  renewToken(): Observable<UserToken> {
     return this.http.get<UserToken>(environment.URL.auth.token).pipe(
       map( userToken => {
         localStorage.setItem('token', userToken.token);    // Set token
-        return !!userToken.token;
+        return userToken;
       }),
       timeout(TIMEOUT)
     );

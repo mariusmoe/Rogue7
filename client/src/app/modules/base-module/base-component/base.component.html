@@ -1,84 +1,32 @@
 
-<header class="topHeader" [ngClass]="{ mobile: (isMobile | async) }">
-  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavLeft.toggle(); sidenavRight.close()" class="navToggle" aria-label="Toggle navigation">
-    <mat-icon aria-label="Open Navigation">menu</mat-icon>
+<header class="topHeader" [ngClass]="{ mobile: (mobileService.isMobile() | async) }">
+  <button mat-icon-button *ngIf="mobileService.isMobile() | async" [routerLink]="router.url !== '/navigation' ? '/navigation' : '/'"
+          class="navToggle" aria-label="Toggle navigation">
+    <mat-icon>menu</mat-icon>
   </button>
-  <a routerLink="/"><mat-icon svgIcon="logo" ngClass="logo"></mat-icon>otingane</a>
-  <button mat-icon-button *ngIf="isMobile | async" (click)="sidenavRight.toggle(); sidenavLeft.close()" class="navToggle right" aria-label="Toggle user panel">
-    <mat-icon aria-label="Open Navigation">person</mat-icon>
+  <a routerLink="/" class="title"><mat-icon svgIcon="logo" ngClass="logo"></mat-icon>otingane</a>
+  <button mat-icon-button *ngIf="mobileService.isMobile() | async" [routerLink]="router.url !== '/controlpanel' ? '/controlpanel' : '/'"
+          class="navToggle right" aria-label="Toggle user panel">
+    <mat-icon>person</mat-icon>
   </button>
 </header>
 
-<mat-sidenav-container ngClass="sidenavContainer">
-  <!-- TEMPLATES -->
-  <ng-template #navigationTemplate>
-    <mat-card>
-      <mat-card-content>
-        <mat-nav-list dense>
-          <ng-container *ngIf="contentSubject | async as nav">
-            <a mat-list-item *ngFor="let navEntry of nav.rootContent"
-              routerLink="/{{navEntry.route}}"
-              routerLinkActive="active">{{ navEntry.title }}</a>
-
-            <ng-container *ngFor="let folderEntry of nav.folders">
-              <h2 mat-subheader>{{ folderEntry.title }}</h2>
-              <a mat-list-item *ngFor="let navEntry of folderEntry.content"
-                routerLink="/{{navEntry.route}}"
-                routerLinkActive="active"
-                ngClass="subItem">{{ navEntry.title }}</a>
-            </ng-container>
-          </ng-container>
-
-          <ng-container *ngIf="steamServersSubject | async as steamServers">
-            <ng-container *ngIf="steamServers && steamServers.length > 0">
-              <h2 mat-subheader>Steam Servers</h2>
-
-              <a mat-list-item *ngFor="let server of steamServers"
-              routerLink="/steam/{{server.route}}"
-              routerLinkActive="active"
-              ngClass="subItem">{{ server.title }}</a>
-            </ng-container>
-          </ng-container>
-        </mat-nav-list>
-      </mat-card-content>
-    </mat-card>
-  </ng-template>
-
-  <ng-template #userTemplate>
-    <app-login-component></app-login-component>
-    <app-control-panel-component></app-control-panel-component>
-  </ng-template>
-
-
-  <mat-sidenav #sidenavLeft mode="over" position="start" ngClass="sidenav">
-    <nav class="nav" *ngIf="isMobile | async">
-      <ng-container *ngTemplateOutlet="navigationTemplate"></ng-container>
-    </nav>
-  </mat-sidenav>
-
-  <mat-sidenav #sidenavRight mode="over" position="end" ngClass="sidenav">
-    <ng-container *ngIf="isMobile | async">
-      <ng-container *ngTemplateOutlet="userTemplate"></ng-container>
-    </ng-container>
-  </mat-sidenav>
-
-  <div class="wrapper" [ngClass]="{ mobile: (isMobile | async) }">
-    <!-- NAVIGATION BAR -->
-    <nav class="nav left" *ngIf="!(isMobile | async)">
-      <ng-container *ngTemplateOutlet="navigationTemplate"></ng-container>
-    </nav>
-
-    <!-- CONTENT -->
-    <main class="main center">
-      <router-outlet></router-outlet>
-    </main>
-
-    <!-- USER -->
-    <aside class="user right" *ngIf="!(isMobile | async)">
-      <ng-container *ngTemplateOutlet="userTemplate"></ng-container>
-    </aside>
+<div class="wrapper" [ngClass]="{ mobile: (mobileService.isMobile() | async) }">
+  <!-- NAVIGATION BAR -->
+  <div class="nav left" *ngIf="!(mobileService.isMobile() | async)">
+    <app-nav-component></app-nav-component>
   </div>
 
-  <!-- FOOTER -->
-  <app-footer-component class="footer"></app-footer-component>
-</mat-sidenav-container>
+  <!-- CONTENT -->
+  <main class="main center">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- USER -->
+  <aside class="user right" *ngIf="!(mobileService.isMobile() | async)">
+    <app-control-panel-component></app-control-panel-component>
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<app-footer-component class="footer"></app-footer-component>
