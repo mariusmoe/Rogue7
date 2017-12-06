@@ -1,11 +1,14 @@
 import { NgModule } from '@angular/core';
-import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 import { RouterModule, Routes } from '@angular/router';
+
+import { environment } from '@env';
+
+// Service Worker
+import { WorkerService } from '@app/services';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
-// Base
+
 import { AppComponent } from './app.component';
 
 
@@ -20,8 +23,11 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserAnimationsModule,
-    environment.production ? ServiceWorkerModule.register('/ngsw-worker.js') : [],
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
+  ],
+  providers: [
+    environment.production ? WorkerService : [],
   ],
   bootstrap: [AppComponent]
 })

@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef,
 
 import { CmsContent } from '@app/models';
 import { DOCUMENT } from '@angular/platform-browser';
-// import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
@@ -32,19 +32,18 @@ export class CKEditorComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit() {
-    // this.loadCKEditor();
     // Load CKEditor if it already exists
     if (typeof ClassicEditor !== 'undefined') {
       this.loadCKEditor();
       return;
     }
     // Load from CDN
-    const script = this.document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.src = 'https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js';
-    script.onload = () => { this.loadCKEditor(); };
-    this.document.body.appendChild(script);
+    // const script = this.document.createElement('script');
+    // script.type = 'text/javascript';
+    // script.async = true;
+    // script.src = 'https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js';
+    // script.onload = () => { this.loadCKEditor(); };
+    // this.document.body.appendChild(script);
   }
 
 

@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
-import { CanActivate } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
+
 import { AuthService } from '@app/services';
 import { AccessRoles } from '@app/models';
 
 @Injectable()
 export class AdminGuard implements CanActivate {
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router) { }
 
 
   /**
@@ -15,7 +18,11 @@ export class AdminGuard implements CanActivate {
    */
   canActivate() {
     const isExpired = this.authService.jwtIsExpired(localStorage.getItem('token'));
-    return !isExpired && this.authService.isUserOfRole(AccessRoles.admin);
+    const accessGranted = !isExpired && this.authService.isUserOfRole(AccessRoles.admin);
+    if (!accessGranted) {
+      this.router.navigateByUrl('/');
+    }
+    return accessGranted;
   }
 
 }

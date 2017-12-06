@@ -1,15 +1,12 @@
 {
-  "index": "/",
+  "index": "/index.html",
   "assetGroups": [
     {
       "name": "app",
       "installMode": "prefetch",
       "resources": {
         "files": [
-          "/favicon.ico",
-          "/assets/logo256.svg",
-          "!/ngsw-worker.js",
-          "/manifest.json"
+          "!/ngsw-worker.js"
         ],
         "versionedFiles": [
           "/*.bundle.css",

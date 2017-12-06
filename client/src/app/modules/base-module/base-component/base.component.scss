@@ -1,11 +1,10 @@
 @import "../../../theme.scss";
 
-
 $contentBG: rgba(255,255,255,0.8);
 $border: 1px solid #666;
-
 $contentWidth: 850px;
 $sideWidth: 250px;
+$headerHeight: 44px;
 
 
 // SITE SETUP
@@ -17,20 +16,18 @@ $sideWidth: 250px;
   justify-content: center;
   align-items: stretch;
 
+  &.mobile {
+    margin-top: $headerHeight;
+  }
+
   .left, .right, .center {
     flex: 1 1;
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
-  }
-
-  .left, .right {
     max-width: $sideWidth;
   }
-  .center.main {
+  .center {
     max-width: $contentWidth;
-  }
-  &.mobile {
-    padding-top: 44px;
   }
 }
 
@@ -39,16 +36,10 @@ $sideWidth: 250px;
   background: $primary;
   display: flex;
   justify-content: center;
+  max-height: $headerHeight;
   padding: 0.5em;
   color: #fff;
-
-  &.mobile {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 10;
-  }
+  z-index: 50;
 
   a.title {
     text-align: center;
@@ -69,4 +60,44 @@ $sideWidth: 250px;
       right: 2px;
     }
   }
+}
+
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+.loading {
+  // NOTE: ::ng-deep might be depricated later! Use with care!
+  ::ng-deep .mat-progress-bar-buffer {
+    background: none;
+  }
+}
+
+// SIDE CONTENT
+.sidenavContainer {
+  background: none;
+  .sidenav {
+    position: fixed;
+    pointer-events: all;
+    top: $headerHeight;
+    width: 85vw;
+    max-width: 350px;
+    height: calc(100vh - $headerHeight);
+    padding: 10px 7px 4px 7px;
+    box-sizing: border-box;
+    background: $background;
+  }
+}
+
+.swipe {
+  position: fixed;
+  top: $headerHeight;
+  bottom: 0;
+  width: 6vw;
+  z-index: 20;
+  &.left { left: 0; }
+  &.right { right: 0; }
 }

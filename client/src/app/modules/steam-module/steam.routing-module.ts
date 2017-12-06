@@ -5,8 +5,12 @@ import { AuthGuard } from '@app/guards';
 
 import { ServerComponent } from './server-component/server.component';
 
+import { SteamResolver } from '@app/guards';
+
 const routes: Routes = [
-  { path: ':serverRoute' , component: ServerComponent },
+  { path: ':serverRoute' , component: ServerComponent, resolve: {
+      SteamServer: SteamResolver
+  }}
 ];
 
 @NgModule({

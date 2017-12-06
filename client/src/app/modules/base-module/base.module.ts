@@ -10,11 +10,14 @@ import { SharedModule } from '@app/modules/shared.module';
 import { BaseComponent } from './base-component/base.component';
 import { LoginComponent } from './login-component/login.component';
 import { ControlPanelComponent } from './control-panel-component/control.panel.component';
-import { UserComponent } from './user-component/user.component';
 import { FooterComponent } from './footer-component/footer.component';
 import { ContentComponent } from './content-component/content.component';
 import { NavComponent } from './nav-component/nav.component';
+import { SearchComponent } from './search-component/search.component';
 import { ModalComponent } from './modals/modal.component';
+
+// CMS resoler
+import { CmsResolver } from '@app/guards';
 
 
 @NgModule({
@@ -22,18 +25,21 @@ import { ModalComponent } from './modals/modal.component';
     BaseComponent,
     LoginComponent,
     ControlPanelComponent,
-    UserComponent,
     FooterComponent,
     ContentComponent,
     NavComponent,
+    SearchComponent,
     ModalComponent
   ],
   imports: [
-    SharedModule.forRoot(),
     BaseRoutingModule,
+    SharedModule.forRoot()
   ],
   entryComponents: [
     ModalComponent
+  ],
+  providers: [
+    CmsResolver
   ]
 })
 export class BaseModule { }

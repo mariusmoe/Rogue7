@@ -1,4 +1,10 @@
 
-.editorParent {
+$headerHeight: 44px;
+
+.content.editor {
   min-height: 200px;
+
+  .ck-editor .ck-sticky-panel .ck-sticky-panel__content_sticky {
+    top: $headerHeight;
+  }
 }

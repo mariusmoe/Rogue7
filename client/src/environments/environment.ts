@@ -3,22 +3,25 @@
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `angular-cli.json`.
 
+const baseURL = 'http://localhost:2000';
+
 export const environment = {
   production: false,
 
   URL: {
-    base:           'http://localhost:2000',
-    api:            'http://localhost:2000/api',
+    base:           baseURL,
+    api:            baseURL + '/api',
     auth: {
-      login:        'http://localhost:2000/api/auth/login',
-      token:        'http://localhost:2000/api/auth/token',
-      updatepass:   'http://localhost:2000/api/auth/updatepassword',
+      login:        baseURL + '/api/auth/login',
+      token:        baseURL + '/api/auth/token',
+      updatepass:   baseURL + '/api/auth/updatepassword',
     },
     steam: {
-      servers:      'http://localhost:2000/api/steam',
+      servers:      baseURL + '/api/steam',
     },
     cms: {
-      content:      'http://localhost:2000/api/cms',
+      content:      baseURL + '/api/cms',
+      search:       baseURL + '/api/cms/search',
     },
   }
 };

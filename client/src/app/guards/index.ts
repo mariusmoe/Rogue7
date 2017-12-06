@@ -1,5 +1,6 @@
 export * from './auth.guard';
 export * from './admin.guard';
-export * from './cms.guard';
 export * from './deactivate.guard';
-export * from './mobile.guard';
+
+export * from './cms.resolver';
+export * from './steam.resolver';

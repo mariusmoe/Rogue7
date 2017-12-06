@@ -1,11 +1,12 @@
 @import 'theme.scss';
 
-.content,
-.editorParent {
-  a {
+.content {
+  a, p {
     word-break: break-all;
+  }
+  a {
     text-decoration: underline;
-    &:hover {
+    &:hover, &:active {
       text-decoration: underline;
       color: $primary;
     }
@@ -87,8 +88,7 @@
 
 // Mobile styling
 .wrapper.mobile {
-  .content,
-  .editorParent {
+  .content {
     figure.image {
       &.image-style-align-right,
       &.image-style-align-left {

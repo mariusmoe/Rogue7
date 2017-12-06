@@ -9,22 +9,25 @@
   "description": "The home of Sotingane",
   "icons": [
     {
-      "src": "assets/logo192themed.svg",
-      "sizes": "192x192"
-    }, {
+     "src": "assets/logo192themed.svg",
+     "sizes": "192x192",
+     "type": "image/svg"
+   }, {
       "src": "assets/logo192themed.png",
       "sizes": "192x192",
       "type": "image/png"
     }, {
       "src": "assets/logo256themed.svg",
-      "sizes": "256x256"
+      "sizes": "256x256",
+      "type": "image/svg"
     }, {
       "src": "assets/logo256themed.png",
       "sizes": "256x256",
       "type": "image/png"
     }, {
       "src": "assets/logo512themed.svg",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "type": "image/svg"
     }, {
       "src": "assets/logo512themed.png",
       "sizes": "512x512",

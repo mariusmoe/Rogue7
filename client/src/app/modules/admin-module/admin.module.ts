@@ -5,6 +5,7 @@ import { AdminRoutingModule } from './admin.routing-module';
 
 // Modules
 import { SharedModule } from '@app/modules/shared.module';
+import { AuthedModule } from '@app/modules/authed.module';
 
 // Components
 import { ComposeComponent } from './compose-component/compose.component';
@@ -22,7 +23,8 @@ import { DeactivateGuard } from '@app/guards';
   ],
   imports: [
     SharedModule,
-    AdminRoutingModule,
+    AuthedModule,
+    AdminRoutingModule
   ],
   providers: [
     DeactivateGuard

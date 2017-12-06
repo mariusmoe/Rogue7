@@ -19,7 +19,15 @@ export class NavComponent {
   contentSubject = new BehaviorSubject(null);
   steamServersSubject = new BehaviorSubject<SteamServer[]>(null);
 
-  private sortMethod = (a, b) => { if (a.title > b.title) { return 1; } if (a.title < b.title) { return -1; } return 0; };
+  /**
+   * Sort arrangement function for CmsContent, CmsFolders and SteamServer, based on either's title.
+   * @param  {CmsContent | CmsFolder | SteamServer}   a object to be sorted
+   * @param  {CmsContent | CmsFolder | SteamServer}   b object to be sorted
+   * @return {number}                                 a's relative position to b.
+   */
+  private static sortMethod(a: CmsContent | CmsFolder | SteamServer, b: CmsContent | CmsFolder | SteamServer): number {
+    if (a.title > b.title) { return 1; } if (a.title < b.title) { return -1; } return 0;
+  }
 
   constructor(
     private authService: AuthService,
@@ -40,11 +48,15 @@ export class NavComponent {
     // Subscribe to steam server updates
     steamService.requestSteamServers().pipe(takeUntil(this.ngUnsubscribe)).subscribe( serverList => {
       if (!serverList) { return; }
+      serverList.sort(NavComponent.sortMethod);
       this.steamServersSubject.next(serverList);
     });
   }
 
-
+  /**
+   * Creates and organizes the navigation tree from the CmsContent list provided
+   * @param  {CmsContent[]} contentList the CmsContent list to create the nav tree from
+   */
   private updateContentList(contentList: CmsContent[]) {
     if (!contentList) { return; }
 
@@ -66,9 +78,9 @@ export class NavComponent {
       folder.content.push(content);
     }
     // sort
-    rootContent.sort(this.sortMethod);
-    folders.sort(this.sortMethod);
-    for (const folder of folders) { folder.content.sort(this.sortMethod); }
+    rootContent.sort(NavComponent.sortMethod);
+    folders.sort(NavComponent.sortMethod);
+    for (const folder of folders) { folder.content.sort(NavComponent.sortMethod); }
     // Push
     this.contentSubject.next({
       rootContent: rootContent,

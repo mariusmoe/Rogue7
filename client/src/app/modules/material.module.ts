@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 
-// Modules
+// Modules (COMMON)
 import {
+  MatSnackBarModule,
   MatCardModule,
   MatListModule,
   MatIconModule,
@@ -10,13 +11,9 @@ import {
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatTooltipModule,
-  MatSnackBarModule,
   MatSidenavModule,
-  MatExpansionModule,
-  MatSelectModule,
-  MatMenuModule,
   MatDialogModule,
-  MatAutocompleteModule
+  MatMenuModule
 } from '@angular/material';
 
 
@@ -24,6 +21,7 @@ import {
 
 @NgModule({
   exports: [
+    MatSnackBarModule,
     MatCardModule,
     MatListModule,
     MatIconModule,
@@ -32,13 +30,9 @@ import {
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatSnackBarModule,
     MatSidenavModule,
-    MatExpansionModule,
-    MatSelectModule,
-    MatMenuModule,
     MatDialogModule,
-    MatAutocompleteModule
+    MatMenuModule
   ]
 })
 export class MaterialModule { }

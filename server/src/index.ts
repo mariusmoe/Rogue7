@@ -7,6 +7,8 @@ import { Setup } from './libs/setup';
 // routing
 import { AppRouter } from './router';
 
+import { AppSeeds } from './libs/seeds';
+
 // boot
 import * as mongoose from 'mongoose';
 import { createServer, Server } from 'http';
@@ -30,7 +32,6 @@ class App {
 
     // BOOT
     this.boot();
-    console.timeEnd('Launch time');
   }
 
   private boot() {
@@ -59,6 +60,7 @@ class App {
       server.listen(this.app.get('port'), () => {
         if (configUtil.getEnv('NODE_ENV') !== 'test') {
           console.log(`Sotingane running on - Port ${this.app.get('port')}...`);
+          console.timeEnd('Launch time');
         }
       });
     }).catch( (err) => {

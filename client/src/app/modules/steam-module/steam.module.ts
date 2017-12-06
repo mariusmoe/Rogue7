@@ -9,6 +9,8 @@ import { SharedModule } from '@app/modules/shared.module';
 // Components
 import { ServerComponent } from './server-component/server.component';
 
+// SteamResolver
+import { SteamResolver } from '@app/guards';
 
 
 @NgModule({
@@ -18,6 +20,9 @@ import { ServerComponent } from './server-component/server.component';
   imports: [
     SteamRoutingModule,
     SharedModule
+  ],
+  providers: [
+    SteamResolver
   ]
 })
 export class SteamModule { }

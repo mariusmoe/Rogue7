@@ -17,27 +17,24 @@ import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
-import { DateFnsModule } from 'ngx-date-fns';
 
 // Guards
-import {
-  AuthGuard,
-  AdminGuard,
-  CMSGuard,
-  MobileGuard
-} from '@app/guards';
+import { AuthGuard, AdminGuard } from '@app/guards';
 
+// Pipes
+import { TimeAgo } from '@app/pipes';
 
 @NgModule({
-  declarations: [
-  ],
   exports: [
     CommonModule,
     MaterialModule,
     ReactiveFormsModule,
     RouterModule,
     HttpClientModule,
-    DateFnsModule
+    TimeAgo
+  ],
+  declarations: [
+    TimeAgo
   ]
 })
 export class SharedModule {
@@ -53,12 +50,10 @@ export class SharedModule {
         AuthService,
         CMSService,
         SteamService,
-        AuthGuard,
-        AdminGuard,
         MobileService,
-        CMSGuard,
-        MobileGuard
-      ],
+        AuthGuard,
+        AdminGuard
+      ]
     };
   }
 }

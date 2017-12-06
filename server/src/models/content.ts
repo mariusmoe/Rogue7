@@ -18,11 +18,13 @@ const schema = new Schema({
   access: {
     type: String,
     enum: ['admin', 'user', 'everyone'],
-    default: 'everyone'
+    default: 'everyone',
+    index: true
   },
   content: {
     type: String, // html
-    required: true
+    required: true,
+    index: 'text' // required for search
   },
   folder: {
     type: String, // format: folder/subfolder/subsubfolder
@@ -49,7 +51,7 @@ const schema = new Schema({
 export interface content extends Document {
   title: string;
   route: string;
-  access: accessRoles;
+  access?: accessRoles;
   content?: string;
   folder?: string;
   updatedBy?: Schema.Types.ObjectId;

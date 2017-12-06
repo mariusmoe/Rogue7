@@ -1,4 +1,4 @@
-import { Component, OnChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -6,15 +6,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '@app/services';
 import { User, UpdatePasswordUser, ModalData } from '@app/models';
 
-import { ModalComponent } from '../modals/modal.component';
+import { ModalComponent } from '@app/modules/base-module/modals/modal.component';
 
 @Component({
-  selector: 'app-user-component',
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss'],
+  selector: 'app-change-password-component',
+  templateUrl: './change.password.component.html',
+  styleUrls: ['./change.password.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class UserComponent {
+export class ChangePasswordComponent {
   changePasswordForm: FormGroup;
 
   constructor(

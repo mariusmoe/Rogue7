@@ -1,11 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate } from '@angular/router';
+import { CanActivate, Router } from '@angular/router';
+
 import { AuthService } from '@app/services';
+
 
 @Injectable()
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService) { }
+  constructor(
+    private authService: AuthService,
+    private router: Router) { }
 
 
   /**
@@ -13,9 +17,12 @@ export class AuthGuard implements CanActivate {
    * @return {boolean} whether access is granted
    */
   canActivate() {
-    const user = this.authService.getUser().getValue();
     const isExpired = this.authService.jwtIsExpired(localStorage.getItem('token'));
-    return user && !isExpired;
+    const accessGranted = this.authService.getUser().getValue() && !isExpired;
+    if (!accessGranted) {
+      this.router.navigateByUrl('/');
+    }
+    return accessGranted;
   }
 
 }

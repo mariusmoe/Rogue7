@@ -1,6 +1,6 @@
-import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
 import { CMSService, AuthService } from '@app/services';
@@ -20,7 +20,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContentComponent implements OnDestroy {
+export class ContentComponent implements OnInit, OnDestroy {
   AccessRoles = AccessRoles;
   private ngUnsubscribe = new Subject();
   public contentSubject = new BehaviorSubject<CmsContent>(null);
@@ -33,11 +33,14 @@ export class ContentComponent implements OnDestroy {
     private san: DomSanitizer,
     public authService: AuthService,
     public cmsService: CMSService) {
-    route.url.pipe(takeUntil(this.ngUnsubscribe)).subscribe( (url) => {
-      cmsService.requestContent(url.join()).subscribe(
-        c => { this.contentSubject.next(c); },
-        err => { this.contentSubject.next(<CmsContent>{}); },
-      );
+  }
+
+  ngOnInit() {
+    this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+      if (e instanceof NavigationEnd) {
+        this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+      }
     });
   }
 
@@ -46,9 +49,16 @@ export class ContentComponent implements OnDestroy {
     this.ngUnsubscribe.complete();
   }
 
+  /**
+   * Navigate the user to the editor page.
+   */
   editPage() {
     this.router.navigateByUrl('/admin/compose/' + this.contentSubject.getValue().route);
   }
+
+  /**
+   * Opens a modal asking the user to verify intent to delete the page they're viewing
+   */
   deletePage() {
     const content = this.contentSubject.getValue();
     const data: ModalData = {

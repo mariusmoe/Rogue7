@@ -157,4 +157,34 @@ export class CMSController {
   }
 
 
+
+  /**
+   * Returns search results for a given search term provided in the body
+   * @param  {Request}      req  request
+   * @param  {Response}     res  response
+   * @param  {NextFunction} next next
+   * @return {Response}          server response: the search results
+   */
+ public static searchContent(req: Request, res: Response, next: NextFunction) {
+    const searchTerm = <string>req.body.searchTerm,
+          user       = <user>req.user;
+
+    const accessRights: accessRoles[] = [accessRoles.everyone];
+    if (user) {
+      accessRights.push(accessRoles.user);
+      if (user.role === accessRoles.admin) { accessRights.push(accessRoles.admin); }
+    }
+
+    Content.find(
+      { $text: { $search: searchTerm }, access: { $in: accessRights } },
+      { title: 1, route: 1, folder: 1, textScore: { $meta: 'textScore' } },
+      (err, contentList) => {
+        if (err) { next(err); }
+        if (!contentList) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
+
+        return res.status(200).send(contentList);
+      }
+    ).sort({ textScore: { $meta: 'textScore' } }).lean();
+  }
+
 }

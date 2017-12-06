@@ -46,6 +46,13 @@ export class CMSService {
   }
 
   /**
+   * Sets the cmsRoutes
+   */
+  setContentList(contentList: CmsContent[]) {
+    this.listSubject.next(contentList);
+  }
+
+  /**
    * Returns the time, in ms, until the http request is timed out.
    * @return {number} the time, in ms.
    */
@@ -58,7 +65,6 @@ export class CMSService {
   // ---------------------------------------
 
 
-
   /**
    * Requests the content list
    * @return {Observable<CmsContent[]>}         Server's response, as an Observable
@@ -67,6 +73,13 @@ export class CMSService {
     return this.http.get<CmsContent[]>(environment.URL.cms.content).pipe(timeout(TIMEOUT));
   }
 
+  /**
+   * Requests the content from the given url
+   * @return {Observable<CmsContent>}         Server's response, as an Observable
+   */
+  searchContent(searchTerm: string): Observable<CmsContent[]> {
+    return this.http.post<CmsContent[]>(environment.URL.cms.search, { searchTerm: searchTerm }).pipe(timeout(TIMEOUT));
+  }
 
   /**
    * Requests the content from the given url

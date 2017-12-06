@@ -58,7 +58,7 @@ export class AuthService {
    * @return {User}         The decoded token user
    */
   private jwtDecode(token: string): User {
-    return JSON.parse(atob(token.split('.')[1]));
+    return token ? JSON.parse(atob(token.split('.')[1])) : null;
   }
 
   /**

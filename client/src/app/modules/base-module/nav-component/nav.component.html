@@ -1,5 +1,10 @@
 <mat-card>
   <mat-card-content>
+    <!-- SEARCH -->
+    <app-search-component></app-search-component>
+
+
+    <!-- NAVIGATION -->
     <nav>
       <mat-nav-list dense>
         <ng-container *ngIf="contentSubject | async as nav">

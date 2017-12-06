@@ -1,13 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuard, AdminGuard, CMSGuard, MobileGuard } from '@app/guards';
+import { AuthGuard, AdminGuard } from '@app/guards';
+import { CmsContent } from '@app/models';
 
 import { BaseComponent } from './base-component/base.component';
-import { UserComponent } from './user-component/user.component';
 import { ContentComponent } from './content-component/content.component';
-import { NavComponent } from './nav-component/nav.component';
-import { ControlPanelComponent } from './control-panel-component/control.panel.component';
+
+// CMS resoler
+import { CmsResolver } from '@app/guards';
+
 
 const routes: Routes = [
   { path: '' , component: BaseComponent,
@@ -17,13 +19,12 @@ const routes: Routes = [
       // generic routes
       { path: 'steam', loadChildren: 'app/modules/steam-module/steam.module#SteamModule' },
       // User routes (all users)
-      { path: 'user', component: UserComponent, pathMatch: 'full', canActivate: [AuthGuard] },
-      // mobile guarded routes
-      { path: 'navigation', component: NavComponent, pathMatch: 'full', canActivate: [MobileGuard] },
-      { path: 'controlpanel', component: ControlPanelComponent, pathMatch: 'full', canActivate: [MobileGuard] },
+      { path: 'user', loadChildren: 'app/modules/user-module/user.module#UserModule', pathMatch: 'full', canActivate: [AuthGuard] },
       // CMS routes
-      { path: '' , redirectTo: 'home', pathMatch: 'full', canActivate: [CMSGuard] },
-      { path: '**' , component: ContentComponent, canActivate: [CMSGuard]  },
+      { path: '' , redirectTo: 'home', pathMatch: 'full' },
+      { path: ':content' , component: ContentComponent, resolve: {
+          CmsContent: CmsResolver
+      }},
     ]
   },
 ];
