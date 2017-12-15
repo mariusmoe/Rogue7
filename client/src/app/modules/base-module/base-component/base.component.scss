@@ -2,32 +2,44 @@
 
 $contentBG: rgba(255,255,255,0.8);
 $border: 1px solid #666;
+
 $contentWidth: 850px;
+$contentMinimumWidth: 400px;
+
 $sideWidth: 250px;
+
 $headerHeight: 44px;
+$footerHeight: 48px;
 
 
 // SITE SETUP
 .wrapper {
   background: none !important;
-  min-height: calc(100vh - 44px - 48px);
+  min-height: calc(100vh - #{$headerHeight} - #{$footerHeight});
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   justify-content: center;
   align-items: stretch;
 
   &.mobile {
     margin-top: $headerHeight;
+    .center {
+      max-width: 100%; // Required to make overflow-wrap: break-word; work on mobile
+      min-width: 100%;
+    }
   }
 
   .left, .right, .center {
     flex: 1 1;
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
+  }
+  .left, .right {
     max-width: $sideWidth;
   }
   .center {
     max-width: $contentWidth;
+    min-width: $contentMinimumWidth;
   }
 }
 

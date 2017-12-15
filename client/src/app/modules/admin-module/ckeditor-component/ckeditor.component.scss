@@ -1,10 +1,22 @@
+@import '../../../theme.scss';
 
 $headerHeight: 44px;
 
 .content.editor {
   min-height: 200px;
 
-  ::ng-deep .ck-editor .ck-sticky-panel .ck-sticky-panel__content_sticky {
-    top: $headerHeight;
+  &.mobile {
+    ::ng-deep .ck-editor .ck-sticky-panel .ck-sticky-panel__content_sticky {
+      top: $headerHeight;
+    }
+  }
+
+
+  ::ng-deep .ck-editor__editable.ck-focused {
+    border-color: $primary;
+  }
+  ::ng-deep .ck-list__item_active {
+    background-color: $accent;
+    color: #000;
   }
 }

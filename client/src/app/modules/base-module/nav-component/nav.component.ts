@@ -26,7 +26,7 @@ export class NavComponent {
    * @return {number}                                 a's relative position to b.
    */
   private static sortMethod(a: CmsContent | CmsFolder | SteamServer, b: CmsContent | CmsFolder | SteamServer): number {
-    if (a.title > b.title) { return 1; } if (a.title < b.title) { return -1; } return 0;
+    return a.title.localeCompare(b.title);
   }
 
   constructor(

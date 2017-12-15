@@ -1,11 +1,15 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef,
   Input, Output, EventEmitter, ChangeDetectionStrategy, Inject } from '@angular/core';
 
-import { CmsContent } from '@app/models';
 import { DOCUMENT } from '@angular/platform-browser';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+
+import { CmsContent } from '@app/models';
+import { MobileService } from '@app/services';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 @Component({
   selector: 'app-ckeditor',
@@ -28,8 +32,9 @@ export class CKEditorComponent implements OnInit, OnDestroy {
     }
   };
 
-  constructor(@Inject(DOCUMENT) private document: Document) {
-   }
+  constructor(
+    public mobileService: MobileService,
+    @Inject(DOCUMENT) private document: Document) { }
 
   ngOnInit() {
     // Load CKEditor if it already exists

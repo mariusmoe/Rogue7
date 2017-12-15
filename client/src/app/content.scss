@@ -5,6 +5,10 @@
     word-wrap: break-word; // legacy name of overflow-wrap
     overflow-wrap: break-word;
   }
+  & > h1, & > h2, & > h3, & > h4, & > h5, & > h6 {
+    clear: both;
+  }
+
   a {
     text-decoration: underline;
     &:hover, &:active {
@@ -40,7 +44,7 @@
     }
   }
 
-  ul, ol {
+  & > ul, & > ol {
     padding-left: 2em;
     li {
       padding: 0.3em 0;
@@ -49,16 +53,17 @@
 
   figure.image {
     text-align: center;
-    clear: none !important;
-    margin-left: 0;
-    margin-right: 0;
+    margin: 0 0 1em 0; // 1em margin bottom
     box-sizing: border-box;
+    display: block;
+    clear: both;
 
 
     > img {
       display: block;
       margin: 0 auto;
       max-width: 100%;
+      width: 100%;
     }
 
     & > figcaption {
@@ -70,19 +75,21 @@
 
     &.image-style-align-left,
     &.image-style-align-right {
+      clear: none !important;
       display: inline-block;
-      max-width: 50%;
+      max-width: calc(50% - .8em); // negate the padding
+      width: calc(50% - .8em);
       margin-top: 0;
     }
-
-
     &.image-style-align-left {
       float: left;
       margin-right: .8em;
+      clear: left;
     }
     &.image-style-align-right {
       float: right;
       margin-left: .8em;
+      clear: right;
     }
   }
 }
@@ -95,9 +102,10 @@
       &.image-style-align-left {
         float: none;
         display: block;
-        max-width: 100%;
-        margin-left: .8em;
-        margin-right: .8em;
+        max-width: none;
+        width: auto;
+        margin-left: 0;
+        margin-right: 0;
       }
     }
   }
