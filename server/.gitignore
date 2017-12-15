@@ -37,8 +37,8 @@ jspm_packages
 .node_repl_history
 
 # DO NOT INCLUDE CONFIG!
-server/config/*
-!server/config/test.json
+config/*
+!config/test.json
 
 #Useless file from OSX
 .DS_Store
@@ -47,6 +47,8 @@ server/config/*
 # dont include dist
 dist/
 
+# Do not include seeds
+/src/libs/seeds.ts
 
 # package-lock
 package-lock.json

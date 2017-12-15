@@ -13,7 +13,8 @@ import {
   MatTooltipModule,
   MatSidenavModule,
   MatDialogModule,
-  MatMenuModule
+  MatMenuModule,
+  MatPaginatorModule
 } from '@angular/material';
 
 
@@ -32,7 +33,8 @@ import {
     MatTooltipModule,
     MatSidenavModule,
     MatDialogModule,
-    MatMenuModule
+    MatMenuModule,
+    MatPaginatorModule
   ]
 })
 export class MaterialModule { }

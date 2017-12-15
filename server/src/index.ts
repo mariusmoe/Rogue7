@@ -7,8 +7,6 @@ import { Setup } from './libs/setup';
 // routing
 import { AppRouter } from './router';
 
-import { AppSeeds } from './libs/seeds';
-
 // boot
 import * as mongoose from 'mongoose';
 import { createServer, Server } from 'http';

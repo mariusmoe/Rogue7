@@ -1,7 +1,7 @@
-<mat-form-field class="field" floatPlaceholder="never">
-  <button matPrefix mat-icon-button (click)="search(searchInput.value)"><mat-icon>search</mat-icon></button>
-  <input matInput placeholder="Search" type="text" #searchInput autocomplete="off"
-    [value]="searchTerms | async"
-    (change)="search(searchInput.value)" (keyup)="search(searchInput.value)">
-  <button *ngIf="searchInput.value.length > 0" matSuffix mat-icon-button (click)="clear()"><mat-icon>clear</mat-icon></button>
-</mat-form-field>
+<form [formGroup]="form" (ngSubmit)="search()">
+  <mat-form-field class="field" floatPlaceholder="never">
+    <button matPrefix mat-icon-button type="submit"><mat-icon>search</mat-icon></button>
+    <input matInput placeholder="Search" type="text" autocomplete="off" formControlName="search" (change)="search()">
+    <button *ngIf="form.get('search').value.length > 0" matSuffix mat-icon-button (click)="clear()"><mat-icon>clear</mat-icon></button>
+  </mat-form-field>
+</form>

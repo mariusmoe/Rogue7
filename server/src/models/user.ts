@@ -1,14 +1,22 @@
 import { Document, model, Model, Schema } from 'mongoose';
-import * as bcrypt from 'bcrypt-nodejs';
+import { hash, compare } from 'bcrypt';
 import { NextFunction } from 'express';
 
-const SALT_FACTOR = 10;
+const SALT_FACTOR = 11;
 
 /*
  |--------------------------------------------------------------------------
  | User schema
  |--------------------------------------------------------------------------
 */
+
+export enum accessRoles {
+  admin = 'admin',
+  user = 'user',
+  everyone = 'everyone'
+}
+
+
 const schema = new Schema({
   username: {
     type: String,
@@ -22,13 +30,12 @@ const schema = new Schema({
     index: { unique: true }
   },
   password: {
-    // Not in clear text
-    type: String,
+    type: String, // Not in clear text
     required: true
   },
   role: { type: String,
-    enum: ['admin', 'user'],
-    default: 'user'
+    enum: [accessRoles.admin, accessRoles.user],
+    default: accessRoles.user
   },
 });
 
@@ -40,31 +47,22 @@ export interface user extends Document {
   comparePassword: (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void ) => null;
 }
 
-export enum accessRoles {
-  admin = 'admin',
-  user = 'user',
-  everyone = 'everyone'
-}
-
 
 // Before saving do the following
 schema.pre('save', function(next: NextFunction) {
   const user: user = this;
   if (!user.isModified('password')) { return next(); }
-  bcrypt.genSalt(SALT_FACTOR, (err, salt) => {
+  hash(user.password, SALT_FACTOR, (err, hashed) => {
     if (err) { return next(err); }
-    bcrypt.hash(user.password, salt, null, (err, hash) => {
-      if (err) { return next(err); }
-      user.password = hash;
-      next();
-    });
+    user.password = hashed;
+    next();
   });
 });
 
 // Compare password
 schema.methods.comparePassword = function(candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void) {
   const user: user = this;
-  bcrypt.compare(candidatePassword, user.password, (err, isMatch) => {
+  compare(candidatePassword, user.password, (err, isMatch) => {
     if (err) { return cb(err); }
 
     cb(null, isMatch);

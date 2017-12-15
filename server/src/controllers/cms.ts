@@ -3,7 +3,7 @@ import { user, accessRoles } from '../models/user';
 import { Content, content } from '../models/content';
 import { status, ROUTE_STATUS, CMS_STATUS } from '../libs/responseMessage';
 import { escape } from 'validator';
-import { sanitize } from '../libs/sanitizer';
+import { sanitize, stripHTML } from '../libs/sanitizer';
 
 
 export class CMSController {
@@ -25,7 +25,11 @@ export class CMSController {
       if (user.role === accessRoles.admin) { accessRights.push(accessRoles.admin); }
     }
 
-    Content.find({ access: { $in: accessRights }}, { 'title': true, 'route': true, 'access': true, 'folder': true }, (err, contentList) => {
+    Content.find(
+      { access: { $in: accessRights }},
+      { title: 1, route: 1, access: 1, folder: 1, description: 1, nav: 1 },
+      (err, contentList) => {
+
       if (err) { next(err); }
       if (!contentList) {
         return res.status(404).send(status(CMS_STATUS.NO_ROUTES));
@@ -46,7 +50,7 @@ export class CMSController {
     const route      = <string>req.params.route,
           user       = <user>req.user;
 
-    Content.findOne({ route: route }, (err, content) => {
+    Content.findOne({ route: route }, { content_searchable: false }, (err, content) => {
       if (err) { next(err); }
       if (!content) {
         return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
@@ -89,10 +93,13 @@ export class CMSController {
       route: escape(data.route.replace(/\//g, '')).toLowerCase(),
       access: data.access,
       content: sanitize(data.content),
+      content_searchable: stripHTML(data.content),
+      description: sanitize(data.description),
+      nav: !!data.nav,
       createdBy: user._id,
       updatedBy: user._id,
     });
-    if (data.folder) { content.folder = escape(data.folder).replace(/\//g, ''); }
+    if (data.folder) { content.folder = stripHTML(data.folder).replace(/\//g, ''); }
 
     content.save((err, success) => {
       // if (err) { next(err); }
@@ -123,12 +130,15 @@ export class CMSController {
     }
 
     // insert ONLY sanitized and escaped data!
-    Content.findOneAndUpdate({route: route }, { $set: {
+    Content.findOneAndUpdate({ route: route }, { $set: {
       title: escape(data.title),
       route: escape(data.route.replace(/\//g, '')).toLowerCase(),
       access: data.access,
       content: sanitize(data.content),
-      folder: data.folder ? escape(data.folder).replace(/\//g, '') : '',
+      content_searchable: stripHTML(data.content),
+      description: sanitize(data.description),
+      nav: !!data.nav,
+      folder: data.folder ? stripHTML(data.folder).replace(/\//g, '') : '',
       updatedBy: user._id,
     }}, { new: true }, (err, content) => {
       // if (err) { next(err); }
@@ -149,7 +159,7 @@ export class CMSController {
   public static deleteContent(req: Request, res: Response, next: NextFunction) {
     const route = <string>req.params.route;
 
-    Content.remove({route: route}, (err) => {
+    Content.remove({ route: route }, (err) => {
       // if (err) { next(err); }
       if (err) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
       return res.status(200).send(status(CMS_STATUS.CONTENT_DELETED));
@@ -166,7 +176,7 @@ export class CMSController {
    * @return {Response}          server response: the search results
    */
  public static searchContent(req: Request, res: Response, next: NextFunction) {
-    const searchTerm = <string>req.body.searchTerm,
+    const searchTerm = <string>req.params.searchTerm || '',
           user       = <user>req.user;
 
     const accessRights: accessRoles[] = [accessRoles.everyone];
@@ -177,14 +187,12 @@ export class CMSController {
 
     Content.find(
       { $text: { $search: searchTerm }, access: { $in: accessRights } },
-      { title: 1, route: 1, folder: 1, textScore: { $meta: 'textScore' } },
+      { title: 1, route: 1, folder: 1, description: 1, relevance: { $meta: 'textScore' } },
       (err, contentList) => {
-        if (err) { next(err); }
-        if (!contentList) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
-
+        if (err) { return res.status(404).send(status(CMS_STATUS.SEARCH_RESULT_NONE_FOUND)); }
         return res.status(200).send(contentList);
       }
-    ).sort({ textScore: { $meta: 'textScore' } }).lean();
+    ).sort({ relevance: { $meta: 'textScore' } }).lean();
   }
 
 }

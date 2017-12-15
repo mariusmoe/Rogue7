@@ -14,10 +14,11 @@ import { FooterComponent } from './footer-component/footer.component';
 import { ContentComponent } from './content-component/content.component';
 import { NavComponent } from './nav-component/nav.component';
 import { SearchComponent } from './search-component/search.component';
+import { SearchResultsComponent } from './search-results-component/search.results.component';
 import { ModalComponent } from './modals/modal.component';
 
-// CMS resoler
-import { CmsResolver } from '@app/guards';
+// Resolvers
+import { CmsResolver, SearchResolver } from '@app/guards';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import { CmsResolver } from '@app/guards';
     ContentComponent,
     NavComponent,
     SearchComponent,
+    SearchResultsComponent,
     ModalComponent
   ],
   imports: [
@@ -39,7 +41,8 @@ import { CmsResolver } from '@app/guards';
     ModalComponent
   ],
   providers: [
-    CmsResolver
+    CmsResolver,
+    SearchResolver
   ]
 })
 export class BaseModule { }

@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { AuthGuard, AdminGuard } from '@app/guards';
-import { CmsContent } from '@app/models';
-
 import { BaseComponent } from './base-component/base.component';
 import { ContentComponent } from './content-component/content.component';
+import { SearchResultsComponent } from './search-results-component/search.results.component';
 
-// CMS resoler
-import { CmsResolver } from '@app/guards';
+// Guards
+import { CmsResolver, SearchResolver, AuthGuard, AdminGuard } from '@app/guards';
 
 
 const routes: Routes = [
@@ -18,13 +16,13 @@ const routes: Routes = [
       { path: 'admin' , loadChildren: 'app/modules/admin-module/admin.module#AdminModule', canActivate: [AdminGuard] },
       // generic routes
       { path: 'steam', loadChildren: 'app/modules/steam-module/steam.module#SteamModule' },
+      { path: 'search' , redirectTo: 'search/', pathMatch: 'full', data: { SearchResults: '' } },
+      { path: 'search/:term' , component: SearchResultsComponent, resolve: { SearchResults: SearchResolver }},
       // User routes (all users)
       { path: 'user', loadChildren: 'app/modules/user-module/user.module#UserModule', pathMatch: 'full', canActivate: [AuthGuard] },
       // CMS routes
       { path: '' , redirectTo: 'home', pathMatch: 'full' },
-      { path: ':content' , component: ContentComponent, resolve: {
-          CmsContent: CmsResolver
-      }},
+      { path: ':content' , component: ContentComponent, resolve: { CmsContent: CmsResolver }},
     ]
   },
 ];

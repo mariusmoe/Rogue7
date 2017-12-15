@@ -1,6 +1,12 @@
 import * as sanitizeHtml from 'sanitize-html';
 
 
+/*
+ |--------------------------------------------------------------------------
+ | sanitize
+ |--------------------------------------------------------------------------
+*/
+
 const sanitizeOptions: sanitizeHtml.IOptions = {
   allowedTags: [
     'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
@@ -13,12 +19,10 @@ const sanitizeOptions: sanitizeHtml.IOptions = {
     '*': [ 'class' ],
     'img': [ 'src', 'alt' ],
   },
-  // allowedSchemes: [ 'http', 'https', 'steam' ]
   allowedSchemesByTag: {
     'a': [ 'http', 'https', 'steam' ]
   }
 };
-
 
 /**
  * Sanitize HTML
@@ -26,3 +30,24 @@ const sanitizeOptions: sanitizeHtml.IOptions = {
  * @return {string}                 the sanitized HTML output
  */
 export const sanitize = (htmlInput: string) => sanitizeHtml(htmlInput, sanitizeOptions);
+
+
+/*
+ |--------------------------------------------------------------------------
+ | stripHTML
+ |--------------------------------------------------------------------------
+*/
+
+const stripOptions: sanitizeHtml.IOptions = {
+  allowedTags: [],
+  allowedAttributes: {},
+  exclusiveFilter: (frame) => !frame.text.trim(),
+  textFilter: (text) => text.trim().concat(' '),
+};
+
+/**
+ * Removes all HTML tags from a serialized HTML string
+ * @param  {string} htmlInput       the HTML to sanitize
+ * @return {string}                 plain text output
+ */
+export const stripHTML = (htmlInput: string) => sanitizeHtml(htmlInput, stripOptions).trim().replace(/ {1,}/g, ' ');

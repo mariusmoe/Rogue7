@@ -9,13 +9,15 @@ export interface CmsContent {
   // May be present
   folder?: string;
   content?: string;
+  nav?: boolean;
+  description?: string;
   // Only present when requesting single content
   createdBy?: string;
   updatedBy?: string;
   createdAt?: Date;
   updatedAt?: Date;
   // Only present for search results
-  textScore?: number;
+  relevance?: number;
 }
 
 export interface CmsAccess {
@@ -25,6 +27,7 @@ export interface CmsAccess {
 }
 
 export interface CmsFolder {
+  _id?: string;
   title: string;
   content: CmsContent[];
 }

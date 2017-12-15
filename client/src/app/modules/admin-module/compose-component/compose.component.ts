@@ -6,7 +6,7 @@ import { ModalData } from '@app/models';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { ModalComponent } from '@app/modules/base-module/modals/modal.component';
 
-import { CMSService, AuthService } from '@app/services';
+import { CMSService, AuthService, MobileService } from '@app/services';
 import { CmsContent, CmsAccess, AccessRoles } from '@app/models';
 
 import { CKEditorComponent } from '../ckeditor-component/ckeditor.component';
@@ -59,14 +59,17 @@ export class ComposeComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private dialog: MatDialog,
     public cmsService: CMSService,
+    public mobileService: MobileService,
     public authService: AuthService) {
 
     // Form
     this.contentForm = fb.group({
       'route': ['', ComposeComponent.disallowedRoutes(cmsService.getContentList())],
       'title': ['', Validators.required],
-      'folder': [''],
+      'description': ['', Validators.required],
       'access': [AccessRoles.everyone, Validators.required],
+      'nav': [true],
+      'folder': [''],
     });
 
     // Create Folder autocomplete list
@@ -89,8 +92,11 @@ export class ComposeComponent implements OnInit, OnDestroy {
       this.contentForm.get('route').setValue(data.route);
       this.contentForm.get('route').disable(); // TODO: fixme.
       this.contentForm.get('title').setValue(data.title);
-      this.contentForm.get('folder').setValue(data.folder);
+      this.contentForm.get('description').setValue(data.description);
       this.contentForm.get('access').setValue(data.access);
+      this.contentForm.get('nav').setValue(data.nav);
+      this.contentForm.get('folder').setValue(data.folder);
+      if (!data.nav) { this.contentForm.get('folder').disable(); }
       if (this.editor.loadStatus().getValue()) {
         this.editor.setValue(data.content);
         this.initialEditorValue = this.editor.getValue();
@@ -167,6 +173,9 @@ export class ComposeComponent implements OnInit, OnDestroy {
   // --------------- HELPERS ---------------
   // ---------------------------------------
 
+  /**
+   * helper for submitForm()
+   */
   private onSubmit(obs: Observable<CmsContent>) {
     const sub = obs.subscribe(
       newContent => {
@@ -189,5 +198,16 @@ export class ComposeComponent implements OnInit, OnDestroy {
    */
   getAccessChoice(): CmsAccess {
     return this.accessChoices.find(choice => this.contentForm.get('access').value === choice.value);
+  }
+
+  /**
+   * toggles the disabled status of the folder field
+   */
+  updateFolderDisableState() {
+    if (this.contentForm.get('nav').value) {
+      this.contentForm.get('folder').enable();
+    } else {
+      this.contentForm.get('folder').disable();
+    }
   }
 }

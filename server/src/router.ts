@@ -77,14 +77,15 @@ export class AppRouter {
     cmsRoutes.get('/', PassportConfig.configureForUser, CMSController.getContentList);
     // Create content
     cmsRoutes.post('/', PassportConfig.requireAuth, CMSController.createContent);
+    // Search content
+    cmsRoutes.get('/search/:searchTerm', PassportConfig.configureForUser, CMSController.searchContent);
     // Get content
     cmsRoutes.get('/:route', PassportConfig.configureForUser, CMSController.getContent);
     // Patch content
     cmsRoutes.patch('/:route', PassportConfig.requireAuth, CMSController.patchContent);
     // Delete content
     cmsRoutes.delete('/:route', PassportConfig.requireAuth, CMSController.deleteContent);
-    // Search content
-    cmsRoutes.post('/search', PassportConfig.configureForUser, CMSController.searchContent);
+
 
 
     // assign to parent router

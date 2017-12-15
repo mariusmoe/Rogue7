@@ -62,7 +62,7 @@ export class NavComponent {
 
     const rootContent: CmsContent[] = [];
     const folders: CmsFolder[] = [];
-    for (const content of contentList) {
+    for (const content of contentList.filter( c => c.nav )) {
       if (!content.folder) {
         rootContent.push(content);
         continue;
@@ -86,5 +86,15 @@ export class NavComponent {
       rootContent: rootContent,
       folders: folders
     });
+  }
+
+  /**
+   * Helper function for angular's *ngFor
+   * @param  {number}                   index the index of the item to track
+   * @param  {CmsContent | CmsFolder}   item the item tracked
+   * @return {string}                   the item's ID; used for tracking
+   */
+  trackBy(index: number, item: CmsContent | CmsFolder): string {
+    return item._id;
   }
 }

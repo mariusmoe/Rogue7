@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card [ngClass]="{ mobile: (mobileService.isMobile() | async) }">
   <mat-card-title>Compose</mat-card-title>
   <mat-card-content>
     <form [formGroup]="contentForm" (ngSubmit)="submitForm()" id="contentForm">
@@ -25,17 +25,13 @@
           </mat-error>
         </mat-form-field>
 
-
-        <!-- FOLDER -->
+        <!-- DESCRIPTION -->
         <mat-form-field class="field">
-          <input matInput placeholder="Folder" type="text" formControlName="folder" autocomplete="off" [matAutocomplete]="folderAuto">
-          <mat-autocomplete #folderAuto="matAutocomplete">
-            <mat-option *ngFor="let folder of folders" [value]="folder">
-              {{ folder }}
-            </mat-option>
-          </mat-autocomplete>
+          <input matInput placeholder="Description" type="text" formControlName="description" autocomplete="off" required>
+          <mat-error *ngIf="contentForm.get('description').hasError('required')">
+            Description is <strong>required</strong>
+          </mat-error>
         </mat-form-field>
-
 
         <!-- ACCESS -->
         <mat-form-field class="field">
@@ -45,6 +41,22 @@
               {{ option.verbose }}
             </mat-option>
           </mat-select>
+        </mat-form-field>
+
+        <!-- NAV -->
+        <mat-checkbox class="field check" formControlName="nav" (change)="updateFolderDisableState()">
+          Show in navigation
+        </mat-checkbox>
+
+        <!-- FOLDER -->
+        <mat-form-field class="field">
+          <input matInput placeholder="Folder" type="text" formControlName="folder"
+            autocomplete="off" [matAutocomplete]="folderAuto">
+          <mat-autocomplete #folderAuto="matAutocomplete">
+            <mat-option *ngFor="let folder of folders" [value]="folder">
+              {{ folder }}
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
       </div>
 

@@ -4,7 +4,8 @@ import { NgModule } from '@angular/core';
 import {
   MatAutocompleteModule,
   MatExpansionModule,
-  MatSelectModule
+  MatSelectModule,
+  MatCheckboxModule
 } from '@angular/material';
 
 
@@ -12,7 +13,8 @@ import {
   exports: [
     MatAutocompleteModule,
     MatExpansionModule,
-    MatSelectModule
+    MatSelectModule,
+    MatCheckboxModule
   ]
 })
 export class AuthedModule { }

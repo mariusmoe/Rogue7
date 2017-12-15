@@ -1,0 +1,35 @@
+<mat-card class="searchResults">
+  <mat-card-title>Search Results</mat-card-title>
+  <ng-container *ngIf="displayedResults | async as results; else unavailable">
+    <mat-card-content>
+      <ng-container [ngSwitch]="mobileService.isMobile() | async">
+        <app-search-component *ngSwitchCase="true" [term]="route.snapshot.params['term']"></app-search-component>
+        <h3 *ngSwitchDefault>Results for: <i>{{ route.snapshot.params['term'] }}</i></h3>
+      </ng-container>
+      <span>{{searchResults?.length || 0}} results</span>
+      <mat-nav-list ngClass="nav">
+        <mat-divider></mat-divider>
+        <a mat-list-item *ngFor="let item of results; let i = index; trackBy: trackBy" routerLink="/{{item.route}}">
+          <mat-icon mat-list-icon>chevron_right</mat-icon>
+          <h4 mat-line>{{item.title}}</h4>
+          <p mat-line>{{item.description}}</p>
+          <span mat-line class="relevance">Relevance: {{item.relevance | percent }}</span>
+        </a>
+        <mat-divider></mat-divider>
+      </mat-nav-list>
+      <mat-paginator [length]="searchResults?.length || 0" [pageSize]="pageSize"
+        [pageSizeOptions]="pageSizes" (page)="paginator($event)">
+      </mat-paginator>
+    </mat-card-content>
+  </ng-container>
+
+  <ng-template #unavailable>
+    <mat-card-content>
+      <app-search-component></app-search-component>
+      <h3>Results for: {{ route.snapshot.params['term'] }}</h3>
+      <p>
+        Could not load the search results.
+      </p>
+    </mat-card-content>
+  </ng-template>
+</mat-card>

@@ -7,12 +7,7 @@
   "background_color": "#eee",
   "theme_color": "#6b0000",
   "description": "The home of Sotingane",
-  "icons": [
-    {
-     "src": "assets/logo192themed.svg",
-     "sizes": "192x192",
-     "type": "image/svg"
-   }, {
+  "icons": [{
       "src": "assets/logo192themed.png",
       "sizes": "192x192",
       "type": "image/png"

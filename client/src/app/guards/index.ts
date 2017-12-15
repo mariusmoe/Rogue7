@@ -4,3 +4,4 @@ export * from './deactivate.guard';
 
 export * from './cms.resolver';
 export * from './steam.resolver';
+export * from './search.resolver';

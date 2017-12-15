@@ -32,6 +32,7 @@ export const enum CMS_STATUS {
   DATA_UNPROCESSABLE              = 'The provided data could not be processed',
   DATA_UNABLE_TO_SAVE             = 'Could not save. Internal server error',
   CONTENT_DELETED                 = 'Content was successfully deleted',
+  SEARCH_RESULT_NONE_FOUND        = 'Could not find content for the given search query',
 }
 
 export const enum STEAM_STATUS {

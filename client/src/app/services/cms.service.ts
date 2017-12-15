@@ -78,7 +78,7 @@ export class CMSService {
    * @return {Observable<CmsContent>}         Server's response, as an Observable
    */
   searchContent(searchTerm: string): Observable<CmsContent[]> {
-    return this.http.post<CmsContent[]>(environment.URL.cms.search, { searchTerm: searchTerm }).pipe(timeout(TIMEOUT));
+    return this.http.get<CmsContent[]>(environment.URL.cms.search + '/' + searchTerm).pipe(timeout(TIMEOUT));
   }
 
   /**

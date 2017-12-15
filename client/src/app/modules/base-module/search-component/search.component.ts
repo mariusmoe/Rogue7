@@ -1,4 +1,7 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+
+import { Router } from '@angular/router';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { CmsContent } from '@app/models';
 import { CMSService } from '@app/services';
@@ -6,7 +9,7 @@ import { CMSService } from '@app/services';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { of } from 'rxjs/observable/of';
-import { takeUntil, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-search-component',
@@ -14,43 +17,34 @@ import { takeUntil, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/o
   styleUrls: ['./search.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchComponent {
-  private ngUnsubscribe = new Subject();
-  private searchTerms = new Subject<string>();
+export class SearchComponent implements OnInit {
+  @Input() term = '';
+  form: FormGroup;
 
-  constructor(private cmsService: CMSService) {
-    this.searchTerms.pipe(
-      takeUntil(this.ngUnsubscribe),
-      debounceTime(300),        // 300ms
-      // distinctUntilChanged(),   // ignore unchanged value
-      switchMap((term: string) => {
-        return (!term || term === '') ? of(null) : cmsService.searchContent(term);
-      })
-    ).subscribe(contentList => {
-      if (!contentList) {
-        cmsService.getContentList(true);
-      } else {
-        const sortedList = contentList.sort( (a, b) => {
-          return a.textScore > b.textScore ? 1 : (a.textScore === b.textScore ? 0 : -1);
-        });
-        cmsService.setContentList(sortedList);
-      }
-    });
+  constructor(
+    private cmsService: CMSService,
+    private fb: FormBuilder,
+    private router: Router) {
+      this.form = this.fb.group({ 'search': [''] });
+  }
+
+  ngOnInit() {
+    this.form.get('search').setValue(this.term);
   }
 
   /**
-   * [search description]
-   * @param  {string} term [description]
+   * Perform a search and navigate to the search page
    */
-  search(term: string) {
-    this.searchTerms.next(term);
+  search() {
+    this.router.navigateByUrl('/search/' + this.form.get('search').value);
+    // this.form.get('search').setValue('');
   }
 
   /**
    * Clears the search result
    */
   clear() {
-    this.searchTerms.next('');
+    this.form.get('search').setValue('');
   }
 
 }

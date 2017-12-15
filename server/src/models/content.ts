@@ -10,52 +10,47 @@ import { accessRoles } from './user';
 */
 
 const schema = new Schema({
-  title: {
-    type: String,
-    unique: true,
-    required: true
-  },
-  access: {
-    type: String,
-    enum: ['admin', 'user', 'everyone'],
-    default: 'everyone',
-    index: true
-  },
-  content: {
-    type: String, // html
-    required: true,
-    index: 'text' // required for search
-  },
-  folder: {
-    type: String, // format: folder/subfolder/subsubfolder
-  },
-  route: {
-    type: String,
-    required: true,
-    unique: true,
-    index: { unique: true }
-  },
-  updatedBy: {
-    type: Schema.Types.ObjectId, ref: 'User',
-    required: true,
-  },
-  createdBy: {
-    type: Schema.Types.ObjectId, ref: 'User',
-    required: true,
-  },
+  title: { type: String, unique: true, required: true },
+  access: { type: String, enum: ['admin', 'user', 'everyone'], default: 'everyone', index: true },
+  route: { type: String, required: true, unique: true, index: { unique: true } },
+
+  content: { type: String, required: true },
+  content_searchable: { type: String, required: true },
+
+  description: { type: String },
+
+  folder: { type: String },
+  nav: { type: Boolean, default: false, },
+
+  updatedBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 },
 {
   timestamps: true
 });
+// Searchable compound index
+schema.index(
+  { title: 'text', content_searchable: 'text', description: 'text' },
+  { weights: { title: 3, content_searchable: 1, description: 2 } }
+);
+
 
 export interface content extends Document {
   title: string;
-  route: string;
   access?: accessRoles;
+  route: string;
+
   content?: string;
+  content_searchable?: string;
+
+  description?: string;
+
   folder?: string;
+  nav?: boolean;
+
   updatedBy?: Schema.Types.ObjectId;
   createdBy?: Schema.Types.ObjectId;
+
   updatedAt?: Date;
   createdAt?: Date;
 }

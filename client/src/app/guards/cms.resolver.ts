@@ -14,7 +14,7 @@ export class CmsResolver implements Resolve<CmsContent | boolean> {
   constructor(
     private authService: AuthService,
     private cmsService: CMSService,
-    private router: Router) {}
+    private router: Router) { }
 
   /**
    * Resolves access to a CMS content page. The resolver returns the content for a given page
@@ -31,9 +31,8 @@ export class CmsResolver implements Resolve<CmsContent | boolean> {
       map(
         content => {
           // Grant access if access is everyone
-          if (content.access === AccessRoles.everyone) {
-            return content;
-          }
+          if (content.access === AccessRoles.everyone) { return content; }
+
           // if access isn't everyone, login is required
           if (this.authService.getUser() || !this.authService.jwtIsExpired(localStorage.getItem('token'))) {
             // if logged in, the required access privileges are required
@@ -43,13 +42,9 @@ export class CmsResolver implements Resolve<CmsContent | boolean> {
           }
           return true;
         },
-        err => {
-          return true;
-        }
+        err => true
       ),
-      catchError(err => {
-        return of(true);
-      }),
+      catchError(err => of(true)),
     );
   }
 }
