@@ -1,5 +1,7 @@
 @import 'theme.scss';
 
+
+.ck-editor__editable,
 .content {
   a, p {
     word-wrap: break-word; // legacy name of overflow-wrap
@@ -96,6 +98,7 @@
 
 // Mobile styling
 .wrapper.mobile {
+  .ck-editor__editable,
   .content {
     figure.image {
       &.image-style-align-right,
