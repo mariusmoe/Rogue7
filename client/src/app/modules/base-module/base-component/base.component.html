@@ -9,8 +9,7 @@
     <mat-icon [color]="(authService.getUser() | async) ? 'accent' : ''">person</mat-icon>
   </button>
 </header>
-<mat-progress-bar *ngIf="((loadingBarValue | async) > 0) && ((loadingBarValue | async) < 100)" color="accent" mode="determinate"
-  [value]="loadingBarValue | async" ngClass="loading fixed"></mat-progress-bar>
+<app-loadingbar-component class="fixed"></app-loadingbar-component>
 
 <mat-sidenav-container ngClass="sidenavContainer">
   <!-- MOBILE LEFT -->

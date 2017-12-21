@@ -1,4 +1,9 @@
-@import "colours.scss";
+@import "_colours";
+@import "_theme_dark";
+
+$theme: "light";
+
+// DEFAULT THEME: LIGHT & RED
 
 // COLOUR, defaultShade, lighterShade, darkerShade
 $mat-primary: ($mat-red, 900, 300, 900);
@@ -9,10 +14,13 @@ $primary: map-get(nth($mat-primary, 1), nth($mat-primary, 2));
 $accent: map-get(nth($mat-accent, 1), nth($mat-accent, 2));
 $background: #eee;
 
-
-
-// SET THE THEME IN viten.themes.scss! DO NOT MODIFY THE CODE BELOW
 $app-primary: mat-palette(nth($mat-primary, 1), nth($mat-primary, 2), nth($mat-primary, 3), nth($mat-primary, 4));
 $app-accent:  mat-palette(nth($mat-accent, 1), nth($mat-accent, 2), nth($mat-accent, 3), nth($mat-accent, 4));
 $app-warn:    mat-palette($mat-warn);
 $app-theme: mat-light-theme($app-primary, $app-accent, $app-warn);
+
+
+// DARK & RED
+@if $theme == "dark" {
+  @include darkTheme();
+}

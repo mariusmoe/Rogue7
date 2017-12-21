@@ -1,22 +1,23 @@
 import { SwUpdate } from '@angular/service-worker';
 
+import { environment } from '@env';
+
 import { interval } from 'rxjs/observable/interval';
 
-function promptUser(event): boolean {
-  return true;
-}
 
 export class WorkerService {
 
   // TODO: UNDERSTAND THIS!!
 
   constructor(updates: SwUpdate) {
+    if (!environment.production) { return; }
+
     interval(6 * 60 * 60).subscribe(() => updates.checkForUpdate());
 
     updates.available.subscribe(event => {
       console.log('current version is', event.current);
       console.log('available version is', event.available);
-      if (promptUser(event)) {
+      if (true) {
         updates.activateUpdate().then(() => document.location.reload());
       }
     });

@@ -1,4 +1,4 @@
-@import "../../../theme.scss";
+@import '_theme_vars';
 
 $contentBG: rgba(255,255,255,0.8);
 $border: 1px solid #666;
@@ -8,7 +8,7 @@ $contentMinimumWidth: 400px;
 
 $sideWidth: 250px;
 
-$headerHeight: 44px;
+$headerHeight: 38px;
 $footerHeight: 48px;
 
 
@@ -45,13 +45,17 @@ $footerHeight: 48px;
 
 // HEADER
 .topHeader {
+  color: #fff;
   background: $primary;
+  border-bottom: 1px solid darken($primary, 10%);
+  box-sizing: border-box;
+  height: $headerHeight;
+  max-height: $headerHeight;
+
   display: flex;
   justify-content: center;
-  max-height: $headerHeight;
-  padding: 0.5em;
-  color: #fff;
-  z-index: 50;
+  align-items: center;
+  padding: 0.5em 0;
 
   a.title {
     text-align: center;
@@ -63,15 +67,6 @@ $footerHeight: 48px;
       margin-right: 1px;
     }
   }
-  .navToggle {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    &.right {
-      left: auto;
-      right: 2px;
-    }
-  }
 }
 
 .fixed {
@@ -80,12 +75,6 @@ $footerHeight: 48px;
   left: 0;
   right: 0;
   z-index: 1000;
-}
-.loading {
-  // NOTE: ::ng-deep might be depricated later! Use with care!
-  ::ng-deep .mat-progress-bar-buffer {
-    background: none;
-  }
 }
 
 // SIDE CONTENT

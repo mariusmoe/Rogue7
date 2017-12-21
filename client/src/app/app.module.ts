@@ -11,6 +11,10 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { AppComponent } from './app.component';
 
+// Directly load base module
+import { BaseModule } from '@app/modules';
+import { BaseRoutingModule } from '@app/modules/base-module/base.routing-module';
+
 
 const appRoutes: Routes = [
   { path: '', loadChildren: 'app/modules/base-module/base.module#BaseModule' },
@@ -23,11 +27,13 @@ const appRoutes: Routes = [
   ],
   imports: [
     BrowserAnimationsModule,
-    RouterModule.forRoot(appRoutes),
+    BaseModule,
+    BaseRoutingModule,
+    // RouterModule.forRoot(appRoutes),
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
-    environment.production ? WorkerService : [],
+    WorkerService,
   ],
   bootstrap: [AppComponent]
 })

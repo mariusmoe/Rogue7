@@ -42,13 +42,6 @@ export class CKEditorComponent implements OnInit, OnDestroy {
       this.loadCKEditor();
       return;
     }
-    // Load from CDN
-    // const script = this.document.createElement('script');
-    // script.type = 'text/javascript';
-    // script.async = true;
-    // script.src = 'https://cdn.ckeditor.com/ckeditor5/1.0.0-alpha.2/classic/ckeditor.js';
-    // script.onload = () => { this.loadCKEditor(); };
-    // this.document.body.appendChild(script);
   }
 
 

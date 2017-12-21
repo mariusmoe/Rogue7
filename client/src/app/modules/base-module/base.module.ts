@@ -9,6 +9,7 @@ import { SharedModule } from '@app/modules/shared.module';
 // Components
 import { BaseComponent } from './base-component/base.component';
 import { LoginComponent } from './login-component/login.component';
+import { LoadingbarComponent } from './loadingbar-component/loadingbar.component';
 import { ControlPanelComponent } from './control-panel-component/control.panel.component';
 import { FooterComponent } from './footer-component/footer.component';
 import { ContentComponent } from './content-component/content.component';
@@ -25,6 +26,7 @@ import { CmsResolver, SearchResolver } from '@app/guards';
   declarations: [
     BaseComponent,
     LoginComponent,
+    LoadingbarComponent,
     ControlPanelComponent,
     FooterComponent,
     ContentComponent,
@@ -41,8 +43,7 @@ import { CmsResolver, SearchResolver } from '@app/guards';
     ModalComponent
   ],
   providers: [
-    CmsResolver,
-    SearchResolver
+    CmsResolver, SearchResolver
   ]
 })
 export class BaseModule { }

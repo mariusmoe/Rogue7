@@ -1,0 +1,16 @@
+
+@import '~@angular/material/theming';
+
+@import '_theme_vars';
+
+@include mat-core();
+@include angular-material-theme($app-theme);
+
+@import "_core";
+@import "_content";
+
+
+// theme specific content
+@if $theme == "dark" {
+  @include darkThemeContent;
+}
