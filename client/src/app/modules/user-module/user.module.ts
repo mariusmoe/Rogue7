@@ -26,8 +26,8 @@ const routes: Routes = [
     ChangePasswordComponent
   ],
   imports: [
-    SharedModule,
     AuthedModule,
+    SharedModule,
     RouterModule.forChild(routes)
   ]
 })

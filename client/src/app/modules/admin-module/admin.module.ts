@@ -22,8 +22,8 @@ import { DeactivateGuard } from '@app/guards';
     SteamComponent
   ],
   imports: [
-    SharedModule,
     AuthedModule,
+    SharedModule,
     AdminRoutingModule
   ],
   providers: [

@@ -24,7 +24,6 @@
           <div #content class="content" [innerHTML]="san.bypassSecurityTrustHtml(contentObject.content)">
           </div>
 
-
           <div class="info" *ngIf="contentObject.route !== 'home'">
             <div>
               Updated by: {{contentObject.updatedBy.username}}, <span [matTooltip]="contentObject.updatedAt | TimeAgo" matTooltipPosition="above">

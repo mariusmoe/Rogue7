@@ -183,7 +183,7 @@ export class ComposeComponent implements OnInit, OnDestroy {
         if (newContent) {
           this.cmsService.getContentList(true);
           this.hasSaved = true;
-          this.router.navigate([newContent.route]);
+          this.router.navigateByUrl(newContent.route);
         }
       },
       error => {

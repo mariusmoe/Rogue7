@@ -1,0 +1,44 @@
+@import '_theme_vars';
+@import '~@angular/material/theming';
+
+$app-theme: mat-light-theme(
+  mat-palette(nth($mat-primary, 1), nth($mat-primary, 2), nth($mat-primary, 3), nth($mat-primary, 4)),
+  mat-palette(nth($mat-accent,  1), nth($mat-accent,  2), nth($mat-accent,  3), nth($mat-accent,  4)),
+  mat-palette($mat-warn)
+);
+
+// Core
+@include mat-core();
+@include mat-core-theme($app-theme);
+
+// Generic
+@include mat-button-theme($app-theme);
+@include mat-list-theme($app-theme);
+@include mat-divider-theme($app-theme);
+@include mat-icon-theme($app-theme);
+
+// Forms
+@include mat-input-theme($app-theme);
+@include mat-form-field-theme($app-theme);
+@include mat-checkbox-theme($app-theme);
+@include mat-autocomplete-theme($app-theme);
+
+// Layout
+@include mat-card-theme($app-theme);
+@include mat-sidenav-theme($app-theme);
+@include mat-expansion-panel-theme($app-theme);
+
+// Features
+@include mat-snack-bar-theme($app-theme);
+@include mat-menu-theme($app-theme);
+@include mat-dialog-theme($app-theme);
+@include mat-paginator-theme($app-theme);
+
+// User Feedback
+@include mat-progress-bar-theme($app-theme);
+@include mat-progress-spinner-theme($app-theme);
+@include mat-tooltip-theme($app-theme);
+
+
+// This here includes everything.
+// @include angular-material-theme($app-theme);

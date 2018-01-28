@@ -78,7 +78,7 @@ export class ContentComponent implements OnInit, OnDestroy {
           () => {
             sub.unsubscribe();
             this.cmsService.getContentList(true);
-            this.router.navigate(['/']);
+            this.router.navigateByUrl('/');
           }
         );
       },

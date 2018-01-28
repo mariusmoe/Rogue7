@@ -177,7 +177,7 @@ export class AuthService {
     localStorage.removeItem('token');
     if (this.renewalSub) { this.renewalSub.unsubscribe(); }
     this.userSubject.next(null);
-    this.router.navigate(['/']);
+    this.router.navigateByUrl('/');
   }
 
 

@@ -53,7 +53,7 @@ export class LoginComponent {
       (loggedIn) => {
         sub.unsubscribe();
         if (loggedIn) {
-          this.router.navigate(['/']);
+          this.router.navigateByUrl('/');
           return;
         }
         this.state.next(STATES.TRY_AGAIN);

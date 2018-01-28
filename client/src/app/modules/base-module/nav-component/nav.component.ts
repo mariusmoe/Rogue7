@@ -41,7 +41,7 @@ export class NavComponent {
     });
 
     // Subscribe to content updates, and keep the subscription until we get a new userSubject.next
-    const sub = cmsService.getContentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+    cmsService.getContentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe(
       contentList => this.updateContentList(contentList)
     );
 

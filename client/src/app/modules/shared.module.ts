@@ -13,7 +13,7 @@ import {
 } from '@app/services';
 
 // Modules
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';

@@ -52,7 +52,7 @@ export class ChangePasswordComponent {
         if (result) {
           this.changePasswordForm.reset();
           this.changePasswordForm.markAsUntouched();
-          this.router.navigate(['/']);
+          this.router.navigateByUrl('/');
           this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
           return;
         }

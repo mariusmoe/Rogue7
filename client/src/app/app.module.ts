@@ -16,10 +16,10 @@ import { BaseModule } from '@app/modules';
 import { BaseRoutingModule } from '@app/modules/base-module/base.routing-module';
 
 
-const appRoutes: Routes = [
-  { path: '', loadChildren: 'app/modules/base-module/base.module#BaseModule' },
-  { path: '**', redirectTo: '', pathMatch: 'full' }
-];
+// const appRoutes: Routes = [
+//   { path: '', loadChildren: 'app/modules/base-module/base.module#BaseModule' },
+//   { path: '**', redirectTo: '', pathMatch: 'full' }
+// ];
 
 @NgModule({
   declarations: [

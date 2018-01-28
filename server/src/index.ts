@@ -8,7 +8,7 @@ import { Setup } from './libs/setup';
 import { AppRouter } from './router';
 
 // boot
-import * as mongoose from 'mongoose';
+import { connect as MongooseConnect } from 'mongoose';
 import { createServer, Server } from 'http';
 // import * as https from 'https';
 import { readFileSync } from 'fs';
@@ -33,14 +33,15 @@ class App {
   }
 
   private boot() {
-    (<any>mongoose).Promise = Promise;
     const uri = process.argv[2] || configGet<string>('database');
-    mongoose.connect(uri, { useMongoClient: true }, (error) => {
+
+    MongooseConnect(uri, (error) => {
       if (error) {
         // if error is true, the problem is often with mongoDB not connection
         console.log('ERROR can\'t connect to mongoDB. Did you forgot to run mongod?');
+        console.log(error);
+        return;
       }
-    }).then( () => {
       let server: Server;
       if (configUtil.getEnv('NODE_ENV') === 'production') {
         // PRODUCTION
@@ -61,8 +62,6 @@ class App {
           console.timeEnd('Launch time');
         }
       });
-    }).catch( (err) => {
-      console.log('ERROR can\'t connect to mongoDB. Did you forgot to run mongod?');
     });
   }
 }

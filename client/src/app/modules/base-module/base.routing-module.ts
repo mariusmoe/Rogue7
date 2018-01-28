@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: '' , component: BaseComponent,
     children: [
       // admin routes
-      { path: 'admin' , loadChildren: 'app/modules/admin-module/admin.module#AdminModule', canActivate: [AdminGuard] },
+      { path: 'admin', loadChildren: 'app/modules/admin-module/admin.module#AdminModule', canActivate: [AdminGuard] },
       // generic routes
       { path: 'steam', loadChildren: 'app/modules/steam-module/steam.module#SteamModule' },
       { path: 'search' , redirectTo: 'search/', pathMatch: 'full', data: { SearchResults: '' } },
