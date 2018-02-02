@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router, Resolve, ActivatedRouteSnapshot } from '@angular/router';
 
 import { CmsContent, AccessRoles } from '@app/models';
-import { CMSService, AuthService } from '@app/services';
+import { CMSService, AuthService, TokenService } from '@app/services';
 
 import { Observable } from 'rxjs/Observable';
 import { map, catchError } from 'rxjs/operators';
@@ -12,6 +12,7 @@ import { of } from 'rxjs/observable/of';
 export class CmsResolver implements Resolve<CmsContent | boolean> {
 
   constructor(
+    private tokenService: TokenService,
     private authService: AuthService,
     private cmsService: CMSService,
     private router: Router) { }
@@ -34,7 +35,7 @@ export class CmsResolver implements Resolve<CmsContent | boolean> {
           if (content.access === AccessRoles.everyone) { return content; }
 
           // if access isn't everyone, login is required
-          if (this.authService.getUser() || !this.authService.jwtIsExpired(localStorage.getItem('token'))) {
+          if (this.authService.getUser() || !this.authService.jwtIsExpired(this.tokenService.token)) {
             // if logged in, the required access privileges are required
             if (this.authService.isUserOfRole(content.access) || this.authService.isUserOfRole(AccessRoles.admin)) {
               return content;

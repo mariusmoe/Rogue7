@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material';
 
 import { environment } from '@env';
 import { User, UpdatePasswordUser, UserToken, AccessRoles } from '@app/models';
+import { TokenService } from '@app/services/token.service';
 
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -24,13 +25,14 @@ export class AuthService {
   private renewalSub: Subscription;
 
   constructor(
+    private tokenService: TokenService,
     private snackBar: MatSnackBar,
     private http: HttpClient,
     private router: Router ) {
 
-      const token = localStorage.getItem('token');
+      const token = tokenService.token;
       if (!token || this.jwtIsExpired(token)) {
-        localStorage.removeItem('token');
+        tokenService.token = null;
         return;
       }
       this.updateCurrentUserData(token);
@@ -158,7 +160,7 @@ export class AuthService {
     return this.http.post<UserToken>(environment.URL.auth.login, user).pipe(
       map( userToken => {
         // Set token
-        localStorage.setItem('token', userToken.token);
+        this.tokenService.token = userToken.token;
         // Engage token renewal timer
         this.engageRenewTokenTimer(userToken.token);
         // Set user data & Notify subscribers
@@ -174,7 +176,7 @@ export class AuthService {
    * Log out current user
    */
   logOut() {
-    localStorage.removeItem('token');
+    this.tokenService.token = null;
     if (this.renewalSub) { this.renewalSub.unsubscribe(); }
     this.userSubject.next(null);
     this.router.navigateByUrl('/');
@@ -189,7 +191,7 @@ export class AuthService {
   renewToken(): Observable<UserToken> {
     return this.http.get<UserToken>(environment.URL.auth.token).pipe(
       map( userToken => {
-        localStorage.setItem('token', userToken.token);    // Set token
+        this.tokenService.token = userToken.token;    // Set token
         return userToken;
       }),
       timeout(TIMEOUT)
