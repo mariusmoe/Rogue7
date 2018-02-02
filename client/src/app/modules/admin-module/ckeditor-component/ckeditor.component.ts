@@ -8,7 +8,6 @@ import { MobileService } from '@app/services';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 @Component({
@@ -19,8 +18,9 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 })
 export class CKEditorComponent implements OnInit, OnDestroy {
   @ViewChild('content') editorBox: ElementRef;
-  @Input() value: string;
   @Output() onChange = new EventEmitter<string>();
+
+  public value: string;
 
   private editor: CKEditor;
   private hasLoaded = new BehaviorSubject<boolean>(false);

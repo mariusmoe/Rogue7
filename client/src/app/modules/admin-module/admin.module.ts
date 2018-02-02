@@ -12,6 +12,9 @@ import { ComposeComponent } from './compose-component/compose.component';
 import { CKEditorComponent } from './ckeditor-component/ckeditor.component';
 import { SteamComponent } from './steam-component/steam.component';
 
+// Directive
+import { CKeditorDirective } from './ckeditor-component/ckeditor.directive';
+
 // Guards
 import { DeactivateGuard } from '@app/guards';
 
@@ -19,7 +22,11 @@ import { DeactivateGuard } from '@app/guards';
   declarations: [
     ComposeComponent,
     CKEditorComponent,
-    SteamComponent
+    SteamComponent,
+    CKeditorDirective
+  ],
+  entryComponents: [
+    CKEditorComponent
   ],
   imports: [
     AuthedModule,

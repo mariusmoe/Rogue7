@@ -1,6 +1,8 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy,
+  ViewContainerRef, ComponentFactoryResolver, PLATFORM_ID, Inject } from '@angular/core';
 import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { isPlatformBrowser } from '@angular/common';
 
 import { ModalData } from '@app/models';
 import { MatDialog, MatDialogConfig } from '@angular/material';
@@ -9,6 +11,7 @@ import { ModalComponent } from '@app/modules/base-module/modals/modal.component'
 import { CMSService, AuthService, MobileService } from '@app/services';
 import { CmsContent, CmsAccess, AccessRoles } from '@app/models';
 
+import { CKeditorDirective } from '../ckeditor-component/ckeditor.directive';
 import { CKEditorComponent } from '../ckeditor-component/ckeditor.component';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -24,7 +27,9 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ComposeComponent implements OnInit, OnDestroy {
-  @ViewChild(CKEditorComponent) editor: CKEditorComponent;
+  @ViewChild(CKeditorDirective) editorHost: CKeditorDirective;
+  editor: CKEditorComponent;
+
   AccessRoles = AccessRoles;
 
   public inputContent: CmsContent; // http input
@@ -54,6 +59,8 @@ export class ComposeComponent implements OnInit, OnDestroy {
 
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private componentFactoryResolver: ComponentFactoryResolver,
     private router: Router,
     private route: ActivatedRoute,
     private fb: FormBuilder,
@@ -61,6 +68,10 @@ export class ComposeComponent implements OnInit, OnDestroy {
     public cmsService: CMSService,
     public mobileService: MobileService,
     public authService: AuthService) {
+
+    // Do not load on the server. Only load for browser applications.
+    if (!isPlatformBrowser(platformId)) { return; }
+
 
     // Form
     this.contentForm = fb.group({
@@ -107,6 +118,16 @@ export class ComposeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(CKEditorComponent);
+    const viewContainerRef = this.editorHost.viewContainerRef;
+    viewContainerRef.clear();
+
+    const componentRef = viewContainerRef.createComponent(componentFactory);
+    this.editor = componentRef.instance;
+    if (this.inputContent) {
+      this.editor.value = this.inputContent.content;
+    }
+
     this.editor.loadStatus().pipe(takeUntil(this.ngUnsubscribe)).subscribe( hasLoaded => {
       if (hasLoaded) {
         if (this.inputContent) { this.editor.setValue(this.inputContent.content); }
