@@ -1,19 +1,14 @@
 @import '_theme_vars';
 
-$contentBG: rgba(255,255,255,0.8);
-$border: 1px solid #666;
-
-$contentWidth: 850px;
-$contentMinimumWidth: 400px;
-
-$sideWidth: 250px;
-
-$headerHeight: 38px;
-$footerHeight: 48px;
-
 
 // SITE SETUP
 .wrapper {
+  max-width: $wrapperWidth;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding-left: $wrapperPadding;
+  padding-right: $wrapperPadding;
+
   background: none !important;
   min-height: calc(100vh - #{$headerHeight} - #{$footerHeight});
   display: flex;
@@ -22,60 +17,28 @@ $footerHeight: 48px;
   align-items: stretch;
 
   &.mobile {
+    padding: 0;
     margin-top: $headerHeight;
+
     .center {
       max-width: 100%; // Required to make overflow-wrap: break-word; work on mobile
       min-width: 100%;
     }
   }
 
-  .left, .right, .center {
+  .left, .center {
     flex: 1 1;
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
   }
-  .left, .right {
+  .left {
     max-width: $sideWidth;
   }
   .center {
-    max-width: $contentWidth;
     min-width: $contentMinimumWidth;
   }
 }
 
-// HEADER
-.topHeader {
-  color: #fff;
-  background: $primary;
-  border-bottom: 1px solid darken($primary, 10%);
-  box-sizing: border-box;
-  height: $headerHeight;
-  max-height: $headerHeight;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0.5em 0;
-
-  a.title {
-    text-align: center;
-    font-size: 1.5em;
-    margin: 0 auto;
-    .logo {
-      vertical-align: bottom;
-      margin-bottom: 2px;
-      margin-right: 1px;
-    }
-  }
-}
-
-.fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
 
 // SIDE CONTENT
 .sidenavContainer {
@@ -90,6 +53,14 @@ $footerHeight: 48px;
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
     background: $background;
+  }
+}
+
+.mobileLoginInfo {
+  .mat-card-avatar {
+    font-size: 2.8em;
+    margin-left: -5px;
+    // margin-right: 10px;
   }
 }
 

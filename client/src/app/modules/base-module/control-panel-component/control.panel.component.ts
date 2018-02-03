@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '@app/services';
 
 
@@ -9,5 +9,6 @@ import { AuthService } from '@app/services';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ControlPanelComponent {
+  @Input() style: 'menu';
   constructor(public authService: AuthService) {}
 }

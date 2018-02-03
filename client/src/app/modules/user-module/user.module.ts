@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // Modules
-import { SharedModule } from '@app/modules/shared.module';
-import { AuthedModule } from '@app/modules/authed.module';
+import { SharedModule, CommonModule } from '@app/modules';
 
 // Guard
 import { AuthGuard } from '@app/guards';
@@ -26,8 +25,8 @@ const routes: Routes = [
     ChangePasswordComponent
   ],
   imports: [
-    AuthedModule,
     SharedModule,
+    CommonModule,
     RouterModule.forChild(routes)
   ]
 })

@@ -1,15 +1,5 @@
-<header class="topHeader" [ngClass]="{ 'fixed': (mobileService.isMobile() | async) }">
-  <button mat-icon-button *ngIf="mobileService.isMobile() | async" (click)="sidenavLeft.toggle(); sidenavRight.close()"
-          class="navToggle" aria-label="Toggle navigation">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <a routerLink="/" class="title"><mat-icon svgIcon="logo" ngClass="logo"></mat-icon>otingane</a>
-  <button mat-icon-button *ngIf="mobileService.isMobile() | async" (click)="sidenavRight.toggle(); sidenavLeft.close()"
-          class="navToggle right" aria-label="Toggle user panel">
-    <mat-icon [color]="(authService.getUser() | async) ? 'accent' : ''">person</mat-icon>
-  </button>
-</header>
-<app-loadingbar-component class="fixed"></app-loadingbar-component>
+<app-header-component (leftNav)="toggleLeftNav()" (rightNav)="toggleRightNav()"></app-header-component>
+<app-loadingbar-component></app-loadingbar-component>
 
 <mat-sidenav-container ngClass="sidenavContainer">
   <!-- MOBILE LEFT -->
@@ -18,7 +8,20 @@
   </mat-sidenav>
   <!-- MOBILE RIGHT -->
   <mat-sidenav #sidenavRight mode="over" position="end" ngClass="sidenav" (swiperight)="closeSideNavs()" [style.touch-action]="'pan-y'">
-    <app-control-panel-component *ngIf="mobileService.isMobile() | async"></app-control-panel-component>
+    <ng-container *ngIf="mobileService.isMobile() | async">
+      <mat-card>
+        <mat-card-header *ngIf="authService.getUser() | async as user" ngClass="mobileLoginInfo">
+          <mat-card-title>{{ user.username }}</mat-card-title>
+          <mat-card-subtitle>{{ user.role }}</mat-card-subtitle>
+          <mat-icon mat-card-avatar color="accent">person</mat-icon>
+        </mat-card-header>
+
+        <mat-card-content>
+          <app-control-panel-component></app-control-panel-component>
+        </mat-card-content>
+      </mat-card>
+    </ng-container>
+
   </mat-sidenav>
 
   <!-- MOBILE SWIPE TRIGGERS -->
@@ -35,10 +38,6 @@
     <main class="main center">
       <router-outlet></router-outlet>
     </main>
-    <!-- USER -->
-    <aside class="user right" *ngIf="!(mobileService.isMobile() | async)">
-      <app-control-panel-component></app-control-panel-component>
-    </aside>
   </div>
 
   <!-- FOOTER -->

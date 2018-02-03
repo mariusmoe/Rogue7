@@ -3,7 +3,7 @@
 nav {
   padding-top: 0;
   a.active {
-    background: rgba(0,0,0,0.10);
+    background: $activeRouteBackground;
   }
   .subItem {
     margin-left: 14px;

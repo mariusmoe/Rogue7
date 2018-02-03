@@ -1,20 +1,19 @@
 import { NgModule } from '@angular/core';
 
-// Modules (COMMON)
+// Modules
 import {
   MatSnackBarModule,
   MatCardModule,
   MatListModule,
   MatIconModule,
-  MatInputModule,
-  MatButtonModule,
   MatProgressBarModule,
-  MatProgressSpinnerModule,
   MatTooltipModule,
   MatSidenavModule,
-  MatDialogModule,
   MatMenuModule,
-  MatPaginatorModule
+  MatPaginatorModule,
+  MatInputModule,
+  MatButtonModule,
+  MatDialogModule,
 } from '@angular/material';
 
 
@@ -26,15 +25,14 @@ import {
     MatCardModule,
     MatListModule,
     MatIconModule,
-    MatInputModule,
-    MatButtonModule,
     MatProgressBarModule,
-    MatProgressSpinnerModule,
     MatTooltipModule,
     MatSidenavModule,
-    MatDialogModule,
     MatMenuModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDialogModule,
   ]
 })
 export class MaterialModule { }

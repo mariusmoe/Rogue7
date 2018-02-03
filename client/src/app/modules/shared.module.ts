@@ -20,7 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
 
 // Guards
-import { AuthGuard, AdminGuard } from '@app/guards';
+import { AuthGuard, AdminGuard, LoginGuard } from '@app/guards';
 
 // Pipes
 import { TimeAgo } from '@app/pipes';
@@ -54,7 +54,8 @@ export class SharedModule {
         MobileService,
         TokenService,
         AuthGuard,
-        AdminGuard
+        AdminGuard,
+        LoginGuard
       ]
     };
   }

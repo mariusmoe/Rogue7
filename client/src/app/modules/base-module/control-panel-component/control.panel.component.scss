@@ -1,12 +1,17 @@
-
+@import "_theme_vars";
 
 .mat-card {
   margin-bottom: 10px;
 }
 
 .nav {
+  position: relative;
   padding-top: 0;
   a.active {
-    background: rgba(0,0,0,0.10);
+    background: $activeRouteBackground;
   }
+}
+
+button.active {
+  background: $activeRouteBackground;
 }

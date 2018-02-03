@@ -1,0 +1,18 @@
+@import "_theme_vars";
+
+.auth {
+  display: flex;
+  flex-flow: row wrap;
+
+  .login,
+  .register {
+    flex: 1 1;
+  }
+  &.mobile {
+    .login,
+    .register {
+      flex: none;
+      width: 100%;
+    }
+  }
+}

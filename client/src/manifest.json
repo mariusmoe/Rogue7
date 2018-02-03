@@ -3,7 +3,7 @@
   "short_name": "Sotingane",
   "lang": "en-GB",
   "start_url": "/",
-  "display": "fullscreen",
+  "display": "standalone",
   "background_color": "#eee",
   "theme_color": "#6b0000",
   "description": "The home of Sotingane",

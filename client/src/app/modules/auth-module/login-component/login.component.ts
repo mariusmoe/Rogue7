@@ -40,6 +40,16 @@ export class LoginComponent {
     authService.getUser().pipe(takeUntil(this.ngUnsubscribe)).subscribe( user => {
       if (!user) { this.state.next(STATES.READY); }
     });
+
+    this.state.pipe(takeUntil(this.ngUnsubscribe)).subscribe( state => {
+      if (state === this.STATES.LOADING) {
+        this.loginForm.get('username').disable();
+        this.loginForm.get('password').disable();
+      } else {
+        this.loginForm.get('username').enable();
+        this.loginForm.get('password').enable();
+      }
+    });
   }
 
 
@@ -67,12 +77,5 @@ export class LoginComponent {
         this.state.next(STATES.TIMED_OUT);
       },
     );
-  }
-
-  /**
-   * Sends a request to the auth service to log out the user
-   */
-  logOut() {
-    this.authService.logOut();
   }
 }

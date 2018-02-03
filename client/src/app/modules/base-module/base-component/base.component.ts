@@ -47,4 +47,14 @@ export class BaseComponent implements OnInit {
     this.sidenavLeft.close();
     this.sidenavRight.close();
   }
+
+  toggleLeftNav() {
+    this.sidenavLeft.toggle();
+    this.sidenavRight.close();
+  }
+
+  toggleRightNav() {
+    this.sidenavLeft.close();
+    this.sidenavRight.toggle();
+  }
 }

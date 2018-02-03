@@ -4,8 +4,7 @@ import { NgModule } from '@angular/core';
 import { AdminRoutingModule } from './admin.routing-module';
 
 // Modules
-import { SharedModule } from '@app/modules/shared.module';
-import { AuthedModule } from '@app/modules/authed.module';
+import { SharedModule, CommonModule } from '@app/modules';
 
 // Components
 import { ComposeComponent } from './compose-component/compose.component';
@@ -29,8 +28,8 @@ import { DeactivateGuard } from '@app/guards';
     CKEditorComponent
   ],
   imports: [
-    AuthedModule,
     SharedModule,
+    CommonModule,
     AdminRoutingModule
   ],
   providers: [

@@ -8,4 +8,23 @@ $mat-warn:    $mat-red-warn;
 
 $primary:     map-get(nth($mat-primary, 1), nth($mat-primary, 2));
 $accent:      map-get(nth($mat-accent,  1), nth($mat-accent,  2));
+
+// Generic colours
 $background:  #eee;
+$contentBG: rgba(255,255,255,0.8);
+$border: 1px solid #666;
+$activeRouteBackground: rgba(0,0,0,0.10);
+$overlayColour: rgba(0,0,0,0.10);
+
+// Sizing
+
+$wrapperWidth: 1400px;
+$wrapperPadding: 1em;
+
+$contentMinimumWidth: 400px;
+$sideWidth: 250px;
+
+$headerHeight: 38px;
+$footerHeight: 48px;
+
+$maximumFieldWidth: 400px;

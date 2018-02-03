@@ -30,6 +30,8 @@ export class WorkerService {
         this.ngZone.run(() => this.updates.checkForUpdate());
       });
     });
+    // check right away
+    updates.checkForUpdate();
 
     updates.available.subscribe(event => {
       console.log('current version is', event.current);
@@ -40,6 +42,8 @@ export class WorkerService {
       console.log('old version was', event.previous);
       console.log('new version is', event.current);
     });
+
+
   }
 
   /**

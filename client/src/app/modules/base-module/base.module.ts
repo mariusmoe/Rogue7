@@ -8,7 +8,7 @@ import { SharedModule } from '@app/modules/shared.module';
 
 // Components
 import { BaseComponent } from './base-component/base.component';
-import { LoginComponent } from './login-component/login.component';
+import { HeaderComponent } from './header-component/header.component';
 import { LoadingbarComponent } from './loadingbar-component/loadingbar.component';
 import { ControlPanelComponent } from './control-panel-component/control.panel.component';
 import { FooterComponent } from './footer-component/footer.component';
@@ -25,7 +25,7 @@ import { CmsResolver, SearchResolver } from '@app/guards';
 @NgModule({
   declarations: [
     BaseComponent,
-    LoginComponent,
+    HeaderComponent,
     LoadingbarComponent,
     ControlPanelComponent,
     FooterComponent,

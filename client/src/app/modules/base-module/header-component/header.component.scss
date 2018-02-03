@@ -1,0 +1,59 @@
+@import '_theme_vars';
+
+
+// HEADER
+.topHeader {
+  color: #fff;
+  background: $primary;
+  border-bottom: 1px solid darken($primary, 10%);
+  height: $headerHeight;
+  max-height: $headerHeight;
+  box-sizing: border-box;
+
+  .wrapper {
+    max-width: $wrapperWidth;
+    margin: 0 auto;
+    height: $headerHeight;
+    max-height: $headerHeight;
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .navToggle { // only for mobile
+      position: absolute;
+      left: 0;
+    }
+    .userToggle {
+      position: absolute;
+      right: $wrapperPadding;
+    }
+    &.mobile .userToggle, {
+      right: 0;
+    }
+  }
+  a.title {
+    text-align: center;
+    font-size: 1.5em;
+    margin: 0 auto;
+    .logo {
+      vertical-align: bottom;
+      margin-bottom: 2px;
+      margin-right: 1px;
+    }
+  }
+}
+
+.user {
+  min-width: $sideWidth;
+  box-sizing: border-box;
+}
+
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
