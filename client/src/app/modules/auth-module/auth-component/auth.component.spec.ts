@@ -4,37 +4,27 @@ import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
 // required for this specific test
-import { MaterialModule } from '../../../_modules/material.module';
+import { MaterialModule } from '@app/modules/material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 
-import { AuthService } from '../../../_services/auth.service';
+import { AuthService } from '@app/services/auth.service';
 
-import { User } from './../../../_models/user';
+import { User } from '@app/models/user';
 import { Observable } from 'rxjs/Observable';
 import { map, catchError, timeout } from 'rxjs/operators';
 import { of } from 'rxjs/observable/of';
 
-import { LoginComponent } from './login.component';
+import { AuthComponent } from './auth.component';
 
-describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
-
-  const authServiceStub = {
-    getUser(): Observable<User> {
-      return of({
-        _id: 'abcdefg',
-        username: 'testuser',
-        role: 'admin',
-      });
-    }
-  };
+describe('AuthComponent', () => {
+  let component: AuthComponent;
+  let fixture: ComponentFixture<AuthComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
+      declarations: [AuthComponent ],
       imports: [
         BrowserAnimationsModule,
         MaterialModule,
@@ -42,13 +32,13 @@ describe('LoginComponent', () => {
         RouterTestingModule,
         HttpClientModule
       ],
-      providers: [ { provide: AuthService, useValue: authServiceStub } ]
+      //providers: [ { provide: AuthService, useValue: authServiceStub } ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(AuthComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -5,6 +5,7 @@ import { BaseRoutingModule } from './base.routing-module';
 
 // Modules
 import { SharedModule } from '@app/modules/shared.module';
+import { PortalModule } from '@angular/cdk/portal';
 
 // Components
 import { BaseComponent } from './base-component/base.component';
@@ -21,6 +22,9 @@ import { ModalComponent } from './modals/modal.component';
 // Resolvers
 import { CmsResolver, SearchResolver } from '@app/guards';
 
+// Directives
+import { YoutubeDirective } from './content-directives/youtube.directive';
+import { TwitchDirective } from './content-directives/twitch.directive';
 
 @NgModule({
   declarations: [
@@ -33,10 +37,13 @@ import { CmsResolver, SearchResolver } from '@app/guards';
     NavComponent,
     SearchComponent,
     SearchResultsComponent,
-    ModalComponent
+    ModalComponent,
+    YoutubeDirective,
+    TwitchDirective
   ],
   imports: [
     BaseRoutingModule,
+    PortalModule,
     SharedModule.forRoot()
   ],
   entryComponents: [

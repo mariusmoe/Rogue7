@@ -14,6 +14,7 @@ export class MobileService {
 
   private mobileDevices = [
     Breakpoints.Handset,
+    Breakpoints.Small,
     Breakpoints.TabletPortrait
   ];
 

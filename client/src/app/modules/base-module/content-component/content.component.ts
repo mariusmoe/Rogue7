@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material';
+import { DomPortalOutlet, Portal, TemplatePortal } from '@angular/cdk/portal';
 
 import { CMSService, AuthService } from '@app/services';
 import { ModalData, CmsContent, AccessRoles } from '@app/models';
@@ -37,6 +38,7 @@ export class ContentComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+
     this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
       if (e instanceof NavigationEnd) {
         this.contentSubject.next(this.route.snapshot.data['CmsContent']);
@@ -48,6 +50,7 @@ export class ContentComponent implements OnInit, OnDestroy {
     this.ngUnsubscribe.next();
     this.ngUnsubscribe.complete();
   }
+
 
   /**
    * Navigate the user to the editor page.
@@ -82,7 +85,7 @@ export class ContentComponent implements OnInit, OnDestroy {
           }
         );
       },
-      cancel: () => {},
+      cancel: () => { },
     };
     this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
   }

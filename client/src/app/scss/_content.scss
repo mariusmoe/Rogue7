@@ -7,24 +7,27 @@
     word-wrap: break-word; // legacy name of overflow-wrap
     overflow-wrap: break-word;
   }
+
   & > h1, & > h2, & > h3, & > h4, & > h5, & > h6 {
     clear: both;
   }
 
   a {
     text-decoration: underline;
+
     &:hover, &:active {
       text-decoration: underline;
       color: $primary;
     }
   }
+
   blockquote {
     border-left: none;
-
     padding: 0.9em 0 0 3em;
     margin: 0 0 20px;
     position: relative;
     font-style: italic;
+
     p, h1, h2, h3, h4, h5, h6 {
       margin: 0;
     }
@@ -35,11 +38,11 @@
       font-size: 5em;
       font-weight: bold;
       color: #999;
-
       position: absolute;
       left: 0;
       top: -0.2em;
     }
+
     &::after {
       content: attr(cite);
       font-size: 0.75em;
@@ -48,6 +51,7 @@
 
   & > ul, & > ol {
     padding-left: 2em;
+
     li {
       padding: 0.3em 0;
     }
@@ -83,11 +87,13 @@
       width: calc(50% - .8em);
       margin-top: 0;
     }
+
     &.image-style-align-left {
       float: left;
       margin-right: .8em;
       clear: left;
     }
+
     &.image-style-align-right {
       float: right;
       margin-left: .8em;
@@ -95,6 +101,32 @@
     }
   }
 }
+
+.video {
+  display: inline-block;
+  position: relative;
+  margin: 0;
+  width: 50%;
+
+  &.wide {
+    width: 100%;
+  }
+
+  iframe {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
 
 // Mobile styling
 .wrapper.mobile {
@@ -111,5 +143,9 @@
         margin-right: 0;
       }
     }
+  }
+
+  .video {
+    width: 100%;
   }
 }

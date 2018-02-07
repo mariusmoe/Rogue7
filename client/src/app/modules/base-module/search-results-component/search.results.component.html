@@ -17,8 +17,8 @@
         </a>
         <mat-divider></mat-divider>
       </mat-nav-list>
-      <mat-paginator [length]="searchResults?.length || 0" [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizes" (page)="paginator($event)">
+      <mat-paginator [length]="searchResults?.length || 0" [pageSize]="pageSize" [hidePageSize]="mobileService.isMobile() | async"
+        [pageSizeOptions]="pageSizes" (page)="paginator($event)" showFirstLastButtons="true">
       </mat-paginator>
     </mat-card-content>
   </ng-container>

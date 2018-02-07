@@ -46,3 +46,10 @@ dist/
 
 # Do not upload test images to github
 uploads/
+
+# Visual Studio
+.vs
+bin
+obj
+*.sln
+*.njsproj

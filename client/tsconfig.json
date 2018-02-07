@@ -13,12 +13,15 @@
     ],
     "baseUrl": "src",
     "paths": {
-      "@app/*": ["app/*"],
-      "@env": ["environments/environment"]
+      "@app/*": [ "app/*" ],
+      "@env": [ "environments/environment" ]
     },
     "lib": [
       "es2017",
       "dom"
     ]
-  }
+  },
+  "exclude": [
+    "/**.spec.ts"
+  ]
 }

@@ -1,6 +1,6 @@
-import { Component, ChangeDetectionStrategy, ViewChild, Optional, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material';
+import { MatIconRegistry, MatDrawer } from '@angular/material';
 import { Router } from '@angular/router';
 
 import { MobileService, AuthService, WorkerService } from '@app/services';
@@ -16,8 +16,8 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class BaseComponent implements OnInit {
   private ngUnsubscribe = new Subject();
-  @ViewChild('sidenavLeft') private sidenavLeft: any;
-  @ViewChild('sidenavRight') private sidenavRight: any;
+  @ViewChild('sidenavLeft') private sidenavLeft: MatDrawer;
+  @ViewChild('sidenavRight') private sidenavRight: MatDrawer;
 
 
   constructor(

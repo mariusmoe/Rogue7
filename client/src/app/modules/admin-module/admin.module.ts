@@ -4,7 +4,8 @@ import { NgModule } from '@angular/core';
 import { AdminRoutingModule } from './admin.routing-module';
 
 // Modules
-import { SharedModule, CommonModule } from '@app/modules';
+import { SharedModule } from '@app/modules/shared.module';
+import { CommonModule } from '@app/modules/common.module';
 
 // Components
 import { ComposeComponent } from './compose-component/compose.component';

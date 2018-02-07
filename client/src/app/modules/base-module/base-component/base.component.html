@@ -1,7 +1,7 @@
 <app-header-component (leftNav)="toggleLeftNav()" (rightNav)="toggleRightNav()"></app-header-component>
 <app-loadingbar-component></app-loadingbar-component>
 
-<mat-sidenav-container ngClass="sidenavContainer">
+<mat-sidenav-container #sidenav ngClass="sidenavContainer">
   <!-- MOBILE LEFT -->
   <mat-sidenav #sidenavLeft mode="over" position="start" ngClass="sidenav" (swipeleft)="closeSideNavs()" [style.touch-action]="'pan-y'">
     <app-nav-component *ngIf="mobileService.isMobile() | async"></app-nav-component>
