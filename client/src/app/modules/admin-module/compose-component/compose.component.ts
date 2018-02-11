@@ -109,8 +109,8 @@ export class ComposeComponent implements OnInit, OnDestroy {
       this.contentForm.get('folder').setValue(data.folder);
       if (!data.nav) { this.contentForm.get('folder').disable(); }
       if (this.editor.loadStatus().getValue()) {
-        this.editor.setValue(data.content);
-        this.initialEditorValue = this.editor.getValue();
+        this.editor.Value = data.content;
+        this.initialEditorValue = this.editor.Value;
       }
     }, err => {
       router.navigateByUrl('/admin/compose');
@@ -125,13 +125,13 @@ export class ComposeComponent implements OnInit, OnDestroy {
     const componentRef = viewContainerRef.createComponent(componentFactory);
     this.editor = componentRef.instance;
     if (this.inputContent) {
-      this.editor.value = this.inputContent.content;
+      this.editor.Value = this.inputContent.content;
     }
 
     this.editor.loadStatus().pipe(takeUntil(this.ngUnsubscribe)).subscribe( hasLoaded => {
       if (hasLoaded) {
-        if (this.inputContent) { this.editor.setValue(this.inputContent.content); }
-        this.initialEditorValue = this.editor.getValue();
+        if (this.inputContent) { this.editor.Value = this.inputContent.content; }
+        this.initialEditorValue = this.editor.Value;
       }
     });
   }
@@ -151,7 +151,7 @@ export class ComposeComponent implements OnInit, OnDestroy {
     if (this.hasSaved) { return true; }
 
     // Check if we're changing an existing content entry
-    const isDirty = (this.editor.getValue() !== this.initialEditorValue) || this.contentForm.dirty;
+    const isDirty = (this.editor.Value !== this.initialEditorValue) || this.contentForm.dirty;
 
     // if we're not dirty, we can also deactivate
     if (!isDirty) { return true; }
@@ -178,7 +178,7 @@ export class ComposeComponent implements OnInit, OnDestroy {
    */
   submitForm() {
     const content: CmsContent = this.contentForm.getRawValue();
-    content.content = this.editor.getValue();
+    content.content = this.editor.Value;
     content.route = content.route.toLowerCase();
 
     if (this.inputContent) {

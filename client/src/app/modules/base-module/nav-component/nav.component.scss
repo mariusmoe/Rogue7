@@ -1,16 +1,53 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
 @import '_theme_vars';
 
 nav {
-  padding-top: 0;
+  position: fixed;
+  z-index: 100;
+  height: calc(100vh - #{$headerHeight});
+  width: $sideWidth;
+  top: $headerHeight;
+  left: 0;
+  padding-top: 5px;
+  background: $sideBG;
+  border-right: $border;
+  font-size: 0.8em;
+  overflow-y: auto;
+  box-shadow: $boxShadow;
+
+  &.mobile {
+    top: 0;
+    padding-top: 0;
+    width: 100%;
+  }
+
+  .search {
+    margin-top: 10px;
+  }
+
   a.active {
     background: $activeRouteBackground;
   }
-  .subItem {
-    margin-left: 14px;
+
+  a.mat-list-item,
+  h2.mat-subheader {
+    height: 32px;
   }
+
+  .subItem {
+    padding-left: 14px;
+
+    ::ng-deep .mat-ripple {
+      margin-left: -14px;
+    }
+  }
+
   .mat-subheader {
-    color: $primary;
+    /*background: $headerBG;
+    /*border: $border;
+    border-style: solid none;*/
     font-weight: bold;
-    margin-top: 1.2em;
+    margin: 0.8em 0;
+    /*box-shadow: $boxShadow, $boxShadow inset;*/
   }
 }

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 // Modules
 import {
   MatSnackBarModule,
-  MatCardModule,
+  //MatCardModule,
   MatListModule,
   MatIconModule,
   MatProgressBarModule,
@@ -22,7 +22,7 @@ import {
 @NgModule({
   exports: [
     MatSnackBarModule,
-    MatCardModule,
+    //MatCardModule,
     MatListModule,
     MatIconModule,
     MatProgressBarModule,

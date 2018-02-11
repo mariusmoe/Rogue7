@@ -1,23 +1,28 @@
-import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry, MatDrawer } from '@angular/material';
-import { Router } from '@angular/router';
+import { Router, ActivationStart, ActivationEnd } from '@angular/router';
 
 import { MobileService, AuthService, WorkerService } from '@app/services';
+import { RoutingAnim } from '@app/animations';
 
 import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-base-component',
+  animations: [RoutingAnim],
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BaseComponent implements OnInit {
+export class BaseComponent implements OnInit, OnDestroy {
   private ngUnsubscribe = new Subject();
   @ViewChild('sidenavLeft') private sidenavLeft: MatDrawer;
   @ViewChild('sidenavRight') private sidenavRight: MatDrawer;
+
+  public routerSub = new Subject<string>();
 
 
   constructor(
@@ -37,7 +42,18 @@ export class BaseComponent implements OnInit {
     });
     this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
       this.closeSideNavs();
+
+      if (e instanceof ActivationStart) {
+        this.routerSub.next('start');
+      } else if (e instanceof ActivationEnd) {
+        this.routerSub.next('end');
+      }
     });
+  }
+
+  ngOnDestroy() {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 
   /**

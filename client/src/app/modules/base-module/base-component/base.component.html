@@ -1,6 +1,9 @@
 <app-header-component (leftNav)="toggleLeftNav()" (rightNav)="toggleRightNav()"></app-header-component>
 <app-loadingbar-component></app-loadingbar-component>
 
+<!-- NAVIGATION BAR -->
+<app-nav-component *ngIf="!(mobileService.isMobile() | async)"></app-nav-component>
+
 <mat-sidenav-container #sidenav ngClass="sidenavContainer">
   <!-- MOBILE LEFT -->
   <mat-sidenav #sidenavLeft mode="over" position="start" ngClass="sidenav" (swipeleft)="closeSideNavs()" [style.touch-action]="'pan-y'">
@@ -9,37 +12,30 @@
   <!-- MOBILE RIGHT -->
   <mat-sidenav #sidenavRight mode="over" position="end" ngClass="sidenav" (swiperight)="closeSideNavs()" [style.touch-action]="'pan-y'">
     <ng-container *ngIf="mobileService.isMobile() | async">
-      <mat-card>
-        <mat-card-header *ngIf="authService.getUser() | async as user" ngClass="mobileLoginInfo">
-          <mat-card-title>{{ user.username }}</mat-card-title>
-          <mat-card-subtitle>{{ user.role }}</mat-card-subtitle>
-          <mat-icon mat-card-avatar color="accent">person</mat-icon>
-        </mat-card-header>
-
-        <mat-card-content>
-          <app-control-panel-component></app-control-panel-component>
-        </mat-card-content>
-      </mat-card>
+      <div *ngIf="authService.getUser() | async as user" class="mobileLoginInfo">
+        <mat-icon color="primary">person</mat-icon>
+        <div class="user">
+          <h3>{{ user.username }}</h3>
+          <h4>{{ user.role }}</h4>
+        </div>
+      </div>
+      <app-control-panel-component></app-control-panel-component>
     </ng-container>
-
   </mat-sidenav>
 
   <!-- MOBILE SWIPE TRIGGERS -->
   <div *ngIf="mobileService.isMobile() | async" class="swipe left" (swiperight)="sidenavLeft.open()"></div>
   <div *ngIf="mobileService.isMobile() | async" class="swipe right" (swipeleft)="sidenavRight.open()"></div>
 
-
+  
   <div class="wrapper" [ngClass]="{ mobile: (mobileService.isMobile() | async) }">
-    <!-- NAVIGATION BAR -->
-    <div class="nav left" *ngIf="!(mobileService.isMobile() | async)">
-      <app-nav-component></app-nav-component>
-    </div>
     <!-- CONTENT -->
-    <main class="main center">
+    <main [@RoutingAnim]="routerSub | async">
       <router-outlet></router-outlet>
     </main>
+
+    <!-- FOOTER -->
+    <app-footer-component class="footer"></app-footer-component>
   </div>
 
-  <!-- FOOTER -->
-  <app-footer-component class="footer"></app-footer-component>
 </mat-sidenav-container>

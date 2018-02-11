@@ -32,12 +32,12 @@
       margin: 0;
     }
 
-    &::before {
+    &:before {
       content: "\201C"; // left doublequote
       font-family: Georgia, serif;
       font-size: 5em;
       font-weight: bold;
-      color: #999;
+      color: $primary;
       position: absolute;
       left: 0;
       top: -0.2em;
@@ -63,7 +63,22 @@
     box-sizing: border-box;
     display: block;
     clear: both;
+    border: $border;
+    background: $sideBG;
+    box-shadow: $boxShadow;
+    position: relative;
 
+    &:after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: $boxShadow inset;
+      pointer-events: none;
+    }
 
     > img {
       display: block;
@@ -73,10 +88,12 @@
     }
 
     & > figcaption {
-      color: #333;
-      background-color: rgba(0,0,0,0.075) !important;
       padding: .8em;
       font-size: .75em;
+      background: $materialBG !important;
+      box-shadow: $boxShadow inset;
+      border-top: $border;
+      color: $textColor;
     }
 
     &.image-style-align-left,
