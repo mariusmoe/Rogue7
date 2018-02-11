@@ -2,29 +2,34 @@
 
 
 // COLOUR, defaultShade, lighterShade, darkerShade
-$mat-primary: ($mat-red,  900, 300, 900);
-$mat-accent:  ($mat-gold, 600, 100, 700);
+$mat-primary: ($mat-green, 300, 300, 900);
+$mat-accent:  ($mat-black, 400, 300, 500);
 $mat-warn:    $mat-red-warn;
 
 $primary:     map-get(nth($mat-primary, 1), nth($mat-primary, 2));
 $accent:      map-get(nth($mat-accent,  1), nth($mat-accent,  2));
 
 // Generic colours
-$background:  #eee;
-$contentBG: rgba(255,255,255,0.8);
-$border: 1px solid #666;
-$activeRouteBackground: rgba(0,0,0,0.10);
+$background:  #121212;
+$headerBG: #232323;
+$sideBG: #191919;
+
+$contentBG: #232323;
+$materialBG: #303030;
+
+$border: 1px solid #000;
+
+
+$activeRouteBackground: rgba($primary, 0.3); // rgba(255,255,255,0.10);
 $overlayColour: rgba(0,0,0,0.10);
+$boxShadow: 0 0 1.2em 0 rgba(0,0,0,0.30);
+$textColor: #ccc;
 
 // Sizing
-
 $wrapperWidth: 1400px;
-$wrapperPadding: 1em;
+$sideWidth: 220px;
 
-$contentMinimumWidth: 400px;
-$sideWidth: 250px;
-
-$headerHeight: 38px;
-$footerHeight: 48px;
+$headerHeight: 40px;
+$footerHeight: 88px;
 
 $maximumFieldWidth: 400px;

@@ -20,7 +20,7 @@ export class CKEditorComponent implements OnInit, OnDestroy {
   @ViewChild('content') editorBox: ElementRef;
   @Output() onChange = new EventEmitter<string>();
 
-  public value: string;
+  private _value: string;
 
   private editor: CKEditor;
   private hasLoaded = new BehaviorSubject<boolean>(false);
@@ -63,7 +63,7 @@ export class CKEditorComponent implements OnInit, OnDestroy {
       this.editor.listenTo(this.editor.document, 'changesDone', () => {
         this.onChange.emit(this.editor.getData());
       });
-      if (this.value) { this.editor.setData(this.value); }
+      if (this._value) { this.editor.setData(this._value); }
       // notify loaded
       this.hasLoaded.next(true);
     }).catch( err => {
@@ -75,7 +75,7 @@ export class CKEditorComponent implements OnInit, OnDestroy {
    * Returns the HTML value of the editor
    * @return {string} the HTML representation of the content
    */
-  public getValue(): string {
+  get Value(): string {
     return this.editor.getData();
   }
 
@@ -83,9 +83,9 @@ export class CKEditorComponent implements OnInit, OnDestroy {
    * Sets the HTML value of the editor
    * @param  {string} value the HTML representation of the content
    */
-  public setValue(value: string) {
+  set Value(value: string) {
     if (!this.editor) {
-      this.value = value;
+      this._value = value;
       return;
     }
     this.editor.setData(value);

@@ -1,59 +1,53 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
 @import '_theme_vars';
 
 
 // HEADER
 .topHeader {
-  color: #fff;
-  background: $primary;
-  border-bottom: 1px solid darken($primary, 10%);
+  background: $contentBG;
+  border-bottom: $border;
   height: $headerHeight;
   max-height: $headerHeight;
   box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  z-index: 1000;
+  box-shadow: $boxShadow;
 
   .wrapper {
-    max-width: $wrapperWidth;
-    margin: 0 auto;
     height: $headerHeight;
     max-height: $headerHeight;
-    position: relative;
-
+    padding: 0 8px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-
-    .navToggle { // only for mobile
-      position: absolute;
-      left: 0;
-    }
-    .userToggle {
-      position: absolute;
-      right: $wrapperPadding;
-    }
-    &.mobile .userToggle, {
-      right: 0;
-    }
   }
+
   a.title {
     text-align: center;
     font-size: 1.5em;
-    margin: 0 auto;
+
     .logo {
       vertical-align: bottom;
       margin-bottom: 2px;
       margin-right: 1px;
+
+      ::ng-deep path {
+        fill: $primary;
+      }
     }
   }
-}
 
-.user {
-  min-width: $sideWidth;
-  box-sizing: border-box;
-}
-
-.fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+  .search {
+    position: fixed;
+    top: 6px;
+    left: $sideWidth;
+    height: calc(#{$headerHeight} - 12px);
+    max-height: calc(#{$headerHeight} - 12px);
+    box-sizing: border-box;
+    background: $background;
+    box-shadow: $boxShadow inset;
+  }
 }

@@ -1,15 +1,9 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
-import { CmsContent } from '@app/models';
-import { CMSService } from '@app/services';
-
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { of } from 'rxjs/observable/of';
-import { takeUntil } from 'rxjs/operators';
+import { CMSService, MobileService } from '@app/services';
 
 @Component({
   selector: 'app-search-component',
@@ -18,10 +12,10 @@ import { takeUntil } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent implements OnInit {
-  @Input() term = '';
   form: FormGroup;
 
   constructor(
+    public mobileService: MobileService,
     private cmsService: CMSService,
     private fb: FormBuilder,
     private router: Router) {
@@ -29,7 +23,14 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.form.get('search').setValue(this.term);
+
+    let value = '';
+    const url = this.router.routerState.snapshot.url;
+    if (url.indexOf('/search/') === 0) {
+      value = url.split('/')[2] || '';
+    }
+
+    this.form.get('search').setValue(value);
   }
 
   /**

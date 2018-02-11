@@ -1,5 +1,34 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
+@import '_theme_vars';
 
-.field {
-  display: block;
-  margin: 0 auto;
+.searchBox {
+  width: 160px;
+  transition: width ease-in-out 0.5s;
+
+  &:not(.mobile) {
+    &.wide {
+      width: 360px;
+    }
+  }
+
+  &.mobile {
+    width: 80%;
+    max-width: 80%;
+    margin: 0 auto;
+  }
+
+  .field {
+    display: block;
+  }
+
+  & ::ng-deep {
+    .mat-form-field-infix {
+      border-top: none;
+    }
+  }
+}
+
+
+.searchBox ::ng-deep .mat-input-underline {
+  display: none;
 }

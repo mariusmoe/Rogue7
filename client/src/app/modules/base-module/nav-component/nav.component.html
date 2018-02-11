@@ -1,35 +1,31 @@
-<mat-card>
-  <mat-card-content>
-    <!-- SEARCH -->
-    <app-search-component></app-search-component>
-    <!-- NAVIGATION -->
-    <nav>
-      <mat-nav-list dense>
-        <ng-container *ngIf="contentSubject | async as nav">
-          <a mat-list-item *ngFor="let navEntry of nav.rootContent; trackBy: trackBy"
-          routerLink="/{{navEntry.route}}"
-          routerLinkActive="active">{{ navEntry.title }}</a>
+<nav [ngClass]="{'mobile': (mobileService.isMobile() | async) }">
+  <div class="search">
+    <app-search-component *ngIf="mobileService.isMobile() | async"></app-search-component>
+  </div>
+  <mat-nav-list dense>
+    <ng-container *ngIf="contentSubject | async as nav">
+      <a mat-list-item *ngFor="let navEntry of nav.rootContent; trackBy: trackBy"
+         routerLink="/{{navEntry.route}}"
+         routerLinkActive="active">{{ navEntry.title }}</a>
 
-          <ng-container *ngFor="let folderEntry of nav.folders">
-            <h2 mat-subheader>{{ folderEntry.title }}</h2>
-            <a mat-list-item *ngFor="let navEntry of folderEntry.content; trackBy: trackBy"
-            routerLink="/{{navEntry.route}}"
-            routerLinkActive="active"
-            ngClass="subItem">{{ navEntry.title }}</a>
-          </ng-container>
-        </ng-container>
+      <ng-container *ngFor="let folderEntry of nav.folders">
+        <h2 mat-subheader>{{ folderEntry.title }}</h2>
+        <a mat-list-item *ngFor="let navEntry of folderEntry.content; trackBy: trackBy"
+           routerLink="/{{navEntry.route}}"
+           routerLinkActive="active"
+           ngClass="subItem">{{ navEntry.title }}</a>
+      </ng-container>
+    </ng-container>
 
-        <ng-container *ngIf="steamServersSubject | async as steamServers">
-          <ng-container *ngIf="steamServers && steamServers.length > 0">
-            <h2 mat-subheader>Steam Servers</h2>
+    <ng-container *ngIf="steamServersSubject | async as steamServers">
+      <ng-container *ngIf="steamServers && steamServers.length > 0">
+        <h2 mat-subheader>Steam Servers</h2>
 
-            <a mat-list-item *ngFor="let server of steamServers; trackBy: trackBy"
-            routerLink="/steam/{{server.route}}"
-            routerLinkActive="active"
-            ngClass="subItem">{{ server.title }}</a>
-          </ng-container>
-        </ng-container>
-      </mat-nav-list>
-    </nav>
-  </mat-card-content>
-</mat-card>
+        <a mat-list-item *ngFor="let server of steamServers; trackBy: trackBy"
+           routerLink="/steam/{{server.route}}"
+           routerLinkActive="active"
+           ngClass="subItem">{{ server.title }}</a>
+      </ng-container>
+    </ng-container>
+  </mat-nav-list>
+</nav>

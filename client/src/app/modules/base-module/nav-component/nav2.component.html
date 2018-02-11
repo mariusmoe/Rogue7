@@ -1,0 +1,41 @@
+
+<!-- SEARCH -->
+<!--<app-search-component></app-search-component>-->
+
+<!-- NAVIGATION -->
+<nav>
+  <!-- CMS items -->
+  <ng-container *ngIf="contentSubject | async as nav">
+    <!-- Root elements -->
+    <a mat-button *ngFor="let navEntry of nav.rootContent; trackBy: trackBy" routerLink="/{{navEntry.route}}" routerLinkActive="active">
+      {{ navEntry.title }}
+    </a>
+
+    <!-- Content Items -->
+    <ng-container *ngFor="let folderEntry of nav.folders">
+      <!-- Folder buttons -->
+      <button mat-button [matMenuTriggerFor]="submenu" #folder="matMenuTrigger" matDisableBackdrop>
+        {{ folderEntry.title }} <!-- (mouseenter)="folder.openMenu()" -->
+      </button>
+      <!-- Submenu -->
+      <mat-menu #submenu="matMenu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+        <a mat-menu-item routerLink="/{{navEntry.route}}" routerLinkActive="active" *ngFor="let navEntry of folderEntry.content; trackBy: trackBy">
+          {{ navEntry.title }}
+        </a>
+      </mat-menu>
+    </ng-container>
+  </ng-container>
+
+  <!-- Steam servers-->
+  <ng-container *ngIf="steamServersSubject | async as steamServers">
+    <button mat-button [matMenuTriggerFor]="submenu">
+      Steam Servers
+    </button>
+
+    <!-- Each Server item -->
+    <mat-menu #submenu="matMenu" xPosition="after" yPosition="below" [overlapTrigger]="false">
+      <a mat-menu-item routerLink="/steam/{{server.route}}" routerLinkActive="active" *ngFor="let server of steamServers; trackBy: trackBy"
+         ngClass="subItem">{{ server.title }}</a>
+    </mat-menu>
+  </ng-container>
+</nav>

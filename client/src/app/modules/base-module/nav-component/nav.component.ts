@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { CmsContent, CmsFolder, SteamServer } from '@app/models';
-import { AuthService, CMSService, SteamService } from '@app/services';
+import { AuthService, CMSService, SteamService, MobileService } from '@app/services';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -30,6 +30,7 @@ export class NavComponent {
   }
 
   constructor(
+    public mobileService: MobileService,
     private authService: AuthService,
     private cmsService: CMSService,
     private steamService: SteamService) {

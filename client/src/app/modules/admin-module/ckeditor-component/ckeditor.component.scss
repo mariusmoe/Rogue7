@@ -1,3 +1,4 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
 @import '_theme_vars';
 
 $headerHeight: 44px;
@@ -11,12 +12,57 @@ $headerHeight: 44px;
     }
   }
 
+  ::ng-deep .ck-dropdown__panel,
+  ::ng-deep .ck-editor__top .ck-toolbar {
+    background: $headerBG;
+    border: $border;
+  }
 
-  ::ng-deep .ck-editor__editable.ck-focused {
-    border-color: $primary;
+  ::ng-deep .ck-dropdown__panel .ck-list__item {
+    background: $headerBG;
   }
+
+  ::ng-deep .ck-editor-toolbar {
+    .ck-button,
+    .ck-button.ck-disabled {
+      background: $materialBG !important;
+      color: $textColor !important;
+      border: none;
+
+      &:active,
+      &:hover {
+        background: $materialBG !important;
+        box-shadow: none !important;
+      }
+
+      &.ck-on {
+        background: $activeRouteBackground !important;
+      }
+    }
+
+    .ck-button.ck-disabled {
+      background: $background !important;
+    }
+  }
+  // entire box
+  ::ng-deep .ck-editor {
+    background: $background;
+    box-shadow: $boxShadow;
+  }
+
+  ::ng-deep .ck-editor__editable {
+    border: $border;
+  }
+
   ::ng-deep .ck-list__item_active {
-    background-color: $accent;
-    color: #000;
+    background-color: $activeRouteBackground;
+    /*color: #000;*/
   }
+}
+
+// Popup (outside of the .editor div)
+::ng-deep .ck-balloon-panel {
+  background: $contentBG;
+  color: $textColor;
+  border: $border;
 }

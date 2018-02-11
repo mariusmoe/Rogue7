@@ -1,3 +1,5 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
+@import '_theme_vars';
 
 
 .contentWrapper {
@@ -7,18 +9,23 @@
   padding-bottom: 44px;
 
   .content {
+    padding: 0 2px;
     flex: 1 1;
   }
 
   .info {
     position: absolute;
-    right: 24px;
-    bottom: 24px;
-    text-align: right;
+    left: 0;
+    bottom: 0;
     margin-top: 10px;
     font-weight: 600;
     font-size: 0.7em;
-    color: rgba(0,0,0,0.6);
+
+    &.right {
+      text-align: right;
+      left: initial;
+      right: 0;
+    }
   }
 }
 
@@ -27,6 +34,6 @@
 
 .pageControls {
   position: absolute;
-  right: 10px;
-  top: 10px;
+  right: 0.2em;
+  top: 0.2em;
 }

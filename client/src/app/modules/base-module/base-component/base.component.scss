@@ -1,41 +1,34 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
 @import '_theme_vars';
 
 
 // SITE SETUP
 .wrapper {
-  max-width: $wrapperWidth;
+  padding-top: calc(#{$headerHeight} + 20px);
   box-sizing: border-box;
+  color: $textColor;
+  max-width: $wrapperWidth;
+  padding-left: calc(#{$sideWidth} + 20px);
+  padding-right: 20px;
   margin: 0 auto;
-  padding-left: $wrapperPadding;
-  padding-right: $wrapperPadding;
 
-  background: none !important;
-  min-height: calc(100vh - #{$headerHeight} - #{$footerHeight});
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: stretch;
+  main {
+    min-height: calc(100vh - calc(#{$headerHeight} + 20px) - #{$footerHeight});
+  }
+
 
   &.mobile {
-    padding: 0;
-    margin-top: $headerHeight;
-
-    .center {
-      max-width: 100%; // Required to make overflow-wrap: break-word; work on mobile
-      min-width: 100%;
-    }
-  }
-
-  .left, .center {
-    flex: 1 1;
-    padding: 10px 7px 4px 7px;
+    padding: 5px;
+    padding-bottom: 0;
     box-sizing: border-box;
-  }
-  .left {
-    max-width: $sideWidth;
-  }
-  .center {
-    min-width: $contentMinimumWidth;
+    margin-top: $headerHeight;
+    // Required to make overflow-wrap: break-word; work on mobile
+    max-width: 100%;
+    min-width: 100%;
+
+    main {
+      min-height: calc(100vh - calc(#{$headerHeight} + 5px) - #{$footerHeight});
+    }
   }
 }
 
@@ -49,7 +42,7 @@
     top: $headerHeight;
     width: 85vw;
     max-width: 350px;
-    height: calc(100vh - $headerHeight);
+    height: calc(100vh - #{$headerHeight});
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
     background: $background;
@@ -57,10 +50,19 @@
 }
 
 .mobileLoginInfo {
-  .mat-card-avatar {
-    font-size: 2.8em;
+  mat-icon {
+    font-size: 2.9em;
     margin-left: -5px;
     // margin-right: 10px;
+  }
+  .user {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 0.1em;
+    margin-left: 1em;
+    h3, h4 {
+      margin: 0;
+    }
   }
 }
 

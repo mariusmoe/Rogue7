@@ -23,6 +23,11 @@ export const environment = {
       content:      baseURL + '/api/cms',
       search:       baseURL + '/api/cms/search',
     },
+  },
+  
+  FOOTER: {
+    desc: 'Sotingane',
+    copyright: 'Copyright © 2018 Trygve Sørensen. All rights reserved.'
   }
 };
 

@@ -23,8 +23,7 @@ import { ModalComponent } from './modals/modal.component';
 import { CmsResolver, SearchResolver } from '@app/guards';
 
 // Directives
-import { YoutubeDirective } from './content-directives/youtube.directive';
-import { TwitchDirective } from './content-directives/twitch.directive';
+import { VideoDirective } from './content-directives/video.directive';
 
 @NgModule({
   declarations: [
@@ -38,8 +37,7 @@ import { TwitchDirective } from './content-directives/twitch.directive';
     SearchComponent,
     SearchResultsComponent,
     ModalComponent,
-    YoutubeDirective,
-    TwitchDirective
+    VideoDirective,
   ],
   imports: [
     BaseRoutingModule,
