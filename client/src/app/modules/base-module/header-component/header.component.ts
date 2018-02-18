@@ -3,29 +3,29 @@ import { Component, Output, EventEmitter, ChangeDetectionStrategy } from '@angul
 import { AuthService, MobileService } from '@app/services';
 
 @Component({
-  selector: 'app-header-component',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-header-component',
+	templateUrl: './header.component.html',
+	styleUrls: ['./header.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
-  @Output() leftNav: EventEmitter<void> = new EventEmitter();
-  @Output() rightNav: EventEmitter<void> = new EventEmitter();
+	@Output() leftNav: EventEmitter<void> = new EventEmitter();
+	@Output() rightNav: EventEmitter<void> = new EventEmitter();
 
-  constructor(public authService: AuthService, public mobileService: MobileService) {}
+	constructor(public authService: AuthService, public mobileService: MobileService) { }
 
 
-  /**
-   * Toggles the left sidepanel in mobile view
-   */
-  toggleLeft(): void {
-    this.leftNav.emit(null);
-  }
+	/**
+	 * Toggles the left sidepanel in mobile view
+	 */
+	toggleLeft(): void {
+		this.leftNav.emit(null);
+	}
 
-  /**
-   * Toggles the right sidepanel in mobile view
-   */
-  toggleRight(): void {
-    this.rightNav.emit(null);
-  }
+	/**
+	 * Toggles the right sidepanel in mobile view
+	 */
+	toggleRight(): void {
+		this.rightNav.emit(null);
+	}
 }

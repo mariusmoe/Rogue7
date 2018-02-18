@@ -19,31 +19,31 @@ import { of } from 'rxjs/observable/of';
 import { AuthComponent } from './auth.component';
 
 describe('AuthComponent', () => {
-  let component: AuthComponent;
-  let fixture: ComponentFixture<AuthComponent>;
+	let component: AuthComponent;
+	let fixture: ComponentFixture<AuthComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [AuthComponent ],
-      imports: [
-        BrowserAnimationsModule,
-        MaterialModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientModule
-      ],
-      // providers: [ { provide: AuthService, useValue: authServiceStub } ]
-    })
-    .compileComponents();
-  }));
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [AuthComponent],
+			imports: [
+				BrowserAnimationsModule,
+				MaterialModule,
+				ReactiveFormsModule,
+				RouterTestingModule,
+				HttpClientModule
+			],
+			// providers: [ { provide: AuthService, useValue: authServiceStub } ]
+		})
+			.compileComponents();
+	}));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(AuthComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(AuthComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

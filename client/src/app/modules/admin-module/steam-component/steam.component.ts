@@ -8,46 +8,46 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-steam-component',
-  templateUrl: './steam.component.html',
-  styleUrls: ['./steam.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-steam-component',
+	templateUrl: './steam.component.html',
+	styleUrls: ['./steam.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SteamComponent implements OnDestroy {
-  private ngUnsubscribe = new Subject();
-  forms: FormGroup[];
+	private ngUnsubscribe = new Subject();
+	forms: FormGroup[];
 
 
-  // TODO: FIX ME!
-  static disallowedRoutes(contentList: BehaviorSubject<any[]>) {
-    return (control: AbstractControl): { [key: string]: any} => {
-      const list = contentList.getValue();
-      if (list && list.some( (content) => content.route === control.value )) {
-        return { routeAlreadyTaken: true };
-      }
-    };
-  }
+	// TODO: FIX ME!
+	static disallowedRoutes(contentList: BehaviorSubject<any[]>) {
+		return (control: AbstractControl): { [key: string]: any } => {
+			const list = contentList.getValue();
+			if (list && list.some((content) => content.route === control.value)) {
+				return { routeAlreadyTaken: true };
+			}
+		};
+	}
 
 
-  constructor(
-    private fb: FormBuilder,
-    public steam: SteamService) {
+	constructor(
+		private fb: FormBuilder,
+		public steam: SteamService) {
 
 
-    // https://angular.io/guide/reactive-forms#conclusion
-  }
+		// https://angular.io/guide/reactive-forms#conclusion
+	}
 
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+	ngOnDestroy() {
+		this.ngUnsubscribe.next();
+		this.ngUnsubscribe.complete();
+	}
 
-  addServer() {
+	addServer() {
 
-  }
+	}
 
-  editServer() {
+	editServer() {
 
-  }
+	}
 
 }

@@ -10,9 +10,9 @@ import { of } from 'rxjs/observable/of';
 
 @Injectable()
 export class SteamResolver implements Resolve<SteamServer | boolean> {
-  constructor(private steamService: SteamService) {}
+	constructor(private steamService: SteamService) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<SteamServer | boolean> {
-    return this.steamService.requestSteamServer(route.params.serverRoute).pipe( catchError(err => of(false)) );
-  }
+	resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<SteamServer | boolean> {
+		return this.steamService.requestSteamServer(route.params.serverRoute).pipe(catchError(err => of(false)));
+	}
 }

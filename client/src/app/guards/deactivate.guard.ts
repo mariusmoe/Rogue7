@@ -7,11 +7,11 @@ import { ComposeComponent } from '@app/modules/compose-module/compose-component/
 @Injectable()
 export class DeactivateGuard implements CanDeactivate<ComposeComponent> {
 
-  /**
-   * Dictates the access rights to a given route
-   * @return {boolean|Subject<boolean>} whether access is granted
-   */
-  canDeactivate(comp: ComposeComponent) {
-    return comp.canDeactivate();
-  }
+	/**
+	 * Dictates the access rights to a given route
+	 * @return {boolean|Subject<boolean>} whether access is granted
+	 */
+	canDeactivate(comp: ComposeComponent) {
+		return comp.canDeactivate();
+	}
 }

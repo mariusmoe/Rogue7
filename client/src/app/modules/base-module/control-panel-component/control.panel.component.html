@@ -12,14 +12,14 @@
 		<mat-nav-list ngClass="nav" dense>
 			<mat-divider></mat-divider>
 			<a mat-list-item
-				 routerLink="/user"
-				 routerLinkActive="active"><mat-icon matListIcon>settings</mat-icon>User Settings</a>
+			   routerLink="/user"
+			   routerLinkActive="active"><mat-icon matListIcon>settings</mat-icon>User Settings</a>
 			<a mat-list-item *ngIf="user?.role === 'admin'"
-				 routerLink="/compose"
-				 routerLinkActive="active"><mat-icon matListIcon>create</mat-icon>Create Content</a>
+			   routerLink="/compose"
+			   routerLinkActive="active"><mat-icon matListIcon>create</mat-icon>Create Content</a>
 			<a mat-list-item *ngIf="user?.role === 'admin'"
-				 routerLink="/admin"
-				 routerLinkActive="active"><mat-icon matListIcon>build</mat-icon>Application Settings</a>
+			   routerLink="/admin"
+			   routerLinkActive="active"><mat-icon matListIcon>build</mat-icon>Application Settings</a>
 			<mat-divider></mat-divider>
 			<mat-list-item (click)="authService.logOut()"><mat-icon matListIcon>exit_to_app</mat-icon> Log out</mat-list-item>
 		</mat-nav-list>

@@ -2,33 +2,33 @@
 @import '_theme_vars';
 
 .searchBox {
-  width: 350px;
-  transition: width ease-in-out 0.5s;
+	width: 350px;
+	transition: width ease-in-out 0.5s;
 
-  &:not(.mobile) {
-    &.wide {
-      width: 550px;
-    }
-  }
+	&:not(.mobile) {
+		&.wide {
+			width: 550px;
+		}
+	}
 
-  &.mobile {
-    width: 80%;
-    max-width: 80%;
-    margin: 0 auto;
-  }
+	&.mobile {
+		width: 80%;
+		max-width: 80%;
+		margin: 0 auto;
+	}
 
-  .field {
-    display: block;
-  }
+	.field {
+		display: block;
+	}
 
-  & ::ng-deep {
-    .mat-form-field-infix {
-      border-top: none;
-    }
-  }
+	& ::ng-deep {
+		.mat-form-field-infix {
+			border-top: none;
+		}
+	}
 }
 
 
 .searchBox ::ng-deep .mat-input-underline {
-  display: none;
+	display: none;
 }

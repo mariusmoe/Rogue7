@@ -6,37 +6,37 @@
 const baseURL = 'http://localhost:2000';
 
 export const environment = {
-  production: false,
+	production: false,
 
-  TIMEOUT: 5000,
+	TIMEOUT: 5000,
 
-  URL: {
-    base:           baseURL,
-    api:            baseURL + '/api',
-    auth: {
-      login:        baseURL + '/api/auth/login',
-      token:        baseURL + '/api/auth/token',
-      updatepass:   baseURL + '/api/auth/updatepassword',
-    },
-    steam: {
-      servers:      baseURL + '/api/steam',
-    },
-    cms: {
-      content:      baseURL + '/api/cms',
-      search:       baseURL + '/api/cms/search',
-	},
+	URL: {
+		base:				baseURL,
+		api:				baseURL + '/api',
+		auth: {
+			login:			baseURL + '/api/auth/login',
+			token:			baseURL + '/api/auth/token',
+			updatepass:		baseURL + '/api/auth/updatepassword',
+		},
+		steam: {
+			servers:		baseURL + '/api/steam',
+		},
+		cms: {
+			content:		baseURL + '/api/cms',
+			search:			baseURL + '/api/cms/search',
+		},
 		admin: {
-		  users: {
-				all:				baseURL + '/api/admin/users',
-				role:				baseURL + '/api/admin/users/role',
-		  }
+			users: {
+				all:		baseURL + '/api/admin/users',
+				role:		baseURL + '/api/admin/role',
+			}
 		}
-  },
+	},
 
-  FOOTER: {
-    desc: 'Sotingane',
-    copyright: 'Copyright © 2018 Trygve Sørensen. All rights reserved.'
-  }
+	FOOTER: {
+		desc: 'Sotingane',
+		copyright: 'Copyright © 2018 Trygve Sørensen. All rights reserved.'
+	}
 };
 
 // reflect only required in jit mode.

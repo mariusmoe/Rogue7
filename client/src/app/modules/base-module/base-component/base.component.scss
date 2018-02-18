@@ -35,44 +35,53 @@ $wrapperPadding: 20px;
 
 // SIDE CONTENT
 .sidenavContainer {
-  background: none;
-  .sidenav {
-    position: fixed;
-    pointer-events: all;
-    top: $headerHeight;
-    width: 85vw;
-    max-width: 350px;
-    height: calc(100vh - #{$headerHeight});
-    padding: 10px 7px 4px 7px;
-    box-sizing: border-box;
-    background: $sideBG;
+	background: none;
+
+	.sidenav {
+		position: fixed;
+		pointer-events: all;
+		top: $headerHeight;
+		width: 85vw;
+		max-width: 350px;
+		height: calc(100vh - #{$headerHeight});
+		padding: 10px 7px 4px 7px;
+		box-sizing: border-box;
+		background: $sideBG;
 		box-shadow: $boxShadow inset;
-  }
+	}
 }
 
 .mobileLoginInfo {
-  mat-icon {
-    font-size: 2.9em;
-    margin-left: -5px;
-    // margin-right: 10px;
-  }
-  .user {
-    display: inline-block;
-    vertical-align: top;
-    margin-top: 0.1em;
-    margin-left: 1em;
-    h3, h4 {
-      margin: 0;
-    }
-  }
+	mat-icon {
+		font-size: 2.9em;
+		margin-left: -5px;
+		// margin-right: 10px;
+	}
+
+	.user {
+		display: inline-block;
+		vertical-align: top;
+		margin-top: 0.1em;
+		margin-left: 1em;
+
+		h3, h4 {
+			margin: 0;
+		}
+	}
 }
 
 .swipe {
-  position: fixed;
-  top: $headerHeight;
-  bottom: 0;
-  width: 6vw;
-  z-index: 20;
-  &.left { left: 0; }
-  &.right { right: 0; }
+	position: fixed;
+	top: $headerHeight;
+	bottom: 0;
+	width: 6vw;
+	z-index: 20;
+
+	&.left {
+		left: 0;
+	}
+
+	&.right {
+		right: 0;
+	}
 }

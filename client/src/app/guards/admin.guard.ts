@@ -7,23 +7,23 @@ import { AccessRoles } from '@app/models';
 @Injectable()
 export class AdminGuard implements CanActivate {
 
-  constructor(
-    private tokenService: TokenService,
-    private authService: AuthService,
-    private router: Router) { }
+	constructor(
+		private tokenService: TokenService,
+		private authService: AuthService,
+		private router: Router) { }
 
 
-  /**
-   * Dictates the access rights to a given route
-   * @return {boolean} whether access is granted
-   */
-  canActivate() {
-    const isExpired = this.authService.jwtIsExpired(this.tokenService.token);
-    const accessGranted = !isExpired && this.authService.isUserOfRole(AccessRoles.admin);
-    if (!accessGranted) {
-      this.router.navigateByUrl('/');
-    }
-    return accessGranted;
-  }
+	/**
+	 * Dictates the access rights to a given route
+	 * @return {boolean} whether access is granted
+	 */
+	canActivate() {
+		const isExpired = this.authService.jwtIsExpired(this.tokenService.token);
+		const accessGranted = !isExpired && this.authService.isUserOfRole(AccessRoles.admin);
+		if (!accessGranted) {
+			this.router.navigateByUrl('/');
+		}
+		return accessGranted;
+	}
 
 }

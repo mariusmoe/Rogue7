@@ -1,23 +1,25 @@
 
 .field {
-  padding-left: 10px;
-  &.check {
-    margin-top: 3px;
-    margin-bottom: 10px;
-  }
+	padding-left: 10px;
+
+	&.check {
+		margin-top: 3px;
+		margin-bottom: 10px;
+	}
 }
+
 .mobile .field {
-  display: block;
-  padding: 0;
+	display: block;
+	padding: 0;
 }
 
 .actions,
 .formControls {
-  margin: 10px 0;
+	margin: 10px 0;
 }
 
 mat-icon.mat-icon {
-  font-size: 1.2em;
-  margin: 0 2px 0 0;
-  vertical-align: text-top;
+	font-size: 1.2em;
+	margin: 0 2px 0 0;
+	vertical-align: text-top;
 }

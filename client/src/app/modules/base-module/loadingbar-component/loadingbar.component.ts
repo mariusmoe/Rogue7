@@ -7,39 +7,39 @@ import { Subscription } from 'rxjs/Subscription';
 import { takeUntil, map } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-loadingbar-component',
-  templateUrl: './loadingbar.component.html',
-  styleUrls: ['./loadingbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-loadingbar-component',
+	templateUrl: './loadingbar.component.html',
+	styleUrls: ['./loadingbar.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingbarComponent implements OnInit {
-  private ngUnsubscribe = new Subject();
+	private ngUnsubscribe = new Subject();
 
-  public loadingBarValue = new Subject<number>();
-  public loadingBarVisible = new Subject<boolean>();
+	public loadingBarValue = new Subject<number>();
+	public loadingBarVisible = new Subject<boolean>();
 
-  private loadingBarSub: Subscription;
+	private loadingBarSub: Subscription;
 
-  constructor(public router: Router) {}
+	constructor(public router: Router) { }
 
-  ngOnInit() {
-    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
-      if (e instanceof NavigationStart) {
-        this.loadingBarValue.next(0);
+	ngOnInit() {
+		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+			if (e instanceof NavigationStart) {
+				this.loadingBarValue.next(0);
 
-        if (this.loadingBarSub) { this.loadingBarSub.unsubscribe(); }
+				if (this.loadingBarSub) { this.loadingBarSub.unsubscribe(); }
 
-        this.loadingBarSub = interval(100).subscribe(num => { // every 100ms
-          if (num === 1) { this.loadingBarVisible.next(true); }
-          this.loadingBarValue.next(Math.min(90, num * 10));
-        });
-      } else if (e instanceof NavigationEnd || e instanceof NavigationCancel || e instanceof NavigationError) {
-        if (this.loadingBarSub) { this.loadingBarSub.unsubscribe(); }
+				this.loadingBarSub = interval(100).subscribe(num => { // every 100ms
+					if (num === 1) { this.loadingBarVisible.next(true); }
+					this.loadingBarValue.next(Math.min(90, num * 10));
+				});
+			} else if (e instanceof NavigationEnd || e instanceof NavigationCancel || e instanceof NavigationError) {
+				if (this.loadingBarSub) { this.loadingBarSub.unsubscribe(); }
 
-        this.loadingBarValue.next(100); // 100 = max
-        this.loadingBarVisible.next(false);
-      }
-    });
-  }
+				this.loadingBarValue.next(100); // 100 = max
+				this.loadingBarVisible.next(false);
+			}
+		});
+	}
 
 }

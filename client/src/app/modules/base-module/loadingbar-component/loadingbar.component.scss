@@ -2,18 +2,18 @@
 @import "_theme_vars";
 
 .loading {
-  border-bottom: 1px solid #000;
-  height: 3px;
-  // NOTE: ::ng-deep might be depricated later! Use with care!
-  ::ng-deep .mat-progress-bar-buffer {
-    background: darken($background, 5%);
-  }
+	border-bottom: 1px solid #000;
+	height: 3px;
+	// NOTE: ::ng-deep might be depricated later! Use with care!
+	::ng-deep .mat-progress-bar-buffer {
+		background: darken($background, 5%);
+	}
 }
 
 .fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
 }

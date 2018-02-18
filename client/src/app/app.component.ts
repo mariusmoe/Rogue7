@@ -1,8 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
-  template: `<router-outlet></router-outlet>`,
-  encapsulation: ViewEncapsulation.None
+	selector: 'app-root',
+	template: `<router-outlet></router-outlet>`,
+	encapsulation: ViewEncapsulation.None
 })
-export class AppComponent {}
+export class AppComponent { }

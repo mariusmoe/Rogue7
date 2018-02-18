@@ -1,10 +1,10 @@
 
 interface StatusMessage {
-  message: string;
+	message: string;
 }
 
 export const status = (value: string): StatusMessage => {
-  return { 'message': value };
+	return { 'message': value };
 };
 
 

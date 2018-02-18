@@ -19,42 +19,42 @@ import { ChangePasswordComponent } from './change.password.component';
 
 
 describe('ChangePasswordComponent', () => {
-  let component: ChangePasswordComponent;
-  let fixture: ComponentFixture<ChangePasswordComponent>;
+	let component: ChangePasswordComponent;
+	let fixture: ComponentFixture<ChangePasswordComponent>;
 
-  const user: User = {
-    _id: 'abcdefg',
-    username: 'testuser',
-    role: AccessRoles.admin,
-  };
+	const user: User = {
+		_id: 'abcdefg',
+		username: 'testuser',
+		role: AccessRoles.admin,
+	};
 
-  const authServiceStub = {
-    getUser(): Observable<User> {
-      return of(user);
-    }
-  };
+	const authServiceStub = {
+		getUser(): Observable<User> {
+			return of(user);
+		}
+	};
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ChangePasswordComponent ],
-      imports: [
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientModule
-      ],
-      providers: [ { provide: AuthService, useValue: authServiceStub } ]
-    })
-    .compileComponents();
-  }));
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [ChangePasswordComponent],
+			imports: [
+				BrowserAnimationsModule,
+				ReactiveFormsModule,
+				RouterTestingModule,
+				HttpClientModule
+			],
+			providers: [{ provide: AuthService, useValue: authServiceStub }]
+		})
+			.compileComponents();
+	}));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ChangePasswordComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(ChangePasswordComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

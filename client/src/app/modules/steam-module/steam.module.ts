@@ -14,15 +14,15 @@ import { SteamResolver } from '@app/guards';
 
 
 @NgModule({
-  declarations: [
-    ServerComponent
-  ],
-  imports: [
-    SteamRoutingModule,
-    SharedModule
-  ],
-  providers: [
-    SteamResolver
-  ]
+	declarations: [
+		ServerComponent
+	],
+	imports: [
+		SteamRoutingModule,
+		SharedModule
+	],
+	providers: [
+		SteamResolver
+	]
 })
 export class SteamModule { }

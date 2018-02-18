@@ -40,13 +40,13 @@ export class UsersController {
 		if (!changingUser || !newRole) {
 			return res.status(400).send(status(USERS_STATUS.DATA_UNPROCESSABLE));
 		}
-		
+
 		User.updateOne({ _id: changingUser._id }, { $set: { role: newRole } }, (err, updated) => {
 			if (err) { return next(err); }
 			if (updated) {
 				return res.status(200).send(status(USERS_STATUS.USER_ROLE_UPDATED));
 			} else { // user obj with bad id
-				return res.status(400).send(status(USERS_STATUS.DATA_UNPROCESSABLE)); 
+				return res.status(400).send(status(USERS_STATUS.DATA_UNPROCESSABLE));
 			}
 		}).lean();
 

@@ -1,17 +1,19 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
 @import "_theme_vars";
 
 .mat-card {
-  margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 
 .nav {
-  position: relative;
-  padding-top: 0;
-  a.active {
-    background: $activeRouteBackground;
-  }
+	position: relative;
+	padding-top: 0;
+
+	a.active {
+		background: $activeRouteBackground;
+	}
 }
 
 button.active {
-  background: $activeRouteBackground;
+	background: $activeRouteBackground;
 }

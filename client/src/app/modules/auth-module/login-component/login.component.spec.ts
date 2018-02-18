@@ -19,41 +19,41 @@ import { of } from 'rxjs/observable/of';
 import { LoginComponent } from './login.component';
 
 describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+	let component: LoginComponent;
+	let fixture: ComponentFixture<LoginComponent>;
 
-  const authServiceStub = {
-    // getUser(): Observable<User> {
-    //  return of({
-    //    _id: 'abcdefg',
-    //    username: 'testuser',
-    //    role: 'admin',
-    //  });
-    // }
-  };
+	const authServiceStub = {
+		// getUser(): Observable<User> {
+		//  return of({
+		//    _id: 'abcdefg',
+		//    username: 'testuser',
+		//    role: 'admin',
+		//  });
+		// }
+	};
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
-      imports: [
-        BrowserAnimationsModule,
-        MaterialModule,
-        ReactiveFormsModule,
-        RouterTestingModule,
-        HttpClientModule
-      ],
-      providers: [ { provide: AuthService, useValue: authServiceStub } ]
-    })
-    .compileComponents();
-  }));
+	beforeEach(async(() => {
+		TestBed.configureTestingModule({
+			declarations: [LoginComponent],
+			imports: [
+				BrowserAnimationsModule,
+				MaterialModule,
+				ReactiveFormsModule,
+				RouterTestingModule,
+				HttpClientModule
+			],
+			providers: [{ provide: AuthService, useValue: authServiceStub }]
+		})
+			.compileComponents();
+	}));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+	beforeEach(() => {
+		fixture = TestBed.createComponent(LoginComponent);
+		component = fixture.componentInstance;
+		fixture.detectChanges();
+	});
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should create', () => {
+		expect(component).toBeTruthy();
+	});
 });

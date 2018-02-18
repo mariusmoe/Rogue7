@@ -26,29 +26,29 @@ import { CmsResolver, SearchResolver } from '@app/guards';
 import { VideoDirective } from './content-directives/video.directive';
 
 @NgModule({
-  declarations: [
-    BaseComponent,
-    HeaderComponent,
-    LoadingbarComponent,
-    ControlPanelComponent,
-    FooterComponent,
-    ContentComponent,
-    NavComponent,
-    SearchComponent,
-    SearchResultsComponent,
-    ModalComponent,
-    VideoDirective,
-  ],
-  imports: [
-    BaseRoutingModule,
-    PortalModule,
-    SharedModule.forRoot()
-  ],
-  entryComponents: [
-    ModalComponent
-  ],
-  providers: [
-    CmsResolver, SearchResolver
-  ]
+	declarations: [
+		BaseComponent,
+		HeaderComponent,
+		LoadingbarComponent,
+		ControlPanelComponent,
+		FooterComponent,
+		ContentComponent,
+		NavComponent,
+		SearchComponent,
+		SearchResultsComponent,
+		ModalComponent,
+		VideoDirective,
+	],
+	imports: [
+		BaseRoutingModule,
+		PortalModule,
+		SharedModule.forRoot()
+	],
+	entryComponents: [
+		ModalComponent
+	],
+	providers: [
+		CmsResolver, SearchResolver
+	]
 })
 export class BaseModule { }

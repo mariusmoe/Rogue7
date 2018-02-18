@@ -12,71 +12,71 @@ import { takeUntil } from 'rxjs/operators';
 
 
 enum STATES {
-  READY,
-  LOADING,
-  TRY_AGAIN,
-  TIMED_OUT,
+	READY,
+	LOADING,
+	TRY_AGAIN,
+	TIMED_OUT,
 }
 
 @Component({
-  selector: 'app-login-component',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-login-component',
+	templateUrl: './login.component.html',
+	styleUrls: ['./login.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-  private ngUnsubscribe = new Subject();
-  public loginForm: FormGroup;
-  STATES = STATES;
-  public state = new BehaviorSubject<STATES>(STATES.READY);
+	private ngUnsubscribe = new Subject();
+	public loginForm: FormGroup;
+	STATES = STATES;
+	public state = new BehaviorSubject<STATES>(STATES.READY);
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder,
-    public authService: AuthService) {
-    this.loginForm = fb.group({
-      'username': ['', Validators.required],
-      'password': ['', Validators.required]
-    });
-    authService.getUser().pipe(takeUntil(this.ngUnsubscribe)).subscribe( user => {
-      if (!user) { this.state.next(STATES.READY); }
-    });
+	constructor(
+		private router: Router,
+		private fb: FormBuilder,
+		public authService: AuthService) {
+		this.loginForm = fb.group({
+			'username': ['', Validators.required],
+			'password': ['', Validators.required]
+		});
+		authService.getUser().pipe(takeUntil(this.ngUnsubscribe)).subscribe(user => {
+			if (!user) { this.state.next(STATES.READY); }
+		});
 
-    this.state.pipe(takeUntil(this.ngUnsubscribe)).subscribe( state => {
-      if (state === this.STATES.LOADING) {
-        this.loginForm.get('username').disable();
-        this.loginForm.get('password').disable();
-      } else {
-        this.loginForm.get('username').enable();
-        this.loginForm.get('password').enable();
-      }
-    });
-  }
+		this.state.pipe(takeUntil(this.ngUnsubscribe)).subscribe(state => {
+			if (state === this.STATES.LOADING) {
+				this.loginForm.get('username').disable();
+				this.loginForm.get('password').disable();
+			} else {
+				this.loginForm.get('username').enable();
+				this.loginForm.get('password').enable();
+			}
+		});
+	}
 
 
-  /**
-   * Submits the login form
-   */
-  logIn() {
-    this.state.next(STATES.LOADING);
-    const user: User = this.loginForm.getRawValue();
-    const sub = this.authService.login(user).subscribe(
-      (loggedIn) => {
-        sub.unsubscribe();
-        if (loggedIn) {
-          this.router.navigateByUrl('/');
-          return;
-        }
-        this.state.next(STATES.TRY_AGAIN);
-      },
-      (error: HttpErrorResponse) => {
-        sub.unsubscribe();
-        if (error && error.status >= 400 && error.status < 500) {
-          this.state.next(STATES.TRY_AGAIN);
-          return;
-        }
-        this.state.next(STATES.TIMED_OUT);
-      },
-    );
-  }
+	/**
+	 * Submits the login form
+	 */
+	logIn() {
+		this.state.next(STATES.LOADING);
+		const user: User = this.loginForm.getRawValue();
+		const sub = this.authService.login(user).subscribe(
+			(loggedIn) => {
+				sub.unsubscribe();
+				if (loggedIn) {
+					this.router.navigateByUrl('/');
+					return;
+				}
+				this.state.next(STATES.TRY_AGAIN);
+			},
+			(error: HttpErrorResponse) => {
+				sub.unsubscribe();
+				if (error && error.status >= 400 && error.status < 500) {
+					this.state.next(STATES.TRY_AGAIN);
+					return;
+				}
+				this.state.next(STATES.TIMED_OUT);
+			},
+		);
+	}
 }

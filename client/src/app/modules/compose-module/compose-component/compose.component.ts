@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy,
-  ViewContainerRef, PLATFORM_ID, Inject } from '@angular/core';
+import {
+	Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy,
+	ViewContainerRef, PLATFORM_ID, Inject
+} from '@angular/core';
 import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
@@ -21,206 +23,206 @@ import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
-  selector: 'app-compose-component',
-  templateUrl: './compose.component.html',
-  styleUrls: ['./compose.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-compose-component',
+	templateUrl: './compose.component.html',
+	styleUrls: ['./compose.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ComposeComponent implements OnInit, OnDestroy {
-  @ViewChild(CKEditorComponent) editor: CKEditorComponent;
+	@ViewChild(CKEditorComponent) editor: CKEditorComponent;
 
-  AccessRoles = AccessRoles;
+	AccessRoles = AccessRoles;
 
-  public inputContent: CmsContent; // http input
+	public inputContent: CmsContent; // http input
 
-  private ngUnsubscribe = new Subject();
-  private hasSaved = false;
-  private initialEditorValue: string; // used for canDeactivate
+	private ngUnsubscribe = new Subject();
+	private hasSaved = false;
+	private initialEditorValue: string; // used for canDeactivate
 
-  contentForm: FormGroup;
-  accessChoices: CmsAccess[] = [
-    { value: AccessRoles.everyone,  verbose: 'Everyone',  icon: 'group' },
-    { value: AccessRoles.user,      verbose: 'Users',     icon: 'verified_user' },
-    { value: AccessRoles.admin,     verbose: 'Admins',    icon: 'security' }
-  ];
+	contentForm: FormGroup;
+	accessChoices: CmsAccess[] = [
+		{ value: AccessRoles.everyone, verbose: 'Everyone', icon: 'group' },
+		{ value: AccessRoles.user, verbose: 'Users', icon: 'verified_user' },
+		{ value: AccessRoles.admin, verbose: 'Admins', icon: 'security' }
+	];
 
-  folders: string[] = [];
-
-
-  static disallowedRoutes(contentList: BehaviorSubject<CmsContent[]>) {
-    return (control: AbstractControl): { [key: string]: any} => {
-      const list = contentList.getValue();
-      if (list && list.some( (content) => content.route === control.value )) {
-        return { routeAlreadyTaken: true };
-      }
-    };
-  }
+	folders: string[] = [];
 
 
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private router: Router,
-    private route: ActivatedRoute,
-    private fb: FormBuilder,
-    private dialog: MatDialog,
-    public cmsService: CMSService,
-    public mobileService: MobileService,
-    public authService: AuthService) {
-
-    // Do not load on the server. Only load for browser applications.
-    if (!isPlatformBrowser(platformId)) { return; }
+	static disallowedRoutes(contentList: BehaviorSubject<CmsContent[]>) {
+		return (control: AbstractControl): { [key: string]: any } => {
+			const list = contentList.getValue();
+			if (list && list.some((content) => content.route === control.value)) {
+				return { routeAlreadyTaken: true };
+			}
+		};
+	}
 
 
-    // Form
-    this.contentForm = fb.group({
-      'route': ['', ComposeComponent.disallowedRoutes(cmsService.getContentList())],
-      'title': ['', Validators.required],
-      'description': ['', Validators.required],
-      'access': [AccessRoles.everyone, Validators.required],
-      'nav': [true],
-      'folder': [''],
-    });
+	constructor(
+		@Inject(PLATFORM_ID) private platformId: Object,
+		private router: Router,
+		private route: ActivatedRoute,
+		private fb: FormBuilder,
+		private dialog: MatDialog,
+		public cmsService: CMSService,
+		public mobileService: MobileService,
+		public authService: AuthService) {
 
-    // Create Folder autocomplete list
-    this.cmsService.getContentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe( contentList => {
-      if (!contentList) { return; }
-      const folders: string[] = [];
-      for (const content of contentList) {
-        if (content.folder && folders.indexOf(content.folder) === -1) {
-          folders.push(content.folder);
-        }
-      }
-      this.folders = folders.sort();
-    });
-
-    // Router: Check if we are editing or creating content
-    const param = route.snapshot.params['route'];
-    if (!param) { return; }
-    this.cmsService.requestContent(param).subscribe(data => {
-      this.inputContent = data;
-      this.contentForm.get('route').setValue(data.route);
-      this.contentForm.get('route').disable(); // TODO: fixme.
-      this.contentForm.get('title').setValue(data.title);
-      this.contentForm.get('description').setValue(data.description);
-      this.contentForm.get('access').setValue(data.access);
-      this.contentForm.get('nav').setValue(data.nav);
-      this.contentForm.get('folder').setValue(data.folder);
-      if (!data.nav) { this.contentForm.get('folder').disable(); }
-      if (this.editor.loadStatus().getValue()) {
-        this.editor.Value = data.content;
-        this.initialEditorValue = this.editor.Value;
-      }
-    }, err => {
-      router.navigateByUrl('/admin/compose');
-    });
-  }
-
-  ngOnInit() {
-    if (this.inputContent) {
-      this.editor.Value = this.inputContent.content;
-    }
-
-    this.editor.loadStatus().pipe(takeUntil(this.ngUnsubscribe)).subscribe( hasLoaded => {
-      if (hasLoaded) {
-        if (this.inputContent) { this.editor.Value = this.inputContent.content; }
-        this.initialEditorValue = this.editor.Value;
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
-
-  // ---------------------------------------
-  // -------------- UTILITIES --------------
-  // ---------------------------------------
+		// Do not load on the server. Only load for browser applications.
+		if (!isPlatformBrowser(platformId)) { return; }
 
 
-  canDeactivate() {
-    // if we've saved, we're fine deactivating!
-    if (this.hasSaved) { return true; }
+		// Form
+		this.contentForm = fb.group({
+			'route': ['', ComposeComponent.disallowedRoutes(cmsService.getContentList())],
+			'title': ['', Validators.required],
+			'description': ['', Validators.required],
+			'access': [AccessRoles.everyone, Validators.required],
+			'nav': [true],
+			'folder': [''],
+		});
 
-    // Check if we're changing an existing content entry
-    const isDirty = (this.editor.Value !== this.initialEditorValue) || this.contentForm.dirty;
+		// Create Folder autocomplete list
+		this.cmsService.getContentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe(contentList => {
+			if (!contentList) { return; }
+			const folders: string[] = [];
+			for (const content of contentList) {
+				if (content.folder && folders.indexOf(content.folder) === -1) {
+					folders.push(content.folder);
+				}
+			}
+			this.folders = folders.sort();
+		});
 
-    // if we're not dirty, we can also deactivate
-    if (!isDirty) { return true; }
+		// Router: Check if we are editing or creating content
+		const param = route.snapshot.params['route'];
+		if (!param) { return; }
+		this.cmsService.requestContent(param).subscribe(data => {
+			this.inputContent = data;
+			this.contentForm.get('route').setValue(data.route);
+			this.contentForm.get('route').disable(); // TODO: fixme.
+			this.contentForm.get('title').setValue(data.title);
+			this.contentForm.get('description').setValue(data.description);
+			this.contentForm.get('access').setValue(data.access);
+			this.contentForm.get('nav').setValue(data.nav);
+			this.contentForm.get('folder').setValue(data.folder);
+			if (!data.nav) { this.contentForm.get('folder').disable(); }
+			if (this.editor.loadStatus().getValue()) {
+				this.editor.Value = data.content;
+				this.initialEditorValue = this.editor.Value;
+			}
+		}, err => {
+			router.navigateByUrl('/admin/compose');
+		});
+	}
 
-    const answer = new Subject<boolean>();
+	ngOnInit() {
+		if (this.inputContent) {
+			this.editor.Value = this.inputContent.content;
+		}
 
-    const data: ModalData = {
-      headerText: 'Unsaved work!',
-      bodyText: 'Do you wish to proceed without saving?',
-      proceedColor: 'accent',   proceedText: 'Proceed',
-      cancelColor: 'primary',   cancelText: 'Cancel',
-      includeCancel: true,
+		this.editor.loadStatus().pipe(takeUntil(this.ngUnsubscribe)).subscribe(hasLoaded => {
+			if (hasLoaded) {
+				if (this.inputContent) { this.editor.Value = this.inputContent.content; }
+				this.initialEditorValue = this.editor.Value;
+			}
+		});
+	}
 
-      proceed: () => answer.next(true),
-      cancel: () => answer.next(false),
-    };
-    this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
+	ngOnDestroy() {
+		this.ngUnsubscribe.next();
+		this.ngUnsubscribe.complete();
+	}
 
-    return answer;
-  }
+	// ---------------------------------------
+	// -------------- UTILITIES --------------
+	// ---------------------------------------
 
-  /**
-   * Submits the form and hands it over to the cmsService
-   */
-  submitForm() {
-    const content: CmsContent = this.contentForm.getRawValue();
-    content.content = this.editor.Value;
-    content.route = content.route.toLowerCase();
 
-    if (this.inputContent) {
-      // use this.inputContent.route instead of the new route, as we want to update
-      // the route might've changed in the form data
-      this.onSubmit(this.cmsService.updateContent(this.inputContent.route, content));
-      return;
-    }
-    this.onSubmit(this.cmsService.createContent(content));
-  }
+	canDeactivate() {
+		// if we've saved, we're fine deactivating!
+		if (this.hasSaved) { return true; }
 
-  // ---------------------------------------
-  // --------------- HELPERS ---------------
-  // ---------------------------------------
+		// Check if we're changing an existing content entry
+		const isDirty = (this.editor.Value !== this.initialEditorValue) || this.contentForm.dirty;
 
-  /**
-   * helper for submitForm()
-   */
-  private onSubmit(obs: Observable<CmsContent>) {
-    const sub = obs.subscribe(
-      newContent => {
-        sub.unsubscribe();
-        if (newContent) {
-          this.cmsService.getContentList(true);
-          this.hasSaved = true;
-          this.router.navigateByUrl(newContent.route);
-        }
-      },
-      error => {
-        sub.unsubscribe();
-      },
-    );
-  }
+		// if we're not dirty, we can also deactivate
+		if (!isDirty) { return true; }
 
-  /**
-   * returns the CmsAccess value of the selected access privileges
-   * @return {CmsAccess} the selected value
-   */
-  getAccessChoice(): CmsAccess {
-    return this.accessChoices.find(choice => this.contentForm.get('access').value === choice.value);
-  }
+		const answer = new Subject<boolean>();
 
-  /**
-   * toggles the disabled status of the folder field
-   */
-  updateFolderDisableState() {
-    if (this.contentForm.get('nav').value) {
-      this.contentForm.get('folder').enable();
-    } else {
-      this.contentForm.get('folder').disable();
-    }
-  }
+		const data: ModalData = {
+			headerText: 'Unsaved work!',
+			bodyText: 'Do you wish to proceed without saving?',
+			proceedColor: 'accent', proceedText: 'Proceed',
+			cancelColor: 'primary', cancelText: 'Cancel',
+			includeCancel: true,
+
+			proceed: () => answer.next(true),
+			cancel: () => answer.next(false),
+		};
+		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
+
+		return answer;
+	}
+
+	/**
+	 * Submits the form and hands it over to the cmsService
+	 */
+	submitForm() {
+		const content: CmsContent = this.contentForm.getRawValue();
+		content.content = this.editor.Value;
+		content.route = content.route.toLowerCase();
+
+		if (this.inputContent) {
+			// use this.inputContent.route instead of the new route, as we want to update
+			// the route might've changed in the form data
+			this.onSubmit(this.cmsService.updateContent(this.inputContent.route, content));
+			return;
+		}
+		this.onSubmit(this.cmsService.createContent(content));
+	}
+
+	// ---------------------------------------
+	// --------------- HELPERS ---------------
+	// ---------------------------------------
+
+	/**
+	 * helper for submitForm()
+	 */
+	private onSubmit(obs: Observable<CmsContent>) {
+		const sub = obs.subscribe(
+			newContent => {
+				sub.unsubscribe();
+				if (newContent) {
+					this.cmsService.getContentList(true);
+					this.hasSaved = true;
+					this.router.navigateByUrl(newContent.route);
+				}
+			},
+			error => {
+				sub.unsubscribe();
+			},
+		);
+	}
+
+	/**
+	 * returns the CmsAccess value of the selected access privileges
+	 * @return {CmsAccess} the selected value
+	 */
+	getAccessChoice(): CmsAccess {
+		return this.accessChoices.find(choice => this.contentForm.get('access').value === choice.value);
+	}
+
+	/**
+	 * toggles the disabled status of the folder field
+	 */
+	updateFolderDisableState() {
+		if (this.contentForm.get('nav').value) {
+			this.contentForm.get('folder').enable();
+		} else {
+			this.contentForm.get('folder').disable();
+		}
+	}
 }

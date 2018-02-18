@@ -9,37 +9,37 @@ import { NextFunction } from 'express';
 */
 
 const schema = new Schema({
-  title: {
-    type: String,
-    unique: true,
-    required: true
-  },
-  route: {
-    type: String,
-    required: true,
-    unique: true,
-    index: { unique: true }
-  },
-  type: {
-    type: String,
-    required: true
-  },
-  address: {
-    type: String,
-    required: true
-  },
-  port: {
-    type: String,
-    required: true
-  }
+	title: {
+		type: String,
+		unique: true,
+		required: true
+	},
+	route: {
+		type: String,
+		required: true,
+		unique: true,
+		index: { unique: true }
+	},
+	type: {
+		type: String,
+		required: true
+	},
+	address: {
+		type: String,
+		required: true
+	},
+	port: {
+		type: String,
+		required: true
+	}
 });
 
 export interface steamserver extends Document {
-  title: string;
-  route: string;
-  type: string;
-  address: string;
-  port: string;
+	title: string;
+	route: string;
+	type: string;
+	address: string;
+	port: string;
 }
 
 

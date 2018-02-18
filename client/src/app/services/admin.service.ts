@@ -13,23 +13,23 @@ import { of } from 'rxjs/observable/of';  // will be from 'rxjs' in v6
 
 @Injectable()
 export class AdminService {
-  constructor(private http: HttpClient, private router: Router) {
-  }
+	constructor(private http: HttpClient, private router: Router) {
+	}
 
 
-  // ---------------------------------------
-  // ------------- HTTP METHODS ------------
-  // ---------------------------------------
+	// ---------------------------------------
+	// ------------- HTTP METHODS ------------
+	// ---------------------------------------
 
-  getAllusers(): Observable<User[]> {
+	getAllusers(): Observable<User[]> {
 		return this.http.get<User[]>(environment.URL.admin.users.all).pipe(timeout(environment.TIMEOUT));
-  }
+	}
 
 
-  setUserRole(user: User, role: AccessRoles): Observable<boolean> {
+	setUserRole(user: User, role: AccessRoles): Observable<boolean> {
 		return this.http.post<boolean>(environment.URL.admin.users.role, {
-		  user: user,
+			user: user,
 			role: role
 		}).pipe(timeout(environment.TIMEOUT));
-  }
+	}
 }

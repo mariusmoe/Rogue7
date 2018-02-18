@@ -1,39 +1,39 @@
 <div class="searchResults">
-  <h1>Search Results</h1>
+	<h1>Search Results</h1>
 
-  <ng-container *ngIf="displayedResults | async as results; else unavailable">
-    <ng-container [ngSwitch]="mobileService.isMobile() | async">
+	<ng-container *ngIf="displayedResults | async as results; else unavailable">
+		<ng-container [ngSwitch]="mobileService.isMobile() | async">
 
-      <div class="search" *ngSwitchCase="true">
-        <app-search-component></app-search-component>
-      </div>
-      <!--<span *ngSwitchDefault>Results for: <i>{{ route.snapshot.params['term'] }}</i></span>-->
-    </ng-container>
-    <div class="results">{{searchResults?.length || 0}} results</div>
-    <mat-nav-list ngClass="nav">
-      <mat-divider></mat-divider>
-      <a mat-list-item class="item" *ngFor="let item of results; let i = index; trackBy: trackBy" routerLink="/{{item.route}}">
-        <mat-icon mat-list-icon>chevron_right</mat-icon>
-        <h4 mat-line>{{item.title}}</h4>
-        <p mat-line>{{item.description}}</p>
-        <span mat-line class="relevance">Relevance: {{item.relevance | percent }}</span>
+			<div class="search" *ngSwitchCase="true">
+				<app-search-component></app-search-component>
+			</div>
+			<!--<span *ngSwitchDefault>Results for: <i>{{ route.snapshot.params['term'] }}</i></span>-->
+		</ng-container>
+		<div class="results">{{searchResults?.length || 0}} results</div>
+		<mat-nav-list ngClass="nav">
+			<mat-divider></mat-divider>
+			<a mat-list-item class="item" *ngFor="let item of results; let i = index; trackBy: trackBy" routerLink="/{{item.route}}">
+				<mat-icon mat-list-icon>chevron_right</mat-icon>
+				<h4 mat-line>{{item.title}}</h4>
+				<p mat-line>{{item.description}}</p>
+				<span mat-line class="relevance">Relevance: {{item.relevance | percent }}</span>
 
 				<div class="imgWrapper" *ngIf="item.image && !(mobileService.isMobile() | async)">
 					<img [src]="item.image" [alt]="item.title" />
 				</div>
-      </a>
-      <mat-divider></mat-divider>
-    </mat-nav-list>
-    <mat-paginator [length]="searchResults?.length || 0" [pageSize]="pageSize" [hidePageSize]="mobileService.isMobile() | async"
-                   [pageSizeOptions]="pageSizes" (page)="paginator($event)" showFirstLastButtons="true">
-    </mat-paginator>
-  </ng-container>
+			</a>
+			<mat-divider></mat-divider>
+		</mat-nav-list>
+		<mat-paginator [length]="searchResults?.length || 0" [pageSize]="pageSize" [hidePageSize]="mobileService.isMobile() | async"
+					   [pageSizeOptions]="pageSizes" (page)="paginator($event)" showFirstLastButtons="true">
+		</mat-paginator>
+	</ng-container>
 
-  <ng-template #unavailable>
-    <app-search-component></app-search-component>
-    <h3>Results for: {{ route.snapshot.params['term'] }}</h3>
-    <p>
-      Could not load the search results.
-    </p>
-  </ng-template>
+	<ng-template #unavailable>
+		<app-search-component></app-search-component>
+		<h3>Results for: {{ route.snapshot.params['term'] }}</h3>
+		<p>
+			Could not load the search results.
+		</p>
+	</ng-template>
 </div>

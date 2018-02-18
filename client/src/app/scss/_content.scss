@@ -3,166 +3,166 @@
 
 .ck-editor__editable,
 .content {
-  a, p {
-    word-wrap: break-word; // legacy name of overflow-wrap
-    overflow-wrap: break-word;
-  }
+	a, p {
+		word-wrap: break-word; // legacy name of overflow-wrap
+		overflow-wrap: break-word;
+	}
 
-  & > h1, & > h2, & > h3, & > h4, & > h5, & > h6 {
-    clear: both;
-  }
+	& > h1, & > h2, & > h3, & > h4, & > h5, & > h6 {
+		clear: both;
+	}
 
-  a {
-    text-decoration: underline;
+	a {
+		text-decoration: underline;
 
-    &:hover, &:active {
-      text-decoration: underline;
-      color: $primary;
-    }
-  }
+		&:hover, &:active {
+			text-decoration: underline;
+			color: $primary;
+		}
+	}
 
-  blockquote {
-    border-left: none;
-    padding: 0.9em 0 0 3em;
-    margin: 0 0 20px;
-    position: relative;
-    font-style: italic;
+	blockquote {
+		border-left: none;
+		padding: 0.9em 0 0 3em;
+		margin: 0 0 20px;
+		position: relative;
+		font-style: italic;
 
-    p, h1, h2, h3, h4, h5, h6 {
-      margin: 0;
-    }
+		p, h1, h2, h3, h4, h5, h6 {
+			margin: 0;
+		}
 
-    &:before {
-      content: "\201C"; // left doublequote
-      font-family: Georgia, serif;
-      font-size: 5em;
-      font-weight: bold;
-      color: $primary;
-      position: absolute;
-      left: 0;
-      top: -0.2em;
-    }
+		&:before {
+			content: "\201C"; // left doublequote
+			font-family: Georgia, serif;
+			font-size: 5em;
+			font-weight: bold;
+			color: $primary;
+			position: absolute;
+			left: 0;
+			top: -0.2em;
+		}
 
-    &::after {
-      content: attr(cite);
-      font-size: 0.75em;
-    }
-  }
+		&::after {
+			content: attr(cite);
+			font-size: 0.75em;
+		}
+	}
 
-  & > ul, & > ol {
-    padding-left: 2em;
+	& > ul, & > ol {
+		padding-left: 2em;
 
-    li {
-      padding: 0.3em 0;
-    }
-  }
+		li {
+			padding: 0.3em 0;
+		}
+	}
 
-  figure.image {
-    text-align: center;
-    margin: 0 0 1em 0; // 1em margin bottom
-    box-sizing: border-box;
-    display: block;
-    clear: both;
-    border: $border;
-    background: $sideBG;
-    box-shadow: $boxShadow;
-    position: relative;
+	figure.image {
+		text-align: center;
+		margin: 0 0 1em 0; // 1em margin bottom
+		box-sizing: border-box;
+		display: block;
+		clear: both;
+		border: $border;
+		background: $sideBG;
+		box-shadow: $boxShadow;
+		position: relative;
 
-    &:after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      z-index: 1000;
-      box-shadow: $boxShadow inset;
-      pointer-events: none;
-    }
+		&:after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			width: 100%;
+			z-index: 1000;
+			box-shadow: $boxShadow inset;
+			pointer-events: none;
+		}
 
-    > img {
-      display: block;
-      margin: 0 auto;
-      max-width: 100%;
-      width: 100%;
-    }
+		> img {
+			display: block;
+			margin: 0 auto;
+			max-width: 100%;
+			width: 100%;
+		}
 
-    & > figcaption {
-      padding: .8em;
-      font-size: .75em;
-      background: $materialBG !important;
-      box-shadow: $boxShadow inset;
-      border-top: $border;
-      color: $textColor;
-    }
+		& > figcaption {
+			padding: .8em;
+			font-size: .75em;
+			background: $materialBG !important;
+			box-shadow: $boxShadow inset;
+			border-top: $border;
+			color: $textColor;
+		}
 
-    &.image-style-align-left,
-    &.image-style-align-right {
-      clear: none !important;
-      display: inline-block;
-      max-width: calc(50% - .8em); // negate the padding
-      width: calc(50% - .8em);
-      margin-top: 0;
-    }
+		&.image-style-align-left,
+		&.image-style-align-right {
+			clear: none !important;
+			display: inline-block;
+			max-width: calc(50% - .8em); // negate the padding
+			width: calc(50% - .8em);
+			margin-top: 0;
+		}
 
-    &.image-style-align-left {
-      float: left;
-      margin-right: .8em;
-      clear: left;
-    }
+		&.image-style-align-left {
+			float: left;
+			margin-right: .8em;
+			clear: left;
+		}
 
-    &.image-style-align-right {
-      float: right;
-      margin-left: .8em;
-      clear: right;
-    }
-  }
+		&.image-style-align-right {
+			float: right;
+			margin-left: .8em;
+			clear: right;
+		}
+	}
 }
 
 .video {
-  display: inline-block;
-  position: relative;
-  margin: 0;
-  width: 50%;
+	display: inline-block;
+	position: relative;
+	margin: 0;
+	width: 50%;
 
-  &.wide {
-    width: 100%;
-  }
+	&.wide {
+		width: 100%;
+	}
 
-  iframe {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-  }
+	iframe {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+	}
 
-  img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
+	img {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
 }
 
 
 // Mobile styling
 .wrapper.mobile {
-  .ck-editor__editable,
-  .content {
-    figure.image {
-      &.image-style-align-right,
-      &.image-style-align-left {
-        float: none;
-        display: block;
-        max-width: none;
-        width: auto;
-        margin-left: 0;
-        margin-right: 0;
-      }
-    }
-  }
+	.ck-editor__editable,
+	.content {
+		figure.image {
+			&.image-style-align-right,
+			&.image-style-align-left {
+				float: none;
+				display: block;
+				max-width: none;
+				width: auto;
+				margin-left: 0;
+				margin-right: 0;
+			}
+		}
+	}
 
-  .video {
-    width: 100%;
-  }
+	.video {
+		width: 100%;
+	}
 }

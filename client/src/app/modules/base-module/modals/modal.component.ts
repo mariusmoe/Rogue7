@@ -6,40 +6,40 @@ import { CMSService } from '@app/services';
 import { ModalData } from '@app/models';
 
 @Component({
-  selector: 'app-delete-modal',
-  styleUrls: ['./modal.component.scss'],
-  templateUrl: './modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-delete-modal',
+	styleUrls: ['./modal.component.scss'],
+	templateUrl: './modal.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModalComponent {
 
-  constructor(
-    public dialogRef: MatDialogRef<ModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ModalData) {
+	constructor(
+		public dialogRef: MatDialogRef<ModalComponent>,
+		@Inject(MAT_DIALOG_DATA) public data: ModalData) {
 
 
-    dialogRef.afterClosed().subscribe( proceeding => {
-      if (proceeding) {
-        this.data.proceed();
-      } else {
-        if (this.data.includeCancel) {
-          this.data.cancel();
-        }
-      }
-    });
-  }
+		dialogRef.afterClosed().subscribe(proceeding => {
+			if (proceeding) {
+				this.data.proceed();
+			} else {
+				if (this.data.includeCancel) {
+					this.data.cancel();
+				}
+			}
+		});
+	}
 
-  /**
-   * Proceeds with the task and closes the modal.
-   */
-  proceed(): void {
-    this.dialogRef.close(true);
-  }
+	/**
+	 * Proceeds with the task and closes the modal.
+	 */
+	proceed(): void {
+		this.dialogRef.close(true);
+	}
 
-  /**
-   * Closes the modal without proceeding.
-   */
-  cancel(): void {
-    this.dialogRef.close(false);
-  }
+	/**
+	 * Closes the modal without proceeding.
+	 */
+	cancel(): void {
+		this.dialogRef.close(false);
+	}
 }

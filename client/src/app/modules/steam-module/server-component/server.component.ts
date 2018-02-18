@@ -10,52 +10,52 @@ import { interval } from 'rxjs/observable/interval';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-server-component',
-  templateUrl: './server.component.html',
-  styleUrls: ['./server.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-server-component',
+	templateUrl: './server.component.html',
+	styleUrls: ['./server.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ServerComponent implements OnInit, OnDestroy {
-  private ngUnsubscribe = new Subject();
-  public serverSubject = new BehaviorSubject<SteamServer>(null);
-  public serverRoute: string;
+	private ngUnsubscribe = new Subject();
+	public serverSubject = new BehaviorSubject<SteamServer>(null);
+	public serverRoute: string;
 
-  constructor(
-    public steamService: SteamService,
-    private route: ActivatedRoute,
-    private router: Router) {
-  }
+	constructor(
+		public steamService: SteamService,
+		private route: ActivatedRoute,
+		private router: Router) {
+	}
 
 
-  ngOnInit() {
-    this.serverSubject.next(this.route.snapshot.data['SteamServer']);
-    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
-      if (e instanceof NavigationEnd) {
-        this.serverSubject.next(this.route.snapshot.data['SteamServer']);
-      }
-    });
+	ngOnInit() {
+		this.serverSubject.next(this.route.snapshot.data['SteamServer']);
+		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+			if (e instanceof NavigationEnd) {
+				this.serverSubject.next(this.route.snapshot.data['SteamServer']);
+			}
+		});
 
-    this.serverRoute = this.route.snapshot.params['serverRoute'];
+		this.serverRoute = this.route.snapshot.params['serverRoute'];
 
-    // Query for Steam Server
-    this.steamService.requestSteamServer(this.serverRoute).subscribe(
-      c => { this.serverSubject.next(c); },
-      err => { this.serverSubject.next(<SteamServer>{}); },
-    );
+		// Query for Steam Server
+		this.steamService.requestSteamServer(this.serverRoute).subscribe(
+			c => { this.serverSubject.next(c); },
+			err => { this.serverSubject.next(<SteamServer>{}); },
+		);
 
-    // Query for Steam Server DATA
-    this.steamService.querySteamServerData(this.serverRoute);
+		// Query for Steam Server DATA
+		this.steamService.querySteamServerData(this.serverRoute);
 
-    // every 30 sec, it asks again.
-    interval(30 * 1000).pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.steamService.querySteamServerData(this.serverRoute);
-    });
-  }
+		// every 30 sec, it asks again.
+		interval(30 * 1000).pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+			this.steamService.querySteamServerData(this.serverRoute);
+		});
+	}
 
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+	ngOnDestroy() {
+		this.ngUnsubscribe.next();
+		this.ngUnsubscribe.complete();
+	}
 
 
 }

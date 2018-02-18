@@ -15,19 +15,19 @@ import { ChangePasswordComponent } from './change-password-component/change.pass
 
 
 const routes: Routes = [
-  { path: '' , component: UserComponent, canActivate: [AuthGuard], pathMatch: 'full' },
-  { path: '**', redirectTo: '' },
+	{ path: '', component: UserComponent, canActivate: [AuthGuard], pathMatch: 'full' },
+	{ path: '**', redirectTo: '' },
 ];
 
 @NgModule({
-  declarations: [
-    UserComponent,
-    ChangePasswordComponent
-  ],
-  imports: [
-    SharedModule,
-    CommonModule,
-    RouterModule.forChild(routes)
-  ]
+	declarations: [
+		UserComponent,
+		ChangePasswordComponent
+	],
+	imports: [
+		SharedModule,
+		CommonModule,
+		RouterModule.forChild(routes)
+	]
 })
 export class UserModule { }

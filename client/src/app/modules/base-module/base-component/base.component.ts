@@ -10,66 +10,66 @@ import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-base-component',
-  //animations: [RoutingAnim],
-  templateUrl: './base.component.html',
-  styleUrls: ['./base.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-base-component',
+	//animations: [RoutingAnim],
+	templateUrl: './base.component.html',
+	styleUrls: ['./base.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BaseComponent implements OnInit, OnDestroy {
-  private ngUnsubscribe = new Subject();
-  @ViewChild('sidenavLeft') private sidenavLeft: MatDrawer;
-  @ViewChild('sidenavRight') private sidenavRight: MatDrawer;
+	private ngUnsubscribe = new Subject();
+	@ViewChild('sidenavLeft') private sidenavLeft: MatDrawer;
+	@ViewChild('sidenavRight') private sidenavRight: MatDrawer;
 
-  public routerSub = new Subject<string>();
+	public routerSub = new Subject<string>();
 
 
-  constructor(
-    public mobileService: MobileService,
-    public authService: AuthService,
-    public router: Router,
-    private workerService: WorkerService,
-    private iconRegistry: MatIconRegistry,
-    private san: DomSanitizer) {
-    // Register logo
-    iconRegistry.addSvgIcon('logo', san.bypassSecurityTrustResourceUrl('assets/logo256.svg'));
-  }
+	constructor(
+		public mobileService: MobileService,
+		public authService: AuthService,
+		public router: Router,
+		private workerService: WorkerService,
+		private iconRegistry: MatIconRegistry,
+		private san: DomSanitizer) {
+		// Register logo
+		iconRegistry.addSvgIcon('logo', san.bypassSecurityTrustResourceUrl('assets/logo256.svg'));
+	}
 
-  ngOnInit() {
-    this.mobileService.isMobile().pipe(takeUntil(this.ngUnsubscribe)).subscribe(isMobile => {
-      if (!isMobile) { this.closeSideNavs(); }
-    });
-    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
-      this.closeSideNavs();
+	ngOnInit() {
+		this.mobileService.isMobile().pipe(takeUntil(this.ngUnsubscribe)).subscribe(isMobile => {
+			if (!isMobile) { this.closeSideNavs(); }
+		});
+		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+			this.closeSideNavs();
 
-      if (e instanceof ActivationStart) {
-        this.routerSub.next('start');
-      } else if (e instanceof ActivationEnd) {
-        this.routerSub.next('end');
-      }
-    });
-  }
+			if (e instanceof ActivationStart) {
+				this.routerSub.next('start');
+			} else if (e instanceof ActivationEnd) {
+				this.routerSub.next('end');
+			}
+		});
+	}
 
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+	ngOnDestroy() {
+		this.ngUnsubscribe.next();
+		this.ngUnsubscribe.complete();
+	}
 
-  /**
-   * Closes the Mobile navigation sidepanels
-   */
-  closeSideNavs() {
-    this.sidenavLeft.close();
-    this.sidenavRight.close();
-  }
+	/**
+	 * Closes the Mobile navigation sidepanels
+	 */
+	closeSideNavs() {
+		this.sidenavLeft.close();
+		this.sidenavRight.close();
+	}
 
-  toggleLeftNav() {
-    this.sidenavLeft.toggle();
-    this.sidenavRight.close();
-  }
+	toggleLeftNav() {
+		this.sidenavLeft.toggle();
+		this.sidenavRight.close();
+	}
 
-  toggleRightNav() {
-    this.sidenavLeft.close();
-    this.sidenavRight.toggle();
-  }
+	toggleRightNav() {
+		this.sidenavLeft.close();
+		this.sidenavRight.toggle();
+	}
 }

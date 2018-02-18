@@ -1,20 +1,20 @@
 @import "_theme_vars";
 
 .auth {
-  display: flex;
-  flex-flow: row wrap;
+	display: flex;
+	flex-flow: row wrap;
 
-  .login,
-  .register {
-    flex: 1 1;
-  }
+	.login,
+	.register {
+		flex: 1 1;
+	}
 
-  &.mobile {
-    .login,
-    .register {
-      flex: none;
-      width: 100%;
-      text-align: center;
-    }
-  }
+	&.mobile {
+		.login,
+		.register {
+			flex: none;
+			width: 100%;
+			text-align: center;
+		}
+	}
 }

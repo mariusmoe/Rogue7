@@ -1,16 +1,16 @@
-import { NgModule, ModuleWithProviders  } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // services
 import {
-  AuthService,
-  CMSService,
-  InterceptorService,
-  SteamService,
-  MobileService,
-  TokenService,
+	AuthService,
+	CMSService,
+	InterceptorService,
+	SteamService,
+	MobileService,
+	TokenService,
 	AdminService
 } from '@app/services';
 
@@ -27,38 +27,38 @@ import { AuthGuard, AdminGuard, LoginGuard } from '@app/guards';
 import { TimeAgo } from '@app/pipes';
 
 @NgModule({
-  exports: [
-    CommonModule,
-    MaterialModule,
-    ReactiveFormsModule,
-    RouterModule,
-    HttpClientModule,
-    TimeAgo
-  ],
-  declarations: [
-    TimeAgo
-  ]
+	exports: [
+		CommonModule,
+		MaterialModule,
+		ReactiveFormsModule,
+		RouterModule,
+		HttpClientModule,
+		TimeAgo
+	],
+	declarations: [
+		TimeAgo
+	]
 })
 export class SharedModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: SharedModule,
-      providers: [
-        {
-          provide: HTTP_INTERCEPTORS,
-          useClass: InterceptorService,
-          multi: true
-        },
-        AuthService,
-        CMSService,
-        SteamService,
-        MobileService,
-        TokenService,
+	static forRoot(): ModuleWithProviders {
+		return {
+			ngModule: SharedModule,
+			providers: [
+				{
+					provide: HTTP_INTERCEPTORS,
+					useClass: InterceptorService,
+					multi: true
+				},
+				AuthService,
+				CMSService,
+				SteamService,
+				MobileService,
+				TokenService,
 				AdminService,
-        AuthGuard,
-        AdminGuard,
-        LoginGuard
-      ]
-    };
-  }
+				AuthGuard,
+				AdminGuard,
+				LoginGuard
+			]
+		};
+	}
 }

@@ -15,77 +15,77 @@ import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
-  selector: 'app-content-component',
-  templateUrl: './content.component.html',
-  styleUrls: ['./content.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+	selector: 'app-content-component',
+	templateUrl: './content.component.html',
+	styleUrls: ['./content.component.scss'],
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentComponent implements OnInit, OnDestroy {
-  AccessRoles = AccessRoles;
-  private ngUnsubscribe = new Subject();
-  public contentSubject = new BehaviorSubject<CmsContent>(null);
+	AccessRoles = AccessRoles;
+	private ngUnsubscribe = new Subject();
+	public contentSubject = new BehaviorSubject<CmsContent>(null);
 
 
-  constructor(
-    private dialog: MatDialog,
-    private router: Router,
-    private route: ActivatedRoute,
-    private san: DomSanitizer,
-    public authService: AuthService,
-    public cmsService: CMSService) {
-  }
+	constructor(
+		private dialog: MatDialog,
+		private router: Router,
+		private route: ActivatedRoute,
+		private san: DomSanitizer,
+		public authService: AuthService,
+		public cmsService: CMSService) {
+	}
 
-  ngOnInit() {
-    this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+	ngOnInit() {
+		this.contentSubject.next(this.route.snapshot.data['CmsContent']);
 
-    this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
-      if (e instanceof NavigationEnd) {
-        this.contentSubject.next(this.route.snapshot.data['CmsContent']);
-      }
-    });
-  }
+		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+			if (e instanceof NavigationEnd) {
+				this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+			}
+		});
+	}
 
-  ngOnDestroy() {
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
-  }
+	ngOnDestroy() {
+		this.ngUnsubscribe.next();
+		this.ngUnsubscribe.complete();
+	}
 
 
-  /**
-   * Navigate the user to the editor page.
-   */
-  editPage() {
-    this.router.navigateByUrl('/compose/' + this.contentSubject.getValue().route);
-  }
+	/**
+	 * Navigate the user to the editor page.
+	 */
+	editPage() {
+		this.router.navigateByUrl('/compose/' + this.contentSubject.getValue().route);
+	}
 
-  /**
-   * Opens a modal asking the user to verify intent to delete the page they're viewing
-   */
-  deletePage() {
-    const content = this.contentSubject.getValue();
-    const data: ModalData = {
-      headerText: 'Delete ' + content.title,
-      bodyText: 'Do you wish to proceed?',
+	/**
+	 * Opens a modal asking the user to verify intent to delete the page they're viewing
+	 */
+	deletePage() {
+		const content = this.contentSubject.getValue();
+		const data: ModalData = {
+			headerText: 'Delete ' + content.title,
+			bodyText: 'Do you wish to proceed?',
 
-      proceedColor: 'warn',
-      proceedText: 'Delete',
+			proceedColor: 'warn',
+			proceedText: 'Delete',
 
-      cancelColor: 'accent',
-      cancelText: 'Cancel',
+			cancelColor: 'accent',
+			cancelText: 'Cancel',
 
-      includeCancel: true,
+			includeCancel: true,
 
-      proceed: () => {
-        const sub = this.cmsService.deleteContent(content.route).subscribe(
-          () => {
-            sub.unsubscribe();
-            this.cmsService.getContentList(true);
-            this.router.navigateByUrl('/');
-          }
-        );
-      },
-      cancel: () => { },
-    };
-    this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
-  }
+			proceed: () => {
+				const sub = this.cmsService.deleteContent(content.route).subscribe(
+					() => {
+						sub.unsubscribe();
+						this.cmsService.getContentList(true);
+						this.router.navigateByUrl('/');
+					}
+				);
+			},
+			cancel: () => { },
+		};
+		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
+	}
 }

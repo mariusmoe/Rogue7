@@ -8,48 +8,48 @@ import * as logger from 'morgan';
 import * as methodOverride from 'method-override';
 
 export class Setup {
-  /**
-   * Initiates setup
-   * @param  {Express} app express
-   */
-  public static initiate(app: Express) {
-    // Compress / gzip outgoing
-    app.use(compression(<compression.CompressionOptions>{
-      filter: (req: Request) => { return !req.headers['x-no-compression']; }
-    }));
+	/**
+	 * Initiates setup
+	 * @param  {Express} app express
+	 */
+	public static initiate(app: Express) {
+		// Compress / gzip outgoing
+		app.use(compression(<compression.CompressionOptions>{
+			filter: (req: Request) => { return !req.headers['x-no-compression']; }
+		}));
 
-    // Pretty print
-    app.set('json spaces', 4);
+		// Pretty print
+		app.set('json spaces', 4);
 
-    // Secure app with helmet, less xss
-    app.use(helmet());
+		// Secure app with helmet, less xss
+		app.use(helmet());
 
-    // set port
-    app.set('port', process.env.PORT || 2000);
+		// set port
+		app.set('port', process.env.PORT || 2000);
 
-    // bodyParser
-    app.use(urlencoded({ extended: false }));
-    app.use(json());
+		// bodyParser
+		app.use(urlencoded({ extended: false }));
+		app.use(json());
 
-    // Logging
-    if (configUtil.getEnv('NODE_ENV') !== 'test') {
-        //use morgan to log at command line
-        app.use(logger(configGet<string>('loggingMode')));
-    }
+		// Logging
+		if (configUtil.getEnv('NODE_ENV') !== 'test') {
+			//use morgan to log at command line
+			app.use(logger(configGet<string>('loggingMode')));
+		}
 
-    // Headers (CORS)
-    app.use( (req: Request, res: Response, next: NextFunction) => {
-      const origin = req.headers.origin;
-      if (typeof origin === 'string' && configGet<string[]>('allowedOrigins').indexOf(origin) > -1 ) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
-      }
-      res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, PATCH, OPTIONS');
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      next();
-    });
+		// Headers (CORS)
+		app.use((req: Request, res: Response, next: NextFunction) => {
+			const origin = req.headers.origin;
+			if (typeof origin === 'string' && configGet<string[]>('allowedOrigins').indexOf(origin) > -1) {
+				res.setHeader('Access-Control-Allow-Origin', origin);
+			}
+			res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, PATCH, OPTIONS');
+			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
+			res.header('Access-Control-Allow-Credentials', 'true');
+			next();
+		});
 
-    // Method override
-    app.use(methodOverride());
-  }
+		// Method override
+		app.use(methodOverride());
+	}
 }

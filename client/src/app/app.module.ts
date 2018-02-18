@@ -20,19 +20,19 @@ import { BaseRoutingModule } from '@app/modules/base-module/base.routing-module'
 // ];
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  imports: [
-    BrowserAnimationsModule,
-    BaseModule,
-    BaseRoutingModule,
-    // RouterModule.forRoot(appRoutes),
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
-  ],
-  providers: [
-    WorkerService,
-  ],
-  bootstrap: [AppComponent]
+	declarations: [
+		AppComponent
+	],
+	imports: [
+		BrowserAnimationsModule,
+		BaseModule,
+		BaseRoutingModule,
+		// RouterModule.forRoot(appRoutes),
+		ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
+	],
+	providers: [
+		WorkerService,
+	],
+	bootstrap: [AppComponent]
 })
 export class AppModule { }

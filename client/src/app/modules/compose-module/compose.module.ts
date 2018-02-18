@@ -14,17 +14,17 @@ import { CKEditorComponent } from './ckeditor-component/ckeditor.component';
 import { DeactivateGuard } from '@app/guards';
 
 @NgModule({
-  declarations: [
-    ComposeComponent,
-    CKEditorComponent,
-  ],
-  imports: [
-    SharedModule,
-    CommonModule,
-    ComposeRoutingModule
-  ],
-  providers: [
-    DeactivateGuard
-  ]
+	declarations: [
+		ComposeComponent,
+		CKEditorComponent,
+	],
+	imports: [
+		SharedModule,
+		CommonModule,
+		ComposeRoutingModule
+	],
+	providers: [
+		DeactivateGuard
+	]
 })
 export class ComposeModule { }

@@ -2,15 +2,15 @@
 @import '_theme_vars';
 
 .footer {
-  padding: 20px;
-  margin: 0 auto;
-  text-align: center;
-  font-size: 0.75em;
-  color: rgba($textColor, .6);
-  height: $footerHeight;
-  box-sizing: border-box;
+	padding: 20px;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 0.75em;
+	color: rgba($textColor, .6);
+	height: $footerHeight;
+	box-sizing: border-box;
 
-  span {
-    display: block;
-  }
+	span {
+		display: block;
+	}
 }
