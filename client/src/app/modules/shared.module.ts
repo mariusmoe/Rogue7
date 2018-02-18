@@ -10,7 +10,8 @@ import {
   InterceptorService,
   SteamService,
   MobileService,
-  TokenService
+  TokenService,
+	AdminService
 } from '@app/services';
 
 // Modules
@@ -53,6 +54,7 @@ export class SharedModule {
         SteamService,
         MobileService,
         TokenService,
+				AdminService,
         AuthGuard,
         AdminGuard,
         LoginGuard

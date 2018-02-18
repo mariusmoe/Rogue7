@@ -4,37 +4,28 @@ import { NgModule } from '@angular/core';
 import { AdminRoutingModule } from './admin.routing-module';
 
 // Modules
-import { SharedModule } from '@app/modules/shared.module';
-import { CommonModule } from '@app/modules/common.module';
+import { SharedModule, CommonModule } from '@app/modules';
 
 // Components
-import { ComposeComponent } from './compose-component/compose.component';
-import { CKEditorComponent } from './ckeditor-component/ckeditor.component';
+import { SettingsComponent } from './settings-component/settings.component';
+import { UsersComponent } from './users-component/users.component';
 import { SteamComponent } from './steam-component/steam.component';
-
-// Directive
-import { CKeditorDirective } from './ckeditor-component/ckeditor.directive';
-
-// Guards
-import { DeactivateGuard } from '@app/guards';
+import { UserModalComponent } from './user-modal-component/user.modal.component';
 
 @NgModule({
-  declarations: [
-    ComposeComponent,
-    CKEditorComponent,
-    SteamComponent,
-    CKeditorDirective
-  ],
-  entryComponents: [
-    CKEditorComponent
-  ],
-  imports: [
-    SharedModule,
-    CommonModule,
-    AdminRoutingModule
-  ],
-  providers: [
-    DeactivateGuard
-  ]
+	declarations: [
+		SettingsComponent,
+		UsersComponent,
+		SteamComponent,
+		UserModalComponent
+	],
+	imports: [
+		SharedModule,
+		CommonModule,
+		AdminRoutingModule
+	],
+	entryComponents: [
+		UserModalComponent
+	]
 })
 export class AdminModule { }

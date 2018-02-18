@@ -10,7 +10,7 @@ $primary:     map-get(nth($mat-primary, 1), nth($mat-primary, 2));
 $accent:      map-get(nth($mat-accent,  1), nth($mat-accent,  2));
 
 // Generic colours
-$background:  #121212;
+$background: #121212;
 $headerBG: #232323;
 $sideBG: #191919;
 
@@ -26,7 +26,7 @@ $boxShadow: 0 0 1.2em 0 rgba(0,0,0,0.30);
 $textColor: #ccc;
 
 // Sizing
-$wrapperWidth: 1400px;
+$wrapperWidth: 1500px;
 $sideWidth: 220px;
 
 $headerHeight: 40px;

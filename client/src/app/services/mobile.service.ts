@@ -24,7 +24,7 @@ export class MobileService {
     if (breakpointObserver.isMatched(this.mobileDevices)) { this.isMobileSubject.next(true); }
 
     // Handle Mobile breakpoint change
-    this.breakpointObserver.observe(this.mobileDevices).pipe(takeUntil(this.ngUnsubscribe)).subscribe(result => {
+    this.breakpointObserver.observe(this.mobileDevices).pipe(takeUntil(this.ngUnsubscribe), share()).subscribe(result => {
       this.isMobileSubject.next(result.matches);
     });
   }

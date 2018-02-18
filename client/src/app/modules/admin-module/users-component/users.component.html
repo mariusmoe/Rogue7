@@ -1,0 +1,31 @@
+<ng-container *ngIf="displayedResults | async as users; else unavailable">
+
+	<div [ngClass]="{ filterBox: true, mobile: (mobileService.isMobile() | async) }">
+		<mat-form-field floatLabel="never" ngClass="filter">
+			<input matInput placeholder="Filter" type="text" autocomplete="off"
+				   #filter (keyup)="filterUsers(filter.value)">
+		</mat-form-field>
+	</div>
+
+	<div class="users">{{users?.length || 0}} users</div>
+	<mat-list ngClass="list">
+		<ng-container *ngFor="let user of users; let i = index; trackBy: trackBy">
+			<mat-divider></mat-divider>
+			<mat-list-item class="item">
+				<h4 mat-line>{{user.username}}</h4>
+				<p mat-line>{{user.role}}</p>
+				<div class="config">
+					<button mat-raised-button (click)="configUser(user)">Configure</button>
+				</div>
+			</mat-list-item>
+		</ng-container>
+
+	</mat-list>
+	<mat-paginator [length]="searchResults?.length || 0" [pageSize]="pageSize" [hidePageSize]="mobileService.isMobile() | async"
+				   [pageSizeOptions]="pageSizes" (page)="paginator($event)" showFirstLastButtons="true">
+	</mat-paginator>
+</ng-container>
+
+<ng-template #unavailable>
+	Loading..
+</ng-template>

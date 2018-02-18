@@ -11,6 +11,7 @@ export interface CmsContent {
   content?: string;
   nav?: boolean;
   description?: string;
+  image?: string;
   // Only present when requesting single content
   createdBy?: string;
   updatedBy?: string;

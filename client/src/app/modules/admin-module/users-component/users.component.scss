@@ -1,0 +1,29 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
+@import '_theme_vars';
+
+.relevance {
+	font-size: 0.75em !important;
+}
+
+.filterBox {
+	margin: 0 auto;
+	width: 250px;
+
+	&.mobile {
+		width: 80%;
+	}
+
+	.filter {
+		width: 100%;
+	}
+}
+
+.users {
+	margin-top: 10px;
+}
+
+$itemHeight: 72px;
+
+.item {
+	height: $itemHeight !important;
+}

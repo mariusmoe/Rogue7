@@ -9,7 +9,6 @@ import { ModalData, CmsContent, AccessRoles } from '@app/models';
 
 import { ModalComponent } from '../modals/modal.component';
 
-import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
@@ -56,7 +55,7 @@ export class ContentComponent implements OnInit, OnDestroy {
    * Navigate the user to the editor page.
    */
   editPage() {
-    this.router.navigateByUrl('/admin/compose/' + this.contentSubject.getValue().route);
+    this.router.navigateByUrl('/compose/' + this.contentSubject.getValue().route);
   }
 
   /**

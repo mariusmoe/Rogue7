@@ -8,6 +8,8 @@ const baseURL = 'http://localhost:2000';
 export const environment = {
   production: false,
 
+  TIMEOUT: 5000,
+
   URL: {
     base:           baseURL,
     api:            baseURL + '/api',
@@ -22,9 +24,15 @@ export const environment = {
     cms: {
       content:      baseURL + '/api/cms',
       search:       baseURL + '/api/cms/search',
-    },
+	},
+		admin: {
+		  users: {
+				all:				baseURL + '/api/admin/users',
+				role:				baseURL + '/api/admin/users/role',
+		  }
+		}
   },
-  
+
   FOOTER: {
     desc: 'Sotingane',
     copyright: 'Copyright © 2018 Trygve Sørensen. All rights reserved.'

@@ -4,50 +4,47 @@
 
 // HEADER
 .topHeader {
-  background: $contentBG;
-  border-bottom: $border;
-  height: $headerHeight;
-  max-height: $headerHeight;
-  box-sizing: border-box;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  z-index: 1000;
-  box-shadow: $boxShadow;
+	background: $contentBG;
+	border-bottom: $border;
+	height: $headerHeight;
+	max-height: $headerHeight;
+	box-sizing: border-box;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	z-index: 1000;
+	box-shadow: $boxShadow;
 
-  .wrapper {
-    height: $headerHeight;
-    max-height: $headerHeight;
-    padding: 0 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+	.wrapper {
+		height: $headerHeight;
+		max-height: $headerHeight;
+		padding: 0 8px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 
-  a.title {
-    text-align: center;
-    font-size: 1.5em;
+	a.title {
+		text-align: center;
+		font-size: 1.5em;
 
-    .logo {
-      vertical-align: bottom;
-      margin-bottom: 2px;
-      margin-right: 1px;
+		.logo {
+			vertical-align: bottom;
+			margin-bottom: 2px;
+			margin-right: 1px;
 
-      ::ng-deep path {
-        fill: $primary;
-      }
-    }
-  }
+			::ng-deep path {
+				fill: $primary;
+			}
+		}
+	}
 
-  .search {
-    position: fixed;
-    top: 6px;
-    left: $sideWidth;
-    height: calc(#{$headerHeight} - 12px);
-    max-height: calc(#{$headerHeight} - 12px);
-    box-sizing: border-box;
-    background: $background;
-    box-shadow: $boxShadow inset;
-  }
+	.search {
+		height: calc(#{$headerHeight} - 12px);
+		max-height: calc(#{$headerHeight} - 12px);
+		box-sizing: border-box;
+		background: $sideBG;
+		box-shadow: $boxShadow inset;
+	}
 }

@@ -1,0 +1,95 @@
+{
+  "configVersion": 1,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "/favicon.ico",
+        "/index.html",
+        "/0.f56eb7584d2090061702.chunk.js",
+        "/1.f6dd55a7b4d2bb8aac34.chunk.js",
+        "/2.f57d10c0ca7547ce0164.chunk.js",
+        "/3.74abd05a9241be67269f.chunk.js",
+        "/inline.303d4b13d0008e571b73.bundle.js",
+        "/main.7c9f7e998ebc77cd1611.bundle.js",
+        "/polyfills.5f3f1404803ed0b754e1.bundle.js",
+        "/styles.f894b9b0947e933e8d73.bundle.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "/assets/logo192.png",
+        "/assets/logo192themed.png",
+        "/assets/logo192themed.svg",
+        "/assets/logo256.svg",
+        "/assets/logo256themed.png",
+        "/assets/logo256themed.svg",
+        "/assets/logo512themed.png",
+        "/assets/logo512themed.svg"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "fonts",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [],
+      "patterns": [
+        "https:\\/\\/fonts\\.googleapis\\.com\\/.*",
+        "https:\\/\\/fonts\\.gstatic\\.com\\/.*"
+      ]
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-freshness",
+      "patterns": [
+        "\\/api\\/cms$",
+        "\\/api\\/steam$"
+      ],
+      "strategy": "freshness",
+      "maxSize": 100,
+      "maxAge": 86400000,
+      "timeoutMs": 10000,
+      "version": 1
+    },
+    {
+      "name": "api-performance",
+      "patterns": [
+        "\\/api\\/cms\\/.*",
+        "\\/api\\/steam\\/.*"
+      ],
+      "strategy": "performance",
+      "maxSize": 100,
+      "maxAge": 120000,
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/0.f56eb7584d2090061702.chunk.js": "f87ad0f83370f403bab5f3a21f44990a379bfb4f",
+    "/assets/logo192.png": "824aa1dfee0ac98c4a3308f9dcea3ebe81e6024d",
+    "/1.f6dd55a7b4d2bb8aac34.chunk.js": "92034f744cc1c38eb3a0ee96f8e9c5ddefb2009b",
+    "/assets/logo192themed.png": "5f30ac741232684a900a2a6b1b17138c3228f40a",
+    "/2.f57d10c0ca7547ce0164.chunk.js": "fdac6ba5b2218da940f2432cf348f2075ba0adec",
+    "/assets/logo192themed.svg": "80f2059a83d780a2acf19ebd9396291a68ba8fdd",
+    "/3.74abd05a9241be67269f.chunk.js": "d8e45f23658a1c03946c8ec8431ec437aa0de63c",
+    "/assets/logo256.svg": "0e7405b3896bca832e6d9f8cff0a3c5f141d8a49",
+    "/inline.303d4b13d0008e571b73.bundle.js": "126c89a38945bcc5a6cbe6374f2c13a8ce01442b",
+    "/assets/logo256themed.png": "2b385bf32ae114ec91d6ec0d170750085446c439",
+    "/main.7c9f7e998ebc77cd1611.bundle.js": "ac365d702d88529b172b69ce89b3c5d1b35252c4",
+    "/assets/logo256themed.svg": "80f2059a83d780a2acf19ebd9396291a68ba8fdd",
+    "/polyfills.5f3f1404803ed0b754e1.bundle.js": "1340691214f3a89a76a92c147020c1eba88e4a30",
+    "/assets/logo512themed.png": "ed67d6486b332960e1b9bee10b28e5a7dfef8517",
+    "/styles.f894b9b0947e933e8d73.bundle.css": "c5193340afeb87995d381f59edd9d91a20d9e4f2",
+    "/assets/logo512themed.svg": "d34ca372de662506bd2f7aa386282059e9849315",
+    "/favicon.ico": "41c364bb1639103510d3c43b4d7da4d682ac0f4b",
+    "/index.html": "1e6550a3786799218f27aea811011b158f15c4fd"
+  }
+}

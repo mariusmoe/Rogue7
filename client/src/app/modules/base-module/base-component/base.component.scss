@@ -1,35 +1,35 @@
 /// <reference path="../../../scss/_theme_vars.scss" />
 @import '_theme_vars';
 
+$wrapperPadding: 20px;
 
 // SITE SETUP
 .wrapper {
-  padding-top: calc(#{$headerHeight} + 20px);
-  box-sizing: border-box;
-  color: $textColor;
-  max-width: $wrapperWidth;
-  padding-left: calc(#{$sideWidth} + 20px);
-  padding-right: 20px;
-  margin: 0 auto;
+	padding-top: calc(#{$headerHeight} + #{$wrapperPadding});
+	box-sizing: border-box;
+	max-width: $wrapperWidth;
+	padding-left: calc(#{$sideWidth} + #{$wrapperPadding});
+	padding-right: $wrapperPadding;
+	margin: 0 auto;
 
-  main {
-    min-height: calc(100vh - calc(#{$headerHeight} + 20px) - #{$footerHeight});
-  }
+	main {
+		min-height: calc(100vh - calc(#{$headerHeight} + #{$wrapperPadding}) - #{$footerHeight});
+	}
 
 
-  &.mobile {
-    padding: 5px;
-    padding-bottom: 0;
-    box-sizing: border-box;
-    margin-top: $headerHeight;
-    // Required to make overflow-wrap: break-word; work on mobile
-    max-width: 100%;
-    min-width: 100%;
+	&.mobile {
+		padding: 5px;
+		padding-bottom: 0;
+		box-sizing: border-box;
+		margin-top: $headerHeight;
+		// Required to make overflow-wrap: break-word; work on mobile
+		max-width: 100%;
+		min-width: 100%;
 
-    main {
-      min-height: calc(100vh - calc(#{$headerHeight} + 5px) - #{$footerHeight});
-    }
-  }
+		main {
+			min-height: calc(100vh - calc(#{$headerHeight} + 5px) - #{$footerHeight});
+		}
+	}
 }
 
 
@@ -45,7 +45,8 @@
     height: calc(100vh - #{$headerHeight});
     padding: 10px 7px 4px 7px;
     box-sizing: border-box;
-    background: $background;
+    background: $sideBG;
+		box-shadow: $boxShadow inset;
   }
 }
 

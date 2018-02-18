@@ -6,9 +6,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { User } from '@app/models';
 import { AuthService } from '@app/services';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
+
 
 enum STATES {
   READY,

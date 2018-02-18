@@ -4,15 +4,14 @@ import { MatIconRegistry, MatDrawer } from '@angular/material';
 import { Router, ActivationStart, ActivationEnd } from '@angular/router';
 
 import { MobileService, AuthService, WorkerService } from '@app/services';
-import { RoutingAnim } from '@app/animations';
+//import { RoutingAnim } from '@app/animations';
 
 import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-base-component',
-  animations: [RoutingAnim],
+  //animations: [RoutingAnim],
   templateUrl: './base.component.html',
   styleUrls: ['./base.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -9,7 +9,6 @@ import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { timeout } from 'rxjs/operators';
 
-const TIMEOUT = 5000;
 
 @Injectable()
 export class SteamService {
@@ -34,7 +33,7 @@ export class SteamService {
    * Query for all steam servers
    */
   requestSteamServers(): Observable<SteamServer[]> {
-    return this.http.get<SteamServer[]>(environment.URL.steam.servers).pipe(timeout(TIMEOUT));
+    return this.http.get<SteamServer[]>(environment.URL.steam.servers).pipe(timeout(environment.TIMEOUT));
   }
 
   /**
@@ -42,7 +41,7 @@ export class SteamService {
    * @param  {string} route the route assgined for the steam server
    */
   requestSteamServer(route: string): Observable<SteamServer> {
-    return this.http.get<SteamServer>(environment.URL.steam.servers + '/' + route).pipe(timeout(TIMEOUT));
+    return this.http.get<SteamServer>(environment.URL.steam.servers + '/' + route).pipe(timeout(environment.TIMEOUT));
   }
 
   /**
@@ -50,9 +49,8 @@ export class SteamService {
    * @param  {string} route the route assgined for the steam server
    */
   querySteamServerData(route: string) {
-    this.http.get<GameDig>(environment.URL.steam.servers + '/' + route + '/data').pipe(
-      timeout(TIMEOUT)
-    ).subscribe(
+    this.http.get<GameDig>(environment.URL.steam.servers + '/' + route + '/data').pipe(timeout(environment.TIMEOUT))
+      .subscribe(
         data => {
           data.lastUpdate = new Date();
           const now = new Date().valueOf();

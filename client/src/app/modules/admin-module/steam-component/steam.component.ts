@@ -3,10 +3,8 @@ import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/fo
 
 import { SteamService } from '@app/services';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({

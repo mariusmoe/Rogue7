@@ -1,0 +1,10 @@
+
+.row {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: baseline;
+
+	label {
+		margin-right: 2em;
+	}
+}

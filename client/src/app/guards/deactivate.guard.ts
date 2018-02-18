@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
 
-import { ComposeComponent } from '@app/modules/admin-module/compose-component/compose.component';
+import { ComposeComponent } from '@app/modules/compose-module/compose-component/compose.component';
 
 
 @Injectable()

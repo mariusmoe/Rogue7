@@ -17,7 +17,7 @@ export class VideoDirective {
 
   constructor(private el: ElementRef<HTMLAnchorElement>, private renderer: Renderer2) {
     // Checks for Validity of element
-    if (!el.nativeElement || el.nativeElement.tagName !== "A") { return; }
+    if (!el.nativeElement || el.nativeElement.tagName !== 'A') { return; }
     if (el.nativeElement.href === undefined || typeof el.nativeElement.href !== 'string') { return; }
     if (!el.nativeElement.parentNode) { return; } // to protect against template issues
 
@@ -33,7 +33,7 @@ export class VideoDirective {
       return; // Do nothing
     }
 
-    // Create the wrapper 
+    // Create the wrapper
     const wrapper = this.renderer.createElement('div');
     this.renderer.addClass(wrapper, 'video');
 
@@ -96,6 +96,7 @@ export class VideoDirective {
 
     // Create Thumbnail image (also required for aspect ratio)
     this._img = this.renderer.createElement('img');  // Creating a black 16 by 9 base64 image
-    this.renderer.setAttribute(this._img, 'src', 'data:image/bmp;base64,Qk1YAQAAAAAAADYAAAAoAAAAEAAAAAkAAAABABAAAAAAACIBAAASCwAAEgs' + 'A'.repeat(400) + '=');
+    this.renderer.setAttribute(this._img, 'src',
+      'data:image/bmp;base64,Qk1YAQAAAAAAADYAAAAoAAAAEAAAAAkAAAABABAAAAAAACIBAAASCwAAEgs' + 'A'.repeat(400) + '=');
   }
 }

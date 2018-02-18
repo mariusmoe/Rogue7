@@ -8,15 +8,12 @@ import { environment } from '@env';
 import { User, UpdatePasswordUser, UserToken, AccessRoles } from '@app/models';
 import { TokenService } from '@app/services/token.service';
 
+import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Observable } from 'rxjs/Observable';
 import { map, catchError, timeout, takeUntil } from 'rxjs/operators';
 import { timer } from 'rxjs/observable/timer';
-import { of } from 'rxjs/observable/of';
-
-
-const TIMEOUT = 5000;
+import { of } from 'rxjs/observable/of';  // will be from 'rxjs' in v6
 
 
 @Injectable()
@@ -147,6 +144,25 @@ export class AuthService {
     return user && user.role === role;
   }
 
+
+  /**
+   * Log out current user
+   */
+  logOut() {
+    this.tokenService.token = null;
+    if (this.renewalSub) { this.renewalSub.unsubscribe(); }
+    this.userSubject.next(null);
+    this.router.navigateByUrl('/');
+  }
+
+
+  compareUsers(a: User, b: User) {
+		if (a._id && b._id) {
+		  return a._id === b._id;
+		}
+		return a.username === b.username;
+  }
+
   // ---------------------------------------
   // ------------- HTTP METHODS ------------
   // ---------------------------------------
@@ -167,22 +183,9 @@ export class AuthService {
         this.updateCurrentUserData(userToken.token);
         return !!userToken.token;
       }),
-      timeout(TIMEOUT)
+      timeout(environment.TIMEOUT)
     );
   }
-
-
-  /**
-   * Log out current user
-   */
-  logOut() {
-    this.tokenService.token = null;
-    if (this.renewalSub) { this.renewalSub.unsubscribe(); }
-    this.userSubject.next(null);
-    this.router.navigateByUrl('/');
-  }
-
-
 
   /**
    * Attempt to renew JWT token
@@ -194,7 +197,7 @@ export class AuthService {
         this.tokenService.token = userToken.token;    // Set token
         return userToken;
       }),
-      timeout(TIMEOUT)
+      timeout(environment.TIMEOUT)
     );
   }
 
@@ -206,7 +209,7 @@ export class AuthService {
   updatePassword(user: UpdatePasswordUser): Observable<boolean> {
     return this.http.post<boolean>(environment.URL.auth.updatepass, user).pipe(
       map( () => true),
-      timeout(TIMEOUT),
+      timeout(environment.TIMEOUT),
       catchError(err => of(false))
     ); // returns message objects
   }

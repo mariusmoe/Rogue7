@@ -1,14 +1,10 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-
-
 import { Router, NavigationStart, NavigationEnd, NavigationCancel, NavigationError } from '@angular/router';
 
 import { interval } from 'rxjs/observable/interval';
-import { Observable } from 'rxjs/observable';
 import { Subject } from 'rxjs/Subject';
-import { takeUntil, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
-
+import { takeUntil, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-loadingbar-component',

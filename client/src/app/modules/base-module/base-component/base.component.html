@@ -30,7 +30,7 @@
   
   <div class="wrapper" [ngClass]="{ mobile: (mobileService.isMobile() | async) }">
     <!-- CONTENT -->
-    <main [@RoutingAnim]="routerSub | async">
+    <main> <!-- [@RoutingAnim]="routerSub | async" -->
       <router-outlet></router-outlet>
     </main>
 

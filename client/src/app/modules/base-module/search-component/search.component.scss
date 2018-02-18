@@ -2,12 +2,12 @@
 @import '_theme_vars';
 
 .searchBox {
-  width: 160px;
+  width: 350px;
   transition: width ease-in-out 0.5s;
 
   &:not(.mobile) {
     &.wide {
-      width: 360px;
+      width: 550px;
     }
   }
 

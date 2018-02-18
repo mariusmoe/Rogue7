@@ -50,6 +50,20 @@ $custom-dark-theme-foreground: (
   );
 }
 
+@mixin mat-snack-bar-theme($theme) {
+	$is-dark-theme: map-get($theme, is-dark);
+	$accent: map-get($theme, accent);
+
+	.mat-snack-bar-container {
+		background: if($is-dark-theme, $materialBG, #323232);
+		color: $textColor;
+	}
+
+	.mat-simple-snackbar-action {
+		color: if($is-dark-theme, inherit, mat-color($accent));
+	}
+}
+
 
 $app-theme: custom-dark-theme(
   mat-palette(nth($mat-primary, 1), nth($mat-primary, 2), nth($mat-primary, 3), nth($mat-primary, 4)),
@@ -77,6 +91,7 @@ $app-theme: custom-dark-theme(
 // @include mat-card-theme($app-theme);
 @include mat-sidenav-theme($app-theme);
 @include mat-expansion-panel-theme($app-theme);
+@include mat-tabs-theme($app-theme);
 
 // Features
 @include mat-snack-bar-theme($app-theme);

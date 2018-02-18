@@ -1,13 +1,8 @@
 @import "_theme_vars";
 
-$loginFormPadding: 1em;
-
 .loginForm {
   position: relative;
-  padding: $loginFormPadding;
-}
-.loginButton {
-  margin-left: -($loginFormPadding);
+  padding: 1em;
 }
 
 .field {
@@ -27,9 +22,19 @@ $loginFormPadding: 1em;
     width: 100%;
     height: 100%;
     pointer-events: none !important;
-    .loading {
-      margin: 0 auto;
-      margin-top: 30px;
-    }
   }
+}
+
+.actions {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+
+	button {
+		margin-right: 10px;
+	}
+
+	.loading {
+		display: inline-block;
+	}
 }

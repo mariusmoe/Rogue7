@@ -37,7 +37,7 @@ describe('BaseComponent', () => {
         RouterTestingModule,
         HttpClientModule
       ],
-      //providers: [ { provide: AuthService, useValue: authServiceStub } ]
+      // providers: [ { provide: AuthService, useValue: authServiceStub } ]
     })
     .compileComponents();
   }));

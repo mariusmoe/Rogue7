@@ -8,6 +8,7 @@ import {
   MatCheckboxModule,
   MatExpansionModule,
   MatProgressSpinnerModule,
+  MatTabsModule,
 } from '@angular/material';
 
 
@@ -15,12 +16,12 @@ import {
 
 @NgModule({
   exports: [
-    // Material
-    MatAutocompleteModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatExpansionModule,
-    MatProgressSpinnerModule,
+		MatAutocompleteModule,
+		MatSelectModule,
+		MatCheckboxModule,
+		MatExpansionModule,
+		MatProgressSpinnerModule,
+		MatTabsModule
   ]
 })
 export class CommonModule { }

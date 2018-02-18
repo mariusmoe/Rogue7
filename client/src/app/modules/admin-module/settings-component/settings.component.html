@@ -1,0 +1,25 @@
+<h1>Application Settings</h1>
+
+<mat-tab-group class="demo-tab-group">
+	<mat-tab label="Users">
+		<ng-template matTabContent>
+			<app-users-component></app-users-component>
+		</ng-template>
+	</mat-tab>
+
+	<mat-tab label="Test">
+		<ng-template matTabContent>
+			<mat-expansion-panel>
+				<mat-expansion-panel-header>
+					<mat-panel-title>Settings</mat-panel-title>
+				</mat-expansion-panel-header>
+				<ng-template matExpansionPanelContent>
+					<div>
+						test
+					</div>
+				</ng-template>
+			</mat-expansion-panel>
+
+		</ng-template>
+	</mat-tab>
+</mat-tab-group>

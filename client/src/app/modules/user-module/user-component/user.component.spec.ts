@@ -24,13 +24,13 @@ describe('UserComponent', () => {
   let fixture: ComponentFixture<UserComponent>;
 
   const authServiceStub = {
-    //getUser(): Observable<User> {
+    // getUser(): Observable<User> {
     //  return of({
     //    _id: 'abcdefg',
     //    username: 'testuser',
     //    role: 'admin',
     //  });
-    //}
+    // }
   };
 
   beforeEach(async(() => {
