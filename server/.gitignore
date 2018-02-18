@@ -46,6 +46,7 @@ config/*
 
 # dont include dist
 dist/
+www/
 
 # Do not include seeds
 /src/libs/seeds.ts
