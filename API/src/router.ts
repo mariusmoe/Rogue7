@@ -128,8 +128,8 @@ export class AppRouter {
 		const usersRoutes = Router();
 		// Get user list
 		usersRoutes.get('/', PassportConfig.requireAuth, UsersController.getAllUsers);
-		// Set user role
-		usersRoutes.post('/role', PassportConfig.requireAuth, UsersController.setUserRole);
+		// Patch User
+		usersRoutes.post('/:id', PassportConfig.requireAuth, UsersController.patchUser);
 
 
 

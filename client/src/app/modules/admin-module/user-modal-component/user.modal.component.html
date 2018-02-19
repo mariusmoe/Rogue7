@@ -1,24 +1,40 @@
 <h2 mat-dialog-title align="start">{{data.user.username}}</h2>
 <div mat-dialog-content align="start" class="wrapper">
-	<ng-container *ngIf="!authService.isSameUser(data.user, authService.getUser().getValue()); else isSelf">
+	<form [formGroup]="patchUserForm" id="patchUserForm" autocomplete="off" (ngSubmit)="submitForm()">
+		<!-- USERNAME -->
+		<div class="row">
+			<label for="username">Username</label>
+
+			<mat-form-field class="field">
+				<input matInput id="username" #username type="text" formControlName="username" required>
+				<mat-error *ngIf="patchUserForm.get('username').hasError('required')">
+					Username is <strong>required</strong>
+				</mat-error>
+				<mat-error *ngIf="patchUserForm.get('username').hasError('usernameTaken')">
+					Username is taken
+				</mat-error>
+			</mat-form-field>
+		</div>
+
+		<!-- ROLE -->
 		<div class="row">
 			<label for="role">Role</label>
 
 			<mat-form-field ngClass="field">
-				<mat-select id="role" [value]="data.user.role"
-							(selectionChange)="updateUserRights(data.user, $event)">
+				<mat-select id="role" formControlName="role" required>
 					<mat-option *ngFor="let option of accessChoices" [value]="option.value">
 						{{ option.verbose }}
 					</mat-option>
 				</mat-select>
 			</mat-form-field>
 		</div>
-	</ng-container>
-
-	<ng-template #isSelf>
-		<p>You cannot configure your own user</p>
-	</ng-template>
+	</form>
+	<p>
+		{{ issue | async }}
+	</p>
 </div>
 <div mat-dialog-actions align="end">
-	<button mat-button (click)="close()">Close</button>
+	<button mat-button (click)="close()">Cancel</button>
+	<button mat-raised-button type="submit" form="patchUserForm"
+			[disabled]="(!patchUserForm.valid || !patchUserForm.dirty)">Save</button>
 </div>

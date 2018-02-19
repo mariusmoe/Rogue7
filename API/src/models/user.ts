@@ -43,9 +43,9 @@ const schema = new Schema({
 export interface user extends Document {
 	username: string;
 	username_lower: string;
-	password: string;
+	password?: string;
 	role: accessRoles.admin | accessRoles.user;
-	comparePassword: (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void) => null;
+	comparePassword?: (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void) => null;
 }
 
 

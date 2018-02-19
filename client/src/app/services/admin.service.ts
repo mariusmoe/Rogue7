@@ -22,14 +22,11 @@ export class AdminService {
 	// ---------------------------------------
 
 	getAllusers(): Observable<User[]> {
-		return this.http.get<User[]>(environment.URL.admin.users.all).pipe(timeout(environment.TIMEOUT));
+		return this.http.get<User[]>(environment.URL.admin.users).pipe(timeout(environment.TIMEOUT));
 	}
 
 
-	setUserRole(user: User, role: AccessRoles): Observable<boolean> {
-		return this.http.post<boolean>(environment.URL.admin.users.role, {
-			user: user,
-			role: role
-		}).pipe(timeout(environment.TIMEOUT));
+	patchUser(user: User): Observable<boolean> {
+		return this.http.post<boolean>(environment.URL.admin.users + '/' + user._id, user).pipe(timeout(environment.TIMEOUT));
 	}
 }

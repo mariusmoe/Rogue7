@@ -1,4 +1,4 @@
-<ng-container *ngIf="displayedResults | async as users; else unavailable">
+<ng-container *ngIf="displayedResults | async as filteredUsers; else unavailable">
 
 	<div [ngClass]="{ filterBox: true, mobile: (mobileService.isMobile() | async) }">
 		<mat-form-field floatLabel="never" ngClass="filter">
@@ -7,21 +7,23 @@
 		</mat-form-field>
 	</div>
 
-	<div class="users">{{users?.length || 0}} users</div>
-	<mat-list ngClass="list">
-		<ng-container *ngFor="let user of users; let i = index; trackBy: trackBy">
+	<div class="users">{{users.length || 0}} users<span *ngIf="numFilteredUsers !== users.length">, filtered: {{numFilteredUsers}}</span></div>
+	<mat-list ngClass="list"> <!-- filteredUsers defined via async pipe above -->
+		<ng-container *ngFor="let user of filteredUsers; let i = index; trackBy: trackBy">
 			<mat-divider></mat-divider>
 			<mat-list-item class="item">
 				<h4 mat-line>{{user.username}}</h4>
 				<p mat-line>{{user.role}}</p>
 				<button [disabled]="authService.isSameUser(user, authService.getUser().getValue())" #config
-						mat-mini-fab (click)="configUser(user)"><mat-icon [color]="config.disabled ? '' : 'primary'">settings</mat-icon></button>
+						mat-mini-fab (click)="configUser(user)">
+					<mat-icon [color]="config.disabled ? '' : 'primary'">settings</mat-icon>
+				</button>
 			</mat-list-item>
 		</ng-container>
 
 	</mat-list>
-	<mat-paginator [length]="searchResults?.length || 0" [pageSize]="pageSize" [hidePageSize]="mobileService.isMobile() | async"
-				   [pageSizeOptions]="pageSizes" (page)="paginator($event)" showFirstLastButtons="true">
+	<mat-paginator [length]="numFilteredUsers || 0" [(pageSize)]="pageSize" [hidePageSize]="mobileService.isMobile() | async"
+				   [pageSizeOptions]="pageSizes" (page)="paginator($event)" [pageIndex]="pageIndex" showFirstLastButtons="true">
 	</mat-paginator>
 </ng-container>
 

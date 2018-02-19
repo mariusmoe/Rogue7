@@ -3,7 +3,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AdminService, MobileService, AuthService } from '@app/services';
 import { User, ModalData } from '@app/models';
 
-import { MatDialog, MatDialogConfig } from '@angular/material';
+import { MatDialog, MatDialogConfig, PageEvent } from '@angular/material';
 
 import { UserModalComponent, UserModalData } from '../user-modal-component/user.modal.component';
 
@@ -25,9 +25,10 @@ export class UsersComponent implements OnInit {
 	public displayedResults = new BehaviorSubject<User[]>(null);
 	public pageSize = 10;
 	public pageSizes = [10, 25, 50, 100];
-	private currentIndex = 0;
+	public pageIndex = 0;
+	public numFilteredUsers = 0;
 
-	filter = new BehaviorSubject<string>('');
+	private filterSubject = new BehaviorSubject<string>('');
 
 	constructor(
 		private dialog: MatDialog,
@@ -39,8 +40,8 @@ export class UsersComponent implements OnInit {
 	}
 
 	ngOnInit() {
-		this.filter.pipe(distinctUntilChanged(), debounceTime(300), takeUntil(this.ngUnsubscribe)).subscribe(value => {
-			this.updateList();
+		this.filterSubject.pipe(distinctUntilChanged(), debounceTime(300), takeUntil(this.ngUnsubscribe)).subscribe(value => {
+			this.updateFilteredList();
 		})
 	}
 
@@ -49,36 +50,43 @@ export class UsersComponent implements OnInit {
 	private updateList() {
 		const sub = this.adminService.getAllusers().subscribe(users => {
 			this.users = users;
-
-			const list = this.users.filter((user: User) => user.username.toLowerCase().includes(this.filter.getValue().toLowerCase()));
-			this.displayedResults.next(list.slice(this.currentIndex, this.pageSize));
+			this.updateFilteredList();
+			
 			sub.unsubscribe();
 		});
 	}
+
+	private updateFilteredList(index: number = 0, start: number = 0) {
+		this.pageIndex = index;
+		const filteredList = this.users.filter((user: User) => user.username.toLowerCase().includes(this.filterSubject.getValue().toLowerCase()));
+		this.numFilteredUsers = filteredList.length;
+		this.displayedResults.next(filteredList.slice(start, start + this.pageSize));
+		console.log(this.displayedResults.getValue());
+	}
+
 
 	/**
 	 * Paginator helper function
 	 * @param  {any}    event paginator event
 	 */
-	paginator(event: any) {
+	public paginator(event: PageEvent) {
 		this.pageSize = event.pageSize;
-		this.currentIndex = event.pageIndex * event.pageSize;
-		this.displayedResults.next(this.users.slice(this.currentIndex, this.currentIndex + event.pageSize));
+		console.log(event.pageIndex);
+		this.updateFilteredList(event.pageIndex, event.pageIndex * event.pageSize);
 	}
 
-	filterUsers(filter: string) {
-		console.log(filter);
-		this.filter.next(filter);
+	public filterUsers(filter: string) {
+		this.filterSubject.next(filter);
 	}
 
 
 
-	configUser(user: User) {
+	public configUser(user: User) {
 		this.dialog.open(
 			UserModalComponent,
-			<MatDialogConfig>{ data: <UserModalData>{ user: user } }
-		).afterClosed().subscribe(closedResult => {
-			this.updateList();
+			<MatDialogConfig>{ data: <UserModalData>{ user: user, userList: this.users } }
+		).afterClosed().subscribe((closedResult: boolean) => {
+			if (closedResult) { this.updateList(); }
 		});
 	}
 

@@ -26,10 +26,7 @@ export const environment = {
 			search:			baseURL + '/api/cms/search',
 		},
 		admin: {
-			users: {
-				all:		baseURL + '/api/admin/users',
-				role:		baseURL + '/api/admin/role',
-			}
+			users:			baseURL + '/api/admin/users',
 		}
 	},
 
