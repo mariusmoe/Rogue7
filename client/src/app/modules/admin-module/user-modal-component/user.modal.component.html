@@ -1,17 +1,23 @@
 <h2 mat-dialog-title align="start">{{data.user.username}}</h2>
 <div mat-dialog-content align="start" class="wrapper">
-	<div class="row">
-		<label for="role">Role</label>
+	<ng-container *ngIf="!authService.isSameUser(data.user, authService.getUser().getValue()); else isSelf">
+		<div class="row">
+			<label for="role">Role</label>
 
-		<mat-form-field ngClass="field">
-			<mat-select id="role" [value]="data.user.role" [disabled]="authService.compareUsers(data.user, authService.getUser().getValue())"
-						(selectionChange)="updateUserRights(data.user, $event)">
-				<mat-option *ngFor="let option of accessChoices" [value]="option.value">
-					{{ option.verbose }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
-	</div>
+			<mat-form-field ngClass="field">
+				<mat-select id="role" [value]="data.user.role"
+							(selectionChange)="updateUserRights(data.user, $event)">
+					<mat-option *ngFor="let option of accessChoices" [value]="option.value">
+						{{ option.verbose }}
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+		</div>
+	</ng-container>
+
+	<ng-template #isSelf>
+		<p>You cannot configure your own user</p>
+	</ng-template>
 </div>
 <div mat-dialog-actions align="end">
 	<button mat-button (click)="close()">Close</button>

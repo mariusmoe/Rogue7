@@ -4,7 +4,9 @@
 $headerHeight: 44px;
 
 .editor {
-	min-height: 200px;
+	box-sizing: border-box;
+	margin: 0;
+	overflow: hidden;
 
 	&.mobile {
 		::ng-deep .ck-editor .ck-sticky-panel .ck-sticky-panel__content_sticky {
@@ -52,6 +54,7 @@ $headerHeight: 44px;
 
 	::ng-deep .ck-editor__editable {
 		border: $border;
+		min-height: 200px;
 	}
 
 	::ng-deep .ck-list__item_active {

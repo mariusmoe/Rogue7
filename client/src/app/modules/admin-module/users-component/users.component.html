@@ -14,9 +14,8 @@
 			<mat-list-item class="item">
 				<h4 mat-line>{{user.username}}</h4>
 				<p mat-line>{{user.role}}</p>
-				<div class="config">
-					<button mat-raised-button (click)="configUser(user)">Configure</button>
-				</div>
+				<button [disabled]="authService.isSameUser(user, authService.getUser().getValue())" #config
+						mat-mini-fab (click)="configUser(user)"><mat-icon [color]="config.disabled ? '' : 'primary'">settings</mat-icon></button>
 			</mat-list-item>
 		</ng-container>
 

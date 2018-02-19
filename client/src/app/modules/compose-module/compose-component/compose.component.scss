@@ -1,17 +1,34 @@
 
-.field {
-	padding-left: 10px;
+.compose {
+	.formControls {
+		display: flex;
+		align-items: baseline;
+		flex-flow: row wrap;
+		justify-content: space-between;
 
-	&.check {
-		margin-top: 3px;
-		margin-bottom: 10px;
+		.field {
+			flex: 1 1;
+			padding-left: 10px;
+			max-width: 200px;
+		}
+	}
+
+	&.mobile {
+		margin: 0 10px;
+
+		.formControls {
+			display: block;
+			.field {
+				flex: none;
+				display: block;
+				padding: 0;
+				max-width: initial;
+			}
+		}
 	}
 }
 
-.mobile .field {
-	display: block;
-	padding: 0;
-}
+
 
 .actions,
 .formControls {

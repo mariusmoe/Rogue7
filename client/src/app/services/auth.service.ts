@@ -156,7 +156,7 @@ export class AuthService {
 	}
 
 
-	compareUsers(a: User, b: User) {
+	isSameUser(a: User, b: User) {
 		if (a._id && b._id) {
 			return a._id === b._id;
 		}

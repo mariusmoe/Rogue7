@@ -1,5 +1,5 @@
-<div [ngClass]="{ mobile: (mobileService.isMobile() | async) }">
-	<h1>Compose</h1>
+<h1>Compose</h1>
+<div class="compose" [ngClass]="{ mobile: (mobileService.isMobile() | async) }">
 	<form [formGroup]="contentForm" (ngSubmit)="submitForm()" id="contentForm">
 
 		<div class="formControls">
@@ -60,7 +60,7 @@
 		</div>
 
 		<!-- CONTENT -->
-		<app-ckeditor></app-ckeditor>
+		<app-ckeditor class="field"></app-ckeditor>
 	</form>
 	<div ngClass="actions">
 		<button mat-raised-button form="contentForm" type="submit" [disabled]="!contentForm.valid" color="primary">
