@@ -19,7 +19,7 @@ enum STATES {
 }
 
 @Component({
-	selector: 'app-login-component',
+	selector: 'login-component',
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

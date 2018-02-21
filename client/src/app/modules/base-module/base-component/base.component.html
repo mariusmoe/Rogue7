@@ -1,13 +1,13 @@
-<app-header-component (leftNav)="toggleLeftNav()" (rightNav)="toggleRightNav()"></app-header-component>
-<app-loadingbar-component></app-loadingbar-component>
+<header-component (leftNav)="toggleLeftNav()" (rightNav)="toggleRightNav()"></header-component>
+<loadingbar-component></loadingbar-component>
 
 <!-- NAVIGATION BAR -->
-<app-nav-component *ngIf="!(mobileService.isMobile() | async)"></app-nav-component>
+<nav-component *ngIf="!(mobileService.isMobile() | async)"></nav-component>
 
 <mat-sidenav-container #sidenav ngClass="sidenavContainer">
 	<!-- MOBILE LEFT -->
 	<mat-sidenav #sidenavLeft mode="over" position="start" ngClass="sidenav" (swipeleft)="closeSideNavs()" [style.touch-action]="'pan-y'">
-		<app-nav-component *ngIf="mobileService.isMobile() | async"></app-nav-component>
+		<nav-component *ngIf="mobileService.isMobile() | async"></nav-component>
 	</mat-sidenav>
 	<!-- MOBILE RIGHT -->
 	<mat-sidenav #sidenavRight mode="over" position="end" ngClass="sidenav" (swiperight)="closeSideNavs()" [style.touch-action]="'pan-y'">
@@ -19,7 +19,7 @@
 					<h4>{{ user.role }}</h4>
 				</div>
 			</div>
-			<app-control-panel-component></app-control-panel-component>
+			<control-panel-component></control-panel-component>
 		</ng-container>
 	</mat-sidenav>
 
@@ -36,7 +36,7 @@
 		</main>
 
 		<!-- FOOTER -->
-		<app-footer-component class="footer"></app-footer-component>
+		<footer-component class="footer"></footer-component>
 	</div>
 
 </mat-sidenav-container>

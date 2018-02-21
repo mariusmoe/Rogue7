@@ -9,7 +9,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-search-results-component',
+	selector: 'search-results-component',
 	templateUrl: './search.results.component.html',
 	styleUrls: ['./search.results.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

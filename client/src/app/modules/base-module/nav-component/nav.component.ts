@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-nav-component',
+	selector: 'nav-component',
 	templateUrl: './nav.component.html',
 	styleUrls: ['./nav.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

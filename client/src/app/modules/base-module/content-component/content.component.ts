@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import { DomPortalOutlet, Portal, TemplatePortal } from '@angular/cdk/portal';
 
 import { CMSService, AuthService } from '@app/services';
 import { ModalData, CmsContent, AccessRoles } from '@app/models';
@@ -15,32 +13,31 @@ import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
-	selector: 'app-content-component',
+	selector: 'content-component',
 	templateUrl: './content.component.html',
 	styleUrls: ['./content.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentComponent implements OnInit, OnDestroy {
-	AccessRoles = AccessRoles;
-	private ngUnsubscribe = new Subject();
+	public AccessRoles = AccessRoles;
 	public contentSubject = new BehaviorSubject<CmsContent>(null);
-
-
+	private ngUnsubscribe = new Subject();
+	
+	
 	constructor(
 		private dialog: MatDialog,
 		private router: Router,
 		private route: ActivatedRoute,
-		private san: DomSanitizer,
 		public authService: AuthService,
 		public cmsService: CMSService) {
 	}
 
 	ngOnInit() {
-		this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+		this.contentSubject.next(this.prepareContent(this.route.snapshot.data['CmsContent']));
 
 		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
 			if (e instanceof NavigationEnd) {
-				this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+				this.contentSubject.next(this.prepareContent(this.route.snapshot.data['CmsContent']));
 			}
 		});
 	}
@@ -49,6 +46,17 @@ export class ContentComponent implements OnInit, OnDestroy {
 		this.ngUnsubscribe.next();
 		this.ngUnsubscribe.complete();
 	}
+
+
+	/**
+	 * Prepare the content for display. This allows angular to catch our specific attributes later
+	 * @param cmsContent
+	 */
+	private prepareContent(cmsContent: CmsContent): CmsContent {
+		cmsContent.content = cmsContent.content.replace(/<a /g, '<a ngLink ');
+		return cmsContent;
+	}
+
 
 
 	/**

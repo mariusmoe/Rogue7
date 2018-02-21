@@ -5,7 +5,7 @@
 		<ng-container [ngSwitch]="mobileService.isMobile() | async">
 
 			<div class="search" *ngSwitchCase="true">
-				<app-search-component></app-search-component>
+				<search-component></search-component>
 			</div>
 			<!--<span *ngSwitchDefault>Results for: <i>{{ route.snapshot.params['term'] }}</i></span>-->
 		</ng-container>
@@ -30,7 +30,7 @@
 	</ng-container>
 
 	<ng-template #unavailable>
-		<app-search-component></app-search-component>
+		<search-component></search-component>
 		<h3>Results for: {{ route.snapshot.params['term'] }}</h3>
 		<p>
 			Could not load the search results.

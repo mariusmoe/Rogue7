@@ -23,7 +23,7 @@ import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
-	selector: 'app-compose-component',
+	selector: 'compose-component',
 	templateUrl: './compose.component.html',
 	styleUrls: ['./compose.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
@@ -100,20 +100,17 @@ export class ComposeComponent implements OnInit, OnDestroy {
 		if (!param) { return; }
 		this.cmsService.requestContent(param).subscribe(data => {
 			this.inputContent = data;
-			this.contentForm.get('route').setValue(data.route);
+
+			this.contentForm.patchValue(data);
 			this.contentForm.get('route').disable(); // TODO: fixme.
-			this.contentForm.get('title').setValue(data.title);
-			this.contentForm.get('description').setValue(data.description);
-			this.contentForm.get('access').setValue(data.access);
-			this.contentForm.get('nav').setValue(data.nav);
-			this.contentForm.get('folder').setValue(data.folder);
+
 			if (!data.nav) { this.contentForm.get('folder').disable(); }
 			if (this.editor.loadStatus().getValue()) {
 				this.editor.Value = data.content;
 				this.initialEditorValue = this.editor.Value;
 			}
 		}, err => {
-			router.navigateByUrl('/admin/compose');
+			router.navigateByUrl('/compose');
 		});
 	}
 

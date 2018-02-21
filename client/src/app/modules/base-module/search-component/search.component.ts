@@ -6,7 +6,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { CMSService, MobileService } from '@app/services';
 
 @Component({
-	selector: 'app-search-component',
+	selector: 'search-component',
 	templateUrl: './search.component.html',
 	styleUrls: ['./search.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

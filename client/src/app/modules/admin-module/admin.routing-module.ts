@@ -3,13 +3,13 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AdminGuard, DeactivateGuard } from '@app/guards';
 
-import { SettingsComponent } from './settings-component/settings.component';
+import { AdminComponent } from './admin-component/admin.component';
 
 
 @NgModule({
 	imports: [
 		RouterModule.forChild([
-			{ path: '', component: SettingsComponent },
+			{ path: '', component: AdminComponent },
 		])
 	],
 	exports: [

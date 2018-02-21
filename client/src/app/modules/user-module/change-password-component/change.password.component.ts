@@ -9,7 +9,7 @@ import { User, UpdatePasswordUser, ModalData } from '@app/models';
 import { ModalComponent } from '@app/modules/base-module/modals/modal.component';
 
 @Component({
-	selector: 'app-change-password-component',
+	selector: 'change-password-component',
 	templateUrl: './change.password.component.html',
 	styleUrls: ['./change.password.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

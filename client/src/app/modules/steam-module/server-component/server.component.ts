@@ -10,7 +10,7 @@ import { interval } from 'rxjs/observable/interval';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-server-component',
+	selector: 'server-component',
 	templateUrl: './server.component.html',
 	styleUrls: ['./server.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

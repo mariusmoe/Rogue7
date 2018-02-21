@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogConfig, PageEvent } from '@angular/material';
 
 import { AdminService, MobileService, AuthService } from '@app/services';
-import { User, ModalData } from '@app/models';
-
-import { MatDialog, MatDialogConfig, PageEvent } from '@angular/material';
+import { User } from '@app/models';
 
 import { UserModalComponent, UserModalData } from '../user-modal-component/user.modal.component';
 
@@ -13,7 +13,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-users-component',
+	selector: 'users-component',
 	templateUrl: './users.component.html',
 	styleUrls: ['./users.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
@@ -28,25 +28,30 @@ export class UsersComponent implements OnInit {
 	public pageIndex = 0;
 	public numFilteredUsers = 0;
 
-	private filterSubject = new BehaviorSubject<string>('');
+	public filterForm: FormGroup;
+	
 
 	constructor(
 		private dialog: MatDialog,
+		private fb: FormBuilder,
 		public authService: AuthService,
 		public adminService: AdminService,
 		public mobileService: MobileService) {
 
+		this.filterForm = fb.group({ filterControl: [''] });
 		this.updateList();
 	}
 
 	ngOnInit() {
-		this.filterSubject.pipe(distinctUntilChanged(), debounceTime(300), takeUntil(this.ngUnsubscribe)).subscribe(value => {
+		this.filterForm.get('filterControl').valueChanges.pipe(distinctUntilChanged(), debounceTime(300), takeUntil(this.ngUnsubscribe)).subscribe(value => {
 			this.updateFilteredList();
 		})
 	}
 
 
-
+	/**
+	 * Updates the two lists of users; the entire user set, and the filtered and paginated view list
+	 */
 	private updateList() {
 		const sub = this.adminService.getAllusers().subscribe(users => {
 			this.users = users;
@@ -56,30 +61,27 @@ export class UsersComponent implements OnInit {
 		});
 	}
 
+	/**
+	 * Updates the filtered list to reflect the specified page index and start
+	 * @param index
+	 * @param start
+	 */
 	private updateFilteredList(index: number = 0, start: number = 0) {
 		this.pageIndex = index;
-		const filteredList = this.users.filter((user: User) => user.username.toLowerCase().includes(this.filterSubject.getValue().toLowerCase()));
+		const filteredList = this.users.filter((user: User) => user.username.toLowerCase().includes(this.filterForm.get('filterControl').value.toLowerCase()));
 		this.numFilteredUsers = filteredList.length;
 		this.displayedResults.next(filteredList.slice(start, start + this.pageSize));
-		console.log(this.displayedResults.getValue());
 	}
 
 
 	/**
 	 * Paginator helper function
-	 * @param  {any}    event paginator event
+	 * @param  {any}    event PageEvent
 	 */
 	public paginator(event: PageEvent) {
 		this.pageSize = event.pageSize;
-		console.log(event.pageIndex);
 		this.updateFilteredList(event.pageIndex, event.pageIndex * event.pageSize);
 	}
-
-	public filterUsers(filter: string) {
-		this.filterSubject.next(filter);
-	}
-
-
 
 	public configUser(user: User) {
 		this.dialog.open(

@@ -10,7 +10,7 @@ import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-base-component',
+	selector: 'base-component',
 	//animations: [RoutingAnim],
 	templateUrl: './base.component.html',
 	styleUrls: ['./base.component.scss'],

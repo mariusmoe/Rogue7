@@ -9,7 +9,7 @@ import { User, AccessRoles, CmsAccess } from '@app/models';
 import { Subject } from 'rxjs/Subject';
 
 @Component({
-	selector: 'app-user-modal',
+	selector: 'user-modal',
 	styleUrls: ['./user.modal.component.scss'],
 	templateUrl: './user.modal.component.html',
 	changeDetection: ChangeDetectionStrategy.Default

@@ -13,7 +13,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 @Component({
-	selector: 'app-ckeditor',
+	selector: 'ckeditor',
 	templateUrl: './ckeditor.component.html',
 	styleUrls: ['./ckeditor.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

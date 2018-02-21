@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-steam-component',
+	selector: 'steam-component',
 	templateUrl: './steam.component.html',
 	styleUrls: ['./steam.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

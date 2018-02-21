@@ -11,7 +11,7 @@
 		<a routerLink="/" class="title"><mat-icon svgIcon="logo" ngClass="logo"></mat-icon>otingane</a>
 
 		<!-- Search box -->
-		<app-search-component *ngIf="!(mobileService.isMobile() | async)" class="search"></app-search-component>
+		<search-component *ngIf="!(mobileService.isMobile() | async)" class="search"></search-component>
 
 		<!-- Right side logic -->
 		<!-- IF you are logged in -->
@@ -47,7 +47,7 @@
 	<!-- Menu for DESKTOP -->
 	<mat-menu #userPanel="matMenu" xPosition="before" yPosition="below" [overlapTrigger]="false">
 		<div class="user menu" *ngIf="!(mobileService.isMobile() | async)">
-			<app-control-panel-component style="menu"></app-control-panel-component>
+			<control-panel-component style="menu"></control-panel-component>
 		</div>
 	</mat-menu>
 </header>

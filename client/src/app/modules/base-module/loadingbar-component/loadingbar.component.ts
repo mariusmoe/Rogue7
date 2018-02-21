@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { takeUntil, map } from 'rxjs/operators';
 
 @Component({
-	selector: 'app-loadingbar-component',
+	selector: 'loadingbar-component',
 	templateUrl: './loadingbar.component.html',
 	styleUrls: ['./loadingbar.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

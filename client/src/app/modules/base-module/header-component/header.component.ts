@@ -3,7 +3,7 @@ import { Component, Output, EventEmitter, ChangeDetectionStrategy } from '@angul
 import { AuthService, MobileService } from '@app/services';
 
 @Component({
-	selector: 'app-header-component',
+	selector: 'header-component',
 	templateUrl: './header.component.html',
 	styleUrls: ['./header.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush

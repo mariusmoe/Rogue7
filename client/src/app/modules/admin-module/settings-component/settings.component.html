@@ -1,25 +1,66 @@
-<h1>Application Settings</h1>
+<!--
 
-<mat-tab-group class="demo-tab-group">
-	<mat-tab label="Users">
-		<ng-template matTabContent>
-			<app-users-component></app-users-component>
-		</ng-template>
-	</mat-tab>
+	* default homepage route
+	* cms author details
 
-	<mat-tab label="Test">
-		<ng-template matTabContent>
-			<mat-expansion-panel>
-				<mat-expansion-panel-header>
-					<mat-panel-title>Settings</mat-panel-title>
-				</mat-expansion-panel-header>
-				<ng-template matExpansionPanelContent>
-					<div>
-						test
-					</div>
-				</ng-template>
-			</mat-expansion-panel>
+	* access levels / permission groups
+	* content modules (steam servers etc)
+	* theme
+	*
+-->
 
-		</ng-template>
-	</mat-tab>
-</mat-tab-group>
+<form [formGroup]="settingsForm" id="settingsForm" class="settingsForm" autocomplete="off"
+	  [ngClass]="{ mobile: (mobileService.isMobile() | async) }" (ngSubmit)="submitForm()">
+
+	<!-- Content Management SECTION -->
+	<section class="section">
+		<h1>Content Management</h1>
+		<div class="controls">
+
+			<!-- showAuthorDetails -->
+			<div class="field">
+				<mat-checkbox formControlName="showAuthorDetails" class="full" labelPosition="before">
+					<span class="checkLabel">Show content author details</span>
+				</mat-checkbox>
+			</div>
+
+			<div class="field">
+				<label for="something">test</label>
+				<mat-form-field>
+					<input matInput id="something" type="text"> <!--  formControlName="something" -->
+				</mat-form-field>
+			</div>
+
+
+		</div>
+	</section>
+
+
+	<section class="section">
+		<h1>Some Other Section</h1>
+		<div class="controls">
+			<p>Test</p>
+		</div>
+	</section>
+
+	<section class="section">
+		<h1>Some third</h1>
+		<div class="controls">
+			<div style="height: 200px;"></div>
+		</div>
+	</section>
+
+
+	<section class="section">
+		<h1>etc</h1>
+		<div class="controls">
+			<p>mad man maximus</p>
+		</div>
+	</section>
+</form>
+
+<div class="submitbox">
+	<button mat-raised-button type="submit" form="settingsForm" [disabled]="(!settingsForm.valid || !settingsForm.dirty)">
+		Save
+	</button>
+</div>

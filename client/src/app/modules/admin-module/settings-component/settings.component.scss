@@ -1,0 +1,67 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
+@import '_theme_vars';
+
+.settingsForm {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	padding: 10px 0;
+
+
+	.section {
+		flex: 1 1 45%;
+		width: 50%;
+		max-width: 50%;
+		box-sizing: border-box;
+		margin: 10px;
+		background: rgba($contentBG, 0.2);
+		border: $border;
+		border-top: none;
+		/*box-shadow: $boxShadow;*/
+		h1 {
+			font-size: 1.1em;
+			margin: 0;
+			border-style: none none solid none;
+		}
+
+		.controls {
+			padding: 15px;
+		}
+	}
+
+	&.mobile {
+		.section {
+			min-width: 100%;
+		}
+	}
+}
+
+.field {
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+
+	.full {
+		width: 100%;
+		::ng-deep .mat-checkbox-layout {
+			display: flex;
+			justify-content: space-between;
+			width: 100%;
+		}
+		::ng-deep .mat-checkbox-inner-container {
+			margin-right: inherit;
+		}
+	}
+}
+
+
+
+.checkLabel {
+	width: auto;
+	display: block;
+}
+
+.submitbox {
+
+}

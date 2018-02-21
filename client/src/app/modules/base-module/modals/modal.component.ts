@@ -6,7 +6,7 @@ import { CMSService } from '@app/services';
 import { ModalData } from '@app/models';
 
 @Component({
-	selector: 'app-delete-modal',
+	selector: 'delete-modal',
 	styleUrls: ['./modal.component.scss'],
 	templateUrl: './modal.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush

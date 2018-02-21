@@ -1,6 +1,6 @@
 <nav [ngClass]="{'mobile': (mobileService.isMobile() | async) }">
 	<div class="search">
-		<app-search-component *ngIf="mobileService.isMobile() | async"></app-search-component>
+		<search-component *ngIf="mobileService.isMobile() | async"></search-component>
 	</div>
 	<mat-nav-list dense>
 		<ng-container *ngIf="contentSubject | async as nav">
