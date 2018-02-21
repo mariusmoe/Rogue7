@@ -123,7 +123,7 @@
 	display: inline-block;
 	position: relative;
 	margin: 0;
-	width: 50%;
+	width: calc(50% - 0.15em); // account for 1 space
 
 	&.wide {
 		width: 100%;

@@ -22,8 +22,8 @@ import { ModalComponent } from './modals/modal.component';
 // Resolvers
 import { CmsResolver, SearchResolver } from '@app/guards';
 
-// Directives
-import { VideoDirective } from './content-directives/video.directive';
+// Content Controllers
+import { NgLinkComponent } from './content-controllers/nglink.component';
 
 @NgModule({
 	declarations: [
@@ -37,7 +37,7 @@ import { VideoDirective } from './content-directives/video.directive';
 		SearchComponent,
 		SearchResultsComponent,
 		ModalComponent,
-		VideoDirective,
+		NgLinkComponent,
 	],
 	imports: [
 		BaseRoutingModule,
@@ -45,7 +45,8 @@ import { VideoDirective } from './content-directives/video.directive';
 		SharedModule.forRoot()
 	],
 	entryComponents: [
-		ModalComponent
+		ModalComponent,
+		NgLinkComponent
 	],
 	providers: [
 		CmsResolver, SearchResolver
