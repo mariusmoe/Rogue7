@@ -3,6 +3,6 @@
 	<p>{{ data.bodyText }}</p>
 </div>
 <div mat-dialog-actions align="center">
-	<button mat-button *ngIf="data.includeCancel" (click)="cancel()">{{ data.cancelText }}</button>
+	<button mat-button *ngIf="!!this.data.cancelText" (click)="cancel()">{{ data.cancelText }}</button>
 	<button mat-raised-button [color]="data.proceedColor" (click)="proceed()">{{ data.proceedText }}</button>
 </div>

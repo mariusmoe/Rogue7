@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit, AfterViewInit, Input, Inject, Renderer2, ElementRef, ChangeDetectionStrategy } from '@angular/core';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT, DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 enum TwitchType {
 	Channel = 'channel',
@@ -12,7 +12,7 @@ enum TwitchType {
 	template: `
 		<ng-container *ngIf="!isVideo(); else video;" [ngSwitch]="IsLocalUrl">
 			<a *ngSwitchCase="true" [routerLink]="link" [ngStyle]="style">{{text}}</a>
-			<a *ngSwitchCase="false" [href]="link" [ngStyle]="style">{{text}}</a>
+			<a *ngSwitchCase="false" [href]="getLink()" [ngStyle]="style">{{text}}</a>
 		</ng-container>
 		<ng-template #video>
 			<div #videoHost></div>
@@ -23,7 +23,6 @@ enum TwitchType {
 export class NgLinkComponent implements OnInit, AfterViewInit {
 	@Input() link: string;
 	@Input() text: string;
-	@Input() style: object = {};
 
 	private _isLocalUrl = false;
 	public get IsLocalUrl(): boolean { return this._isLocalUrl; }
@@ -34,7 +33,8 @@ export class NgLinkComponent implements OnInit, AfterViewInit {
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
 		private el: ElementRef,
-		private renderer: Renderer2) {
+		private renderer: Renderer2,
+		private san: DomSanitizer) {
 
 	}
 
@@ -44,7 +44,16 @@ export class NgLinkComponent implements OnInit, AfterViewInit {
 			this.link = this.link.replace(origin, '');
 			this._isLocalUrl = true;
 		}
+
 	}
+
+	public getLink(): string | SafeUrl {
+		if (this.link.startsWith('steam://')) {
+			return this.san.bypassSecurityTrustUrl(this.link);
+		}
+		return this.link;
+	}
+
 
 	ngAfterViewInit() {
 		if (!this.isVideo()) { return; }

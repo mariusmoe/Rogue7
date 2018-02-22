@@ -21,11 +21,9 @@ export class ModalComponent {
 		dialogRef.afterClosed().subscribe(proceeding => {
 			if (proceeding) {
 				this.data.proceed();
-			} else {
-				if (this.data.includeCancel) {
-					this.data.cancel();
-				}
+				return;
 			}
+			if (!!this.data.cancel) { this.data.cancel(); }
 		});
 	}
 

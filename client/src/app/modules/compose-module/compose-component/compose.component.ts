@@ -154,7 +154,6 @@ export class ComposeComponent implements OnInit, OnDestroy {
 			bodyText: 'Do you wish to proceed without saving?',
 			proceedColor: 'accent', proceedText: 'Proceed',
 			cancelColor: 'primary', cancelText: 'Cancel',
-			includeCancel: true,
 
 			proceed: () => answer.next(true),
 			cancel: () => answer.next(false),

@@ -45,8 +45,6 @@ export class ChangePasswordComponent {
 					proceedColor: 'primary',
 					proceedText: 'Okay',
 
-					includeCancel: false,
-
 					proceed: () => { }
 				};
 				if (result) {

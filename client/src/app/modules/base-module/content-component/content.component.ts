@@ -1,6 +1,7 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, DoCheck, ChangeDetectionStrategy } from '@angular/core';
-import { ComponentFactoryResolver, InjectionToken, Injector, ComponentFactory, ViewChild, ElementRef, ComponentRef } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import {
+	Component, OnInit, AfterViewInit, OnDestroy, DoCheck, ChangeDetectionStrategy, ChangeDetectorRef,
+	ComponentFactoryResolver, InjectionToken, Injector, ComponentFactory, ViewChild, ElementRef, ComponentRef
+} from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
@@ -29,12 +30,11 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 
 	@ViewChild('contentHost') contentHost: ElementRef;
 	private _ngLinkFactory: ComponentFactory<NgLinkComponent>;
-	private embeddedComponents: ComponentRef<any>[] = [];
+	private embeddedComponents: ComponentRef<NgLinkComponent>[] = [];
 
 	constructor(
 		private resolver: ComponentFactoryResolver,
 		private injector: Injector,
-		private san: DomSanitizer,
 		private dialog: MatDialog,
 		private router: Router,
 		private route: ActivatedRoute,
@@ -50,22 +50,22 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
 			if (e instanceof NavigationEnd) {
 				this.contentSubject.next(this.route.snapshot.data['CmsContent']);
-				this.build(this.contentSubject.getValue());
+				this.build(this.contentSubject.getValue()); // change detection via contentSubject above
 			}
 		});
 	}
 
 	ngAfterViewInit() {
 		this.build(this.contentSubject.getValue());
+		// Detect changes manually for each component.
+		this.embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
 	}
 
 	ngOnDestroy() {
 		this.ngUnsubscribe.next();
 		this.ngUnsubscribe.complete();
-
-		// destroy these components else there will be memory leaks
-		this.embeddedComponents.forEach(comp => comp.destroy());
-		this.embeddedComponents.length = 0;
+		// Clean components
+		this.cleanEmbeddedComponents();
 	}
 
 	ngDoCheck() {
@@ -77,32 +77,40 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	 * @param cmsContent
 	 */
 	private build(cmsContent: CmsContent) {
-		const e = (<HTMLElement>this.contentHost.nativeElement);
-		cmsContent.content = cmsContent.content
-		e.innerHTML = cmsContent.content.replace(/<a /g, '<nglink ').replace(/<\/a>/g, '</nglink>');
+		const e = (<HTMLElement>this!.contentHost!.nativeElement);
+		if (!e) { return; }
+
+		// Clean components before rebuilding
+		this.cleanEmbeddedComponents();
+
+
+		const nglinksel = this._ngLinkFactory.selector;
+		e.innerHTML = cmsContent.content.replace(/<a /g, `<${nglinksel} `).replace(/<\/a>/g, `</${nglinksel}>`);
 		if (!cmsContent.content) { return; }
 
 		// query for elements we need to adjust
-
 		const ngLinks = e.querySelectorAll(this._ngLinkFactory.selector);
-
 		for (let i = 0; i < ngLinks.length; i++) {
-            const link = ngLinks.item(i);
-			// save text content before we modify the element
-            const savedTextContent = link.textContent;
-
-			//convert NodeList into an array, since Angular dosen't like having a NodeList passed for projectableNodes
+			const link = ngLinks.item(i);
+			const savedTextContent = link.textContent; // save text content before we modify the element
+			// convert NodeList into an array, since Angular dosen't like having a NodeList passed for projectableNodes
 			const comp = this._ngLinkFactory.create(this.injector, [Array.prototype.slice.call(link.childNodes)], link);
-			//apply inputs into the dynamic component
-			//only static ones work here since this is the only time they're set
+			// apply inputs into the dynamic component
+			// only static ones work here since this is the only time they're set
 			for (const attr of (link as any).attributes) {
 				comp.instance[attr.nodeName] = attr.nodeValue;
-            }
-            comp.instance.link = link.getAttribute('href');
-            comp.instance.text = savedTextContent;
+			}
+			comp.instance.link = link.getAttribute('href');
+			comp.instance.text = savedTextContent;
 
 			this.embeddedComponents.push(comp);
 		}
+	}
+
+	private cleanEmbeddedComponents() {
+		// destroycomponents to avoid be memory leaks
+		this.embeddedComponents.forEach(comp => comp.destroy());
+		this.embeddedComponents.length = 0;
 	}
 
 
@@ -119,17 +127,11 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	deletePage() {
 		const content = this.contentSubject.getValue();
 		const data: ModalData = {
-			headerText: 'Delete ' + content.title,
+			headerText: `Delete ${content.title}`,
 			bodyText: 'Do you wish to proceed?',
-
-			proceedColor: 'warn',
-			proceedText: 'Delete',
-
-			cancelColor: 'accent',
-			cancelText: 'Cancel',
-
-			includeCancel: true,
-
+			proceedText: 'Delete', proceedColor: 'warn',
+			cancelText: 'Cancel', cancelColor: 'accent',
+			cancel: () => { },
 			proceed: () => {
 				const sub = this.cmsService.deleteContent(content.route).subscribe(
 					() => {
@@ -139,7 +141,6 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 					}
 				);
 			},
-			cancel: () => { },
 		};
 		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
 	}
