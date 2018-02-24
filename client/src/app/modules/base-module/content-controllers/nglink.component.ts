@@ -128,7 +128,7 @@ export class NgLinkComponent implements OnInit, AfterViewInit {
 
 		// Create iframe
 		this._iframe = this.renderer.createElement('iframe');
-		this.renderer.setAttribute(this._iframe, 'src', 'http://player.twitch.tv/?' + type + '=' + prefix + source);
+		this.renderer.setAttribute(this._iframe, 'src', 'https://player.twitch.tv/?' + type + '=' + prefix + source);
 
 		// Create Thumbnail image (also required for aspect ratio)
 		this._img = this.renderer.createElement('img');  // Creating a black 16 by 9 base64 image

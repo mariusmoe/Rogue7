@@ -77,9 +77,10 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	 * @param cmsContent
 	 */
 	private build(cmsContent: CmsContent) {
-		const e = (<HTMLElement>this!.contentHost!.nativeElement);
-		if (!e) { return; }
-
+		if (!this.contentHost || !this.contentHost.nativeElement) {
+			return;
+		}
+		const e = (<HTMLElement>this.contentHost.nativeElement);
 		// Clean components before rebuilding
 		this.cleanEmbeddedComponents();
 

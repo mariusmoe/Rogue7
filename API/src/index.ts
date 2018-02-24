@@ -33,13 +33,14 @@ class App {
 	}
 
 	private boot() {
-		const uri = process.argv[2] || configGet<string>('database');
+		const uri = process.argv[2] || process.env.db || configGet<string>('database');
 
 		MongooseConnect(uri, (error) => {
 			if (error) {
 				// if error is true, the problem is often with mongoDB not connection
-				console.log('ERROR can\'t connect to mongoDB. Did you forgot to run mongod?');
+				console.log('ERROR can\'t connect to mongoDB. Did you forget to run mongod?');
 				console.log(error);
+				process.exit(1);
 				return;
 			}
 			let server: Server;
