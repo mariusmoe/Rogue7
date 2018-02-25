@@ -61,16 +61,14 @@ export class CMSController {
 	 * @param  {NextFunction} next next
 	 * @return {Response}          server response: the content object
 	 */
-	private static getContent(req: Request, res: Response, next: NextFunction) {
+	public static getContent(req: Request, res: Response, next: NextFunction) {
 		const route = <string>req.params.route,
 			user = <user>req.user;
 
-		const includePrevious = req.body!.prev || false;
-
 		Content.findOne({ 'current.route': route }, {
-			'current.content_searchable': false, prev: includePrevious
+			'current.content_searchable': false, prev: false
 		}, (err, contentDoc) => {
-			if (err) { next(err); }
+			//if (err) { next(err); }
 			if (!contentDoc) {
 				return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
 			}
@@ -85,9 +83,31 @@ export class CMSController {
 		}).lean();
 	}
 
+
+
+	/**
+	 * Gets content history of a given route
+	 * @param  {Request}      req  request
+	 * @param  {Response}     res  response
+	 * @param  {NextFunction} next next
+	 * @return {Response}          server response: the content history array
+	 */
 	public static getContentHistory(req: Request, res: Response, next: NextFunction) {
-		req.body = { prev: true };
-		CMSController.getContent(req, res, next);
+		const route = <string>req.params.route,
+			user = <user>req.user;
+
+		if (user.role !== accessRoles.admin) {
+			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
+		}
+
+		Content.findOne({ 'current.route': route }, {
+			current: true, prev: true
+		}, (err, contentDoc) => {
+			if (!contentDoc) {
+				return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
+			}
+			return res.status(200).send(contentDoc.prev);
+		});
 	}
 
 
@@ -160,7 +180,7 @@ export class CMSController {
 		// Fetch current version
 		Content.findOne({ 'current.route': route }, { prev: false }, (err, contentDoc) => {
 			if (!contentDoc) {
-				return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
+				return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
 			}
 
 			const sanitizedContent = sanitize(data.content);
@@ -189,6 +209,7 @@ export class CMSController {
 				},
 				{ new: true },
 				(err2, updated) => {
+					console.log(err2);
 					if (!updated) { return res.status(500).send(status(CMS_STATUS.DATA_UNABLE_TO_SAVE)); }
 					return res.status(200).send(updated.current);
 				}

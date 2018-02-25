@@ -23,6 +23,7 @@ export const environment = {
 		},
 		cms: {
 			content:		baseURL + '/api/cms',
+			history:		baseURL + '/api/cms/history',
 			search:			baseURL + '/api/cms/search',
 		},
 		admin: {

@@ -80,6 +80,15 @@ export class CMSService {
 		return this.http.get<CmsContent>(environment.URL.cms.content + '/' + contentUrl).pipe(timeout(environment.TIMEOUT));
 	}
 
+		/**
+	 * Requests the content History array from the given url
+	 * @return {Observable<CmsContent>}         Server's response, as an Observable
+	 */
+	requestContentHistory(contentUrl: string): Observable<CmsContent[]> {
+		return this.http.get<CmsContent[]>(environment.URL.cms.history + '/' + contentUrl).pipe(timeout(environment.TIMEOUT));
+	}
+
+
 	/**
 	 * Requests to update the content for a given url
 	 * @return {Observable<CmsContent>}         Server's response, as an Observable

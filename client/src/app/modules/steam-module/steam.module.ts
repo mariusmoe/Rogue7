@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { SteamRoutingModule } from './steam.routing-module';
 
 // Modules
-import { SharedModule } from '@app/modules/shared.module';
+import { SharedModule } from '@app/modules/shared-module/shared.module';
 
 // Components
 import { ServerComponent } from './server-component/server.component';

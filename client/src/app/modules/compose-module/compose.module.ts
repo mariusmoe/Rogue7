@@ -4,14 +4,13 @@ import { NgModule } from '@angular/core';
 import { ComposeRoutingModule } from './compose.routing-module';
 
 // Modules
-import { SharedModule, CommonModule } from '@app/modules';
+import { SharedModule, CommonModule, ContentModule } from '@app/modules';
 
 // Components
 import { ComposeComponent } from './compose-component/compose.component';
 import { CKEditorComponent } from './ckeditor-component/ckeditor.component';
 
-// Guards
-import { DeactivateGuard } from '@app/guards';
+
 
 @NgModule({
 	declarations: [
@@ -20,11 +19,9 @@ import { DeactivateGuard } from '@app/guards';
 	],
 	imports: [
 		SharedModule,
+		ContentModule,
 		CommonModule,
 		ComposeRoutingModule
-	],
-	providers: [
-		DeactivateGuard
 	]
 })
 export class ComposeModule { }

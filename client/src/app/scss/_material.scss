@@ -25,10 +25,10 @@ $custom-dark-theme-foreground: (
 	base:              white,
 	divider:           $light-dividers,
 	dividers:          $light-dividers,
-	disabled:          $light-disabled-text,
+	disabled:          $disabled, // $light-disabled-text
 	disabled-button:   rgba(white, 0.3),
-	disabled-text:     $light-disabled-text,
-	hint-text:         $light-disabled-text,
+	disabled-text:     $disabled, // $light-disabled-text
+	hint-text:         $disabled, // $light-disabled-text
 	secondary-text:    $light-secondary-text,
 	icon:              white,
 	icons:             white,

@@ -32,6 +32,7 @@ const schema = new Schema({
 		updatedAt: { type: Date, default: Date.now },
 		createdAt: { type: Date, default: Date.now },
 	},
+	// draft: ..,
 	prev: []
 },
 	{

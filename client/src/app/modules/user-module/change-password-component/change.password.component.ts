@@ -6,7 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '@app/services';
 import { User, UpdatePasswordUser, ModalData } from '@app/models';
 
-import { ModalComponent } from '@app/modules/base-module/modals/modal.component';
+import { ModalComponent } from '@app/modules/shared-module/modals/modal.component';
 
 @Component({
 	selector: 'change-password-component',

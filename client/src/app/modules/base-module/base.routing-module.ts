@@ -2,8 +2,10 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { BaseComponent } from './base-component/base.component';
-import { ContentComponent } from './content-component/content.component';
 import { SearchResultsComponent } from './search-results-component/search.results.component';
+// External
+import { ContentComponent } from '@app/modules/content-module/content-component/content.component';
+
 
 // Guards
 import { CmsResolver, SearchResolver, AuthGuard, AdminGuard, LoginGuard } from '@app/guards';

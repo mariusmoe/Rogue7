@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 // Modules
-import { SharedModule, CommonModule } from '@app/modules';
+import { SharedModule } from '@app/modules/shared-module/shared.module';
+import { CommonModule } from '@app/modules';
 
 // Guard
 import { AuthGuard } from '@app/guards';

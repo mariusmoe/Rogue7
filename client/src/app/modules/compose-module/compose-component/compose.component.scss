@@ -1,39 +1,17 @@
 
-.compose {
-	.formControls {
-		display: flex;
-		align-items: baseline;
-		flex-flow: row wrap;
-		justify-content: space-between;
-
-		.field {
-			flex: 1 1;
-			padding-left: 10px;
-			max-width: 200px;
-		}
-	}
-
-	&.mobile {
-		margin: 0 10px;
-
-		.formControls {
-			display: block;
-			.field {
-				flex: none;
-				display: block;
-				padding: 0;
-				max-width: initial;
-			}
-		}
-	}
+.editor {
+	flex: 1 1 100%;
 }
 
-
-
-.actions,
-.formControls {
-	margin: 10px 0;
+.actions {
+	padding: 10px 0;
+	box-sizing: border-box;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+	align-items: baseline;
 }
+
 
 mat-icon.mat-icon {
 	font-size: 1.2em;

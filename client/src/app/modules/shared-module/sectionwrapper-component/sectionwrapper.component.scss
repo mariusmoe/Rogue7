@@ -1,0 +1,27 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
+@import '_theme_vars';
+
+
+.sectionWrapper {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: flex-start;
+	align-items: stretch;
+	padding: 10px 0;
+
+	::ng-deep section-component {
+		flex: 1 1 45%;
+		width: 50%;
+		max-width: 50%;
+		box-sizing: border-box;
+		margin: 10px;
+	}
+
+	&.mobile {
+		::ng-deep section-component {
+			max-width: none;
+			flex-basis: 100%;
+		}
+	}
+}
+

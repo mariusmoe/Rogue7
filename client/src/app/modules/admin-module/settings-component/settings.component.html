@@ -12,11 +12,10 @@
 <form [formGroup]="settingsForm" id="settingsForm" class="settingsForm" autocomplete="off"
 	  [ngClass]="{ mobile: (mobileService.isMobile() | async) }" (ngSubmit)="submitForm()">
 
-	<!-- Content Management SECTION -->
-	<section class="section">
-		<h1>Content Management</h1>
-		<div class="controls">
 
+	<sectionwrapper-component>
+		<!-- Content Management SECTION -->
+		<section-component header="Content Management">
 			<!-- showAuthorDetails -->
 			<div class="field">
 				<mat-checkbox formControlName="showAuthorDetails" class="full" labelPosition="before">
@@ -30,33 +29,22 @@
 					<input matInput id="something" type="text"> <!--  formControlName="something" -->
 				</mat-form-field>
 			</div>
+		</section-component>
 
 
-		</div>
-	</section>
-
-
-	<section class="section">
-		<h1>Some Other Section</h1>
-		<div class="controls">
+		<section-component header="Some Other Section">
 			<p>Test</p>
-		</div>
-	</section>
+		</section-component>
 
-	<section class="section">
-		<h1>Some third</h1>
-		<div class="controls">
+		<section-component header="Some third">
 			<div style="height: 200px;"></div>
-		</div>
-	</section>
+		</section-component>
 
-
-	<section class="section">
-		<h1>etc</h1>
-		<div class="controls">
+		<section-component header="etc">
 			<p>mad man maximus</p>
-		</div>
-	</section>
+		</section-component>
+
+	</sectionwrapper-component>
 </form>
 
 <div class="submitbox">

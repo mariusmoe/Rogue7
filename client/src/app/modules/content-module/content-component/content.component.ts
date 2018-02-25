@@ -1,5 +1,5 @@
 import {
-	Component, OnInit, AfterViewInit, OnDestroy, DoCheck, ChangeDetectionStrategy, ChangeDetectorRef,
+	Component, Input, OnInit, AfterViewInit, OnDestroy, DoCheck, ChangeDetectionStrategy, ChangeDetectorRef,
 	ComponentFactoryResolver, InjectionToken, Injector, ComponentFactory, ViewChild, ElementRef, ComponentRef
 } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -8,7 +8,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material';
 import { CMSService, AuthService } from '@app/services';
 import { ModalData, CmsContent, AccessRoles } from '@app/models';
 
-import { ModalComponent } from '../modals/modal.component';
+import { ModalComponent } from '@app/modules/shared-module/modals/modal.component';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -26,6 +26,9 @@ import { NgLinkComponent } from '../content-controllers/nglink.component';
 export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck {
 	public AccessRoles = AccessRoles;
 	public contentSubject = new BehaviorSubject<CmsContent>(null);
+	@Input() set contentInput(value: CmsContent) { this.contentSubject.next(value); console.log('UPDATE') }; // This triggers a lot from mat-select anim
+	@Input() previewMode = false;
+
 	private ngUnsubscribe = new Subject();
 
 	@ViewChild('contentHost') contentHost: ElementRef;
@@ -46,19 +49,24 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	}
 
 	ngOnInit() {
-		this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+		// If the contentSubject already has a value, then that's great!
+		if (!this.contentSubject.getValue()) {
+			this.contentSubject.next(this.route.snapshot.data['CmsContent']);
+		}
+
 		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
 			if (e instanceof NavigationEnd) {
 				this.contentSubject.next(this.route.snapshot.data['CmsContent']);
-				this.build(this.contentSubject.getValue()); // change detection via contentSubject above
 			}
 		});
 	}
 
 	ngAfterViewInit() {
-		this.build(this.contentSubject.getValue());
-		// Detect changes manually for each component.
-		this.embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
+		this.contentSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(content => {
+			this.build(content);
+			// Detect changes manually for each component.
+			this.embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
+		});
 	}
 
 	ngOnDestroy() {
@@ -77,15 +85,14 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	 * @param cmsContent
 	 */
 	private build(cmsContent: CmsContent) {
-		// Clean components before rebuilding. Should always do this.
-		this.cleanEmbeddedComponents();
-
 		// null ref checks
 		if (!this.contentHost || !this.contentHost.nativeElement || !cmsContent || !cmsContent.content) {
 			return;
 		}
+		// Clean components before rebuilding.
+		this.cleanEmbeddedComponents();
+		// Prepare content for injection
 		const e = (<HTMLElement>this.contentHost.nativeElement);
-
 		const nglinksel = this._ngLinkFactory.selector;
 		e.innerHTML = cmsContent.content.replace(/<a /g, `<${nglinksel} `).replace(/<\/a>/g, `</${nglinksel}>`);
 

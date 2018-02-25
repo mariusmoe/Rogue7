@@ -86,8 +86,8 @@ export class AppRouter {
 		cmsRoutes.patch('/:route', PassportConfig.requireAuth, CMSController.patchContent);
 		// Delete content
 		cmsRoutes.delete('/:route', PassportConfig.requireAuth, CMSController.deleteContent);
-
-
+		// Content History
+		cmsRoutes.get('/history/:route', PassportConfig.requireAuth, CMSController.getContentHistory);
 
 		// assign to parent router
 		router.use('/cms', cmsRoutes);

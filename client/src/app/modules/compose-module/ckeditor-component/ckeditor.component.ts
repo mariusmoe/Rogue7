@@ -22,6 +22,9 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 	@ViewChild('content') editorBox: ElementRef;
 	@Output() onChange = new EventEmitter<string>();
 
+	public get isReadOnly() { return (this.editor && this.editor.isReadOnly); }
+	public set isReadOnly(value: boolean) { this.editor.isReadOnly = value; }
+
 	private _value: string;
 
 	private editor: CKEditor;

@@ -13,4 +13,5 @@ interface CKEditor {
 	setData(html: string): void;
 	destroy(): void;
 	listenTo(emitter: object, event: string, callback: any): any;
+	isReadOnly: boolean;
 }

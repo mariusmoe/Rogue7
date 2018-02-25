@@ -2,69 +2,136 @@
 <div class="compose" [ngClass]="{ mobile: (mobileService.isMobile() | async) }">
 	<form [formGroup]="contentForm" (ngSubmit)="submitForm()" id="contentForm">
 
-		<div class="formControls">
-			<!-- TITLE -->
-			<mat-form-field class="field">
-				<input matInput placeholder="Title" type="text" formControlName="title" autocomplete="off" required>
-				<mat-error *ngIf="contentForm.get('title').hasError('required')">
-					Title is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+		<mat-tab-group class="demo-tab-group">
+			<mat-tab label="Page Settings">
+				<sectionwrapper-component>
+					<section-component header="Page Information">
+						<!-- TITLE -->
+						<div class="field">
+							<label for="title" [ngClass]="{ disabled: title.disabled }">Title</label>
+
+							<mat-form-field floatLabel="never">
+								<input matInput id="title" #title placeholder="Title" type="text"
+									   formControlName="title" autocomplete="off" required>
+								<mat-error *ngIf="contentForm.get('title').hasError('required')">
+									Title is <strong>required</strong>
+								</mat-error>
+								<mat-error *ngIf="contentForm.get('title').hasError('alreadyExists')">
+									Title already exists! Choose another
+								</mat-error>
+							</mat-form-field>
+						</div>
+						<!-- ROUTE -->
+						<div class="field">
+							<label for="route" [ngClass]="{ disabled: route.disabled }">Route</label>
+							<mat-form-field floatLabel="never">
+								<span matPrefix> / </span>
+								<input matInput id="route" #route placeholder="Route" type="text"
+									   formControlName="route" autocomplete="off" required>
+								<mat-error *ngIf="contentForm.get('route').hasError('required')">
+									Route is <strong>required</strong>
+								</mat-error>
+								<mat-error *ngIf="contentForm.get('route').hasError('alreadyExists')">
+									Route already exists! Choose another
+								</mat-error>
+							</mat-form-field>
+						</div>
+						<!-- DESCRIPTION -->
+						<div class="field">
+							<label for="desc" [ngClass]="{ disabled: desc.disabled }">Description</label>
+							<mat-form-field floatLabel="never">
+								<input matInput id="desc" #desc placeholder="Description" type="text"
+									   formControlName="description" autocomplete="off" required>
+								<mat-error *ngIf="contentForm.get('description').hasError('required')">
+									Description is <strong>required</strong>
+								</mat-error>
+							</mat-form-field>
+						</div>
+					</section-component>
+
+					<section-component header="Accessibility" class="formControls">
+
+						<!-- ACCESS -->
+						<div class="field">
+							<label for="access" [ngClass]="{ disabled: access.disabled }">Access</label>
+							<mat-form-field floatLabel="never">
+								<!-- <mat-icon matPrefix>{{getAccessChoice().icon}}</mat-icon> -->
+								<mat-select id="access" #access placeholder="Access" formControlName="access" required>
+									<mat-option *ngFor="let option of accessChoices" [value]="option.value">
+										{{ option.verbose }}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+
+						<!-- NAV -->
+						<div class="field">
+							<mat-checkbox formControlName="nav" (change)="setFormDisabledState()" class="full" labelPosition="before">
+								Show in navigation
+							</mat-checkbox>
+						</div>
+
+						<!-- FOLDER -->
+						<div class="field">
+							<label for="folder" [ngClass]="{ disabled: folder.disabled }">Navigation Folder</label>
+							<mat-form-field floatLabel="never">
+								<input matInput id="folder" #folder placeholder="Folder" type="text" formControlName="folder"
+									   autocomplete="off" [matAutocomplete]="folderAuto">
+								<mat-autocomplete #folderAuto="matAutocomplete">
+									<mat-option *ngFor="let folder of folders" [value]="folder">
+										{{ folder }}
+									</mat-option>
+								</mat-autocomplete>
+							</mat-form-field>
+						</div>
+					</section-component>
+				</sectionwrapper-component>
+			</mat-tab>
+
+			<mat-tab label="Content">
+				<!-- CONTENT -->
+				<ckeditor class="editor" (onChange)="editorChanged($event)"></ckeditor>
+			</mat-tab>
 
 
-			<!-- ROUTE -->
-			<mat-form-field class="field">
-				<span matPrefix> / </span>
-				<input matInput placeholder="Route" type="text" formControlName="route" autocomplete="off" required>
-				<mat-error *ngIf="contentForm.get('route').hasError('required')">
-					Route is <strong>required</strong>
-				</mat-error>
-				<mat-error *ngIf="contentForm.get('route').hasError('routeAlreadyTaken')">
-					Route is already taken! Choose another
-				</mat-error>
-			</mat-form-field>
+			<mat-tab label="Preview" #previewTab>
+				<ng-template matTabContent>
+					<content-component [contentInput]="contentForm.getRawValue()" previewMode="true"></content-component>
+				</ng-template>
+			</mat-tab>
 
-			<!-- DESCRIPTION -->
-			<mat-form-field class="field">
-				<input matInput placeholder="Description" type="text" formControlName="description" autocomplete="off" required>
-				<mat-error *ngIf="contentForm.get('description').hasError('required')">
-					Description is <strong>required</strong>
-				</mat-error>
-			</mat-form-field>
+		</mat-tab-group>
 
-			<!-- ACCESS -->
-			<mat-form-field class="field">
-				<!-- <mat-icon matPrefix>{{getAccessChoice().icon}}</mat-icon> -->
-				<mat-select placeholder="Access" formControlName="access" required>
-					<mat-option *ngFor="let option of accessChoices" [value]="option.value">
-						{{ option.verbose }}
-					</mat-option>
+	</form>
+
+	<div ngClass="actions">
+		<div>
+			<!-- VERSION -->
+			<mat-form-field>
+				<mat-select id="access" [disabled]="!history" [(value)]="versionIndex" (selectionChange)="versionChange($event)">
+					<ng-container *ngIf="history; else noHistoryAvailable">
+						<mat-option [value]="-1">
+							Ver. {{history[0].version + 2}} - Current draft
+						</mat-option>
+						<mat-option *ngFor="let contentObj of history; let i = index" [value]="i">
+							Ver. {{ contentObj.version + 1}} - {{ contentObj.updatedAt | date }}
+						</mat-option>
+					</ng-container>
+					<ng-template #noHistoryAvailable>
+						<mat-option [value]="-1">
+							Ver. 1 - First draft
+						</mat-option>
+					</ng-template>
 				</mat-select>
-			</mat-form-field>
-
-			<!-- NAV -->
-			<mat-checkbox class="field check" formControlName="nav" (change)="updateFolderDisableState()">
-				Show in navigation
-			</mat-checkbox>
-
-			<!-- FOLDER -->
-			<mat-form-field class="field">
-				<input matInput placeholder="Folder" type="text" formControlName="folder"
-					   autocomplete="off" [matAutocomplete]="folderAuto">
-				<mat-autocomplete #folderAuto="matAutocomplete">
-					<mat-option *ngFor="let folder of folders" [value]="folder">
-						{{ folder }}
-					</mat-option>
-				</mat-autocomplete>
 			</mat-form-field>
 		</div>
 
-		<!-- CONTENT -->
-		<ckeditor class="field"></ckeditor>
-	</form>
-	<div ngClass="actions">
-		<button mat-raised-button form="contentForm" type="submit" [disabled]="!contentForm.valid" color="primary">
-			{{ inputContent ? 'Update page' : 'Create page' }}
-		</button>
+
+		<div>
+			<button mat-raised-button form="contentForm" type="submit" [disabled]="!contentForm.valid" color="primary">
+				{{ originalContent ? 'Update page' : 'Create page' }}
+			</button>
+		</div>
+
 	</div>
 </div>
