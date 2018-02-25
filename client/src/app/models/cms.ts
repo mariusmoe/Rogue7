@@ -1,11 +1,11 @@
 import { AccessRoles } from '@app/models/user';
 
 export interface CmsContent {
-	_id?: string;
 	// Always present
 	title: string;
 	access: AccessRoles;
 	route: string;
+	version: number;
 	// May be present
 	folder?: string;
 	content?: string;
@@ -28,7 +28,6 @@ export interface CmsAccess {
 }
 
 export interface CmsFolder {
-	_id?: string;
 	title: string;
 	content: CmsContent[];
 }

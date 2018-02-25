@@ -10,7 +10,7 @@ import { MobileService } from '@app/services';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 @Component({
 	selector: 'ckeditor',

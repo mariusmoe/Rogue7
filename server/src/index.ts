@@ -66,7 +66,7 @@ class App {
 		// Serve static files that exists
 		this.app.get('*.*', express.static(join(process.cwd(), 'www')));
 		this.app.get('*', (req: Request, res: Response) => {
-			res.sendFile(join(process.cwd(), 'www', 'index.html'));
+			res.sendFile(join(process.cwd(), '..', 'www', 'index.html'));
 		});
 	}
 }

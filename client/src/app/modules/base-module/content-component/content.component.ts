@@ -77,17 +77,17 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	 * @param cmsContent
 	 */
 	private build(cmsContent: CmsContent) {
-		if (!this.contentHost || !this.contentHost.nativeElement) {
+		// Clean components before rebuilding. Should always do this.
+		this.cleanEmbeddedComponents();
+
+		// null ref checks
+		if (!this.contentHost || !this.contentHost.nativeElement || !cmsContent || !cmsContent.content) {
 			return;
 		}
 		const e = (<HTMLElement>this.contentHost.nativeElement);
-		// Clean components before rebuilding
-		this.cleanEmbeddedComponents();
-
 
 		const nglinksel = this._ngLinkFactory.selector;
 		e.innerHTML = cmsContent.content.replace(/<a /g, `<${nglinksel} `).replace(/<\/a>/g, `</${nglinksel}>`);
-		if (!cmsContent.content) { return; }
 
 		// query for elements we need to adjust
 		const ngLinks = e.querySelectorAll(this._ngLinkFactory.selector);

@@ -93,9 +93,9 @@ export class NavComponent {
 	 * Helper function for angular's *ngFor
 	 * @param  {number}                   index the index of the item to track
 	 * @param  {CmsContent | CmsFolder}   item the item tracked
-	 * @return {string}                   the item's ID; used for tracking
+	 * @return {string}                   the item's title; used for tracking
 	 */
 	trackBy(index: number, item: CmsContent | CmsFolder): string {
-		return item._id;
+		return item.title;
 	}
 }
