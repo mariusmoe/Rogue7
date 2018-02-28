@@ -120,7 +120,7 @@ export class AppRouter {
 
 
 	/**
-	 * 
+	 *
 	 * @param router
 	 */
 	private static adminRoutes(router: Router) {
@@ -130,9 +130,6 @@ export class AppRouter {
 		usersRoutes.get('/', PassportConfig.requireAuth, UsersController.getAllUsers);
 		// Patch User
 		usersRoutes.post('/:id', PassportConfig.requireAuth, UsersController.patchUser);
-
-
-
 
 		const adminRoutes = Router();
 		adminRoutes.use('/users', usersRoutes);

@@ -2,7 +2,7 @@ import { get as configGet } from 'config';
 import { ExtractJwt, Strategy as JwtStrategy, StrategyOptions as jwtOptions, VerifiedCallback } from 'passport-jwt';
 import { verify } from 'jsonwebtoken';
 import { Strategy as LocalStrategy, IStrategyOptions as localOptions } from 'passport-local';
-import { User, user } from '../models/user';
+import { UserModel, User } from '../models/user';
 import { use as passportUse, authenticate, Strategy } from 'passport';
 import { Handler } from 'express';
 import { Request, Response, NextFunction } from 'express';
@@ -41,7 +41,7 @@ export class PassportConfig {
 
 // Setting up local login strategy
 const requireLogin = new LocalStrategy(localOptions, (username, password, done) => {
-	User.findOne({ username_lower: username.toLowerCase() }, (err, user) => {
+	UserModel.findOne({ username_lower: username.toLowerCase() }, (err, user) => {
 		if (err) { return done(err); }
 
 		if (!user) { return done(null, false); }
@@ -58,7 +58,7 @@ const requireLogin = new LocalStrategy(localOptions, (username, password, done) 
 
 // Setting up JWT login strategies
 const requireAuth = new JwtStrategy(jwtOptions, function (payload: any, done: VerifiedCallback): void {
-	User.findById(payload._id, function (err: Error, user: user) {
+	UserModel.findById(payload._id, function (err: Error, user: User) {
 		if (err) { return done(err, false); }
 
 		if (user) {
@@ -74,7 +74,7 @@ const configureForUser = (req: Request, res: Response, next: NextFunction) => {
 	const token = jwtOptions.jwtFromRequest(req);
 	verify(token, jwtOptions.secretOrKey, jwtOptions, (err, tokenPayload: any) => {
 		if (err) { return next(); }
-		User.findById(tokenPayload._id, (err, user) => {
+		UserModel.findById(tokenPayload._id, (err2, user) => {
 			req.user = user;
 			next();
 		});

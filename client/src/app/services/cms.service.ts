@@ -13,48 +13,43 @@ import { timeout } from 'rxjs/operators';
 @Injectable()
 export class CMSService {
 
-	private listSubject: BehaviorSubject<CmsContent[]> = new BehaviorSubject(null);
+	private _listSubject: BehaviorSubject<CmsContent[]> = new BehaviorSubject(null);
+
+	// #region constructor
 
 	constructor(
 		private http: HttpClient,
 		private router: Router) {
 	}
 
+	// #endregion
 
-
-	// ---------------------------------------
-	// -------------- UTILITIES --------------
-	// ---------------------------------------
+	// #region Public methods
 
 	/**
 	 * Gets the cmsRoutes as a BehaviorSubject
 	 * @param  {[boolean]}                        forceUpdate, whether to force update. Defaults to false.
 	 * @return {BehaviorSubject<CmsContent[]>}    the BehaviorSubject
 	 */
-	getContentList(forceUpdate = false): BehaviorSubject<CmsContent[]> {
+	public getContentList(forceUpdate = false): BehaviorSubject<CmsContent[]> {
 		if (forceUpdate) {
 			const sub = this.requestContentList().subscribe(
 				contentList => {
 					sub.unsubscribe();
-					this.listSubject.next(contentList);
+					this._listSubject.next(contentList);
 				}
 			);
 		}
-		return this.listSubject;
+		return this._listSubject;
 	}
 
-	/**
-	 * Sets the cmsRoutes
-	 */
-	setContentList(contentList: CmsContent[]) {
-		this.listSubject.next(contentList);
-	}
-
+	// #endregion
 
 	// ---------------------------------------
 	// ------------- HTTP METHODS ------------
 	// ---------------------------------------
 
+	// #region Private HTTP methods
 
 	/**
 	 * Requests the content list
@@ -64,11 +59,15 @@ export class CMSService {
 		return this.http.get<CmsContent[]>(environment.URL.cms.content).pipe(timeout(environment.TIMEOUT));
 	}
 
+	// #endregion
+
+	// #region Public HTTP methods
+
 	/**
 	 * Requests the content from the given url
 	 * @return {Observable<CmsContent>}         Server's response, as an Observable
 	 */
-	searchContent(searchTerm: string): Observable<CmsContent[]> {
+	public searchContent(searchTerm: string): Observable<CmsContent[]> {
 		return this.http.get<CmsContent[]>(environment.URL.cms.search + '/' + searchTerm).pipe(timeout(environment.TIMEOUT));
 	}
 
@@ -76,15 +75,15 @@ export class CMSService {
 	 * Requests the content from the given url
 	 * @return {Observable<CmsContent>}         Server's response, as an Observable
 	 */
-	requestContent(contentUrl: string): Observable<CmsContent> {
+	public requestContent(contentUrl: string): Observable<CmsContent> {
 		return this.http.get<CmsContent>(environment.URL.cms.content + '/' + contentUrl).pipe(timeout(environment.TIMEOUT));
 	}
 
-		/**
+	/**
 	 * Requests the content History array from the given url
 	 * @return {Observable<CmsContent>}         Server's response, as an Observable
 	 */
-	requestContentHistory(contentUrl: string): Observable<CmsContent[]> {
+	public requestContentHistory(contentUrl: string): Observable<CmsContent[]> {
 		return this.http.get<CmsContent[]>(environment.URL.cms.history + '/' + contentUrl).pipe(timeout(environment.TIMEOUT));
 	}
 
@@ -93,7 +92,7 @@ export class CMSService {
 	 * Requests to update the content for a given url
 	 * @return {Observable<CmsContent>}         Server's response, as an Observable
 	 */
-	updateContent(contentUrl: string, updatedContent: CmsContent): Observable<CmsContent> {
+	public updateContent(contentUrl: string, updatedContent: CmsContent): Observable<CmsContent> {
 		return this.http.patch<CmsContent>(environment.URL.cms.content + '/' + contentUrl, updatedContent).pipe(timeout(environment.TIMEOUT));
 	}
 
@@ -101,7 +100,7 @@ export class CMSService {
 	 * Requests to update the content for a given url
 	 * @return {Observable<boolean>}         Server's response, as an Observable
 	 */
-	deleteContent(contentUrl: string): Observable<boolean> {
+	public deleteContent(contentUrl: string): Observable<boolean> {
 		return this.http.delete<boolean>(environment.URL.cms.content + '/' + contentUrl).pipe(timeout(environment.TIMEOUT));
 	}
 
@@ -110,7 +109,9 @@ export class CMSService {
 	 * Requests to create the content for a given url
 	 * @return {Observable<CmsContent>}         Server's response, as an Observable
 	 */
-	createContent(newContent: CmsContent): Observable<CmsContent> {
+	public createContent(newContent: CmsContent): Observable<CmsContent> {
 		return this.http.post<CmsContent>(environment.URL.cms.content, newContent).pipe(timeout(environment.TIMEOUT));
 	}
+
+	// #endregion
 }

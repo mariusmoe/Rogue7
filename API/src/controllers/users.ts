@@ -1,5 +1,5 @@
 ﻿import { Request, Response, NextFunction } from 'express';
-import { User, user, accessRoles } from '../models/user';
+import { UserModel, User, accessRoles } from '../models/user';
 import { get as configGet } from 'config';
 import { status, ROUTE_STATUS, USERS_STATUS } from '../libs/responseMessage';
 
@@ -16,7 +16,7 @@ export class UsersController {
 	 * @param  {NextFunction} next next
 	 */
 	public static getAllUsers(req: Request, res: Response, next: NextFunction) {
-		User.find({}, { username: 1, role: 1, }, (err, users) => {
+		UserModel.find({}, { username: 1, role: 1, }, (err, users) => {
 			if (err) { return next(err); }
 			return res.status(200).send(users);
 		}).lean().sort('username_lower');
@@ -29,10 +29,10 @@ export class UsersController {
 	 * @param  {NextFunction} next next
 	 */
 	public static patchUser(req: Request, res: Response, next: NextFunction) {
-		const user = <user>req.body,
-			adminUser = <user>req.user,
+		const user = <User>req.body,
+			adminUser = <User>req.user,
 			routeId = <string>req.params.id;
-		
+
 		if (adminUser.role !== accessRoles.admin) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
@@ -41,20 +41,20 @@ export class UsersController {
 			return res.status(400).send(status(USERS_STATUS.DATA_UNPROCESSABLE));
 		}
 
-		const applyUser: Partial<user> = {
+		const applyUser: Partial<User> = {
 			_id: user._id,
 			username: user.username,
 			username_lower: user.username.toLowerCase(),
 			role: user.role,
 		};
 
-		User.findOne({ username_lower: applyUser.username_lower }, (err, foundUser) => {
-			if (err || (foundUser && foundUser._id != user._id)) {
+		UserModel.findOne({ username_lower: applyUser.username_lower }, (err, foundUser) => {
+			if (err || (foundUser && foundUser._id !== user._id)) {
 				return res.status(400).send(status(USERS_STATUS.USERNAME_NOT_AVILIABLE));
 			}
 
-			User.findByIdAndUpdate(user._id, applyUser, (err, updated) => {
-				if (err) { return next(err); }
+			UserModel.findByIdAndUpdate(user._id, applyUser, (err2, updated) => {
+				if (err2) { return next(err2); }
 				if (updated) {
 					return res.status(200).send(status(USERS_STATUS.USER_ROLE_UPDATED));
 				} else { // user obj with bad id
@@ -62,9 +62,5 @@ export class UsersController {
 				}
 			});
 		}).lean();
-
-
-
 	}
-
 }

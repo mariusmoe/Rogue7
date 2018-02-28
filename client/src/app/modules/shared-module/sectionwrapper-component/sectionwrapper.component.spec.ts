@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SectionComponent } from './sectionwrapper.component';
+import { SectionWrapperComponent } from './sectionwrapper.component';
 
-describe('SectionComponent', () => {
-	let component: SectionComponent;
-	let fixture: ComponentFixture<SectionComponent>;
+describe('SectionWrapperComponent', () => {
+	let component: SectionWrapperComponent;
+	let fixture: ComponentFixture<SectionWrapperComponent>;
 
 	beforeEach(async(() => {
 		TestBed.configureTestingModule({
-			declarations: [SectionComponent]
+			declarations: [SectionWrapperComponent]
 		})
 			.compileComponents();
 	}));
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(SectionComponent);
+		fixture = TestBed.createComponent(SectionWrapperComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

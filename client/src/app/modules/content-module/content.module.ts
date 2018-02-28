@@ -5,19 +5,19 @@ import { SharedModule } from '@app/modules/shared-module/shared.module';
 
 // Components
 import { ContentComponent } from './content-component/content.component';
-import { NgLinkComponent } from './content-controllers/nglink.component';
+import { DynamicLinkComponent } from './content-controllers/dynamic.link.component';
 
 
 @NgModule({
 	declarations: [
 		ContentComponent,
-		NgLinkComponent,
+		DynamicLinkComponent,
 	],
 	imports: [
 		SharedModule
 	],
 	entryComponents: [
-		NgLinkComponent
+		DynamicLinkComponent
 	],
 	exports: [
 		ContentComponent

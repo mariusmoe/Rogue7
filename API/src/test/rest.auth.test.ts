@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import { TestBed } from './TestBed';
 
-import { User, user, accessRoles } from '../models/user';
+import { UserModel, User, accessRoles } from '../models/user';
 import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
-import { tokenResponse } from '../controllers/auth';
+import { TokenResponse } from '../controllers/auth';
 
 // ---------------------------------
 // ---- Authorization TestSuite ----
@@ -12,8 +12,8 @@ import { tokenResponse } from '../controllers/auth';
 describe('REST: Authorization', () => {
 
 	before(() => {
-		TestBed.stubFindOne(User);
-		TestBed.stubSave(User);
+		TestBed.stubFindOne(UserModel);
+		TestBed.stubSave(UserModel);
 	});
 
 	after(() => {
@@ -28,20 +28,20 @@ describe('REST: Authorization', () => {
 
 	describe('/api/auth/token', () => {
 		it('GET /api/auth/token 200', async () => {
-			let res = await TestBed.http.get('/api/auth/token').set('Authorization', TestBed.token);
+			const res = await TestBed.http.get('/api/auth/token').set('Authorization', TestBed.token);
 
 			expect(res).to.have.status(200);
 			expect(res).to.have.property('body');
 
-			const tokenResponse: tokenResponse = res.body;
-			expect(tokenResponse.token).to.contains(TestBed.token.split('.')[0]);
-			expect(tokenResponse.user).to.have.property('username');
-			expect(tokenResponse.user).property('username').to.equal(TestBed.fakeUser.username);
+			const body: TokenResponse = res.body;
+			expect(body.token).to.contains(TestBed.token.split('.')[0]);
+			expect(body.user).to.have.property('username');
+			expect(body.user).property('username').to.equal(TestBed.fakeUser.username);
 		});
 
 		it('GET /api/auth/token 401', async () => {
 			try {
-				let res = await TestBed.http.get('/api/auth/token');
+				const res = await TestBed.http.get('/api/auth/token');
 			} catch (error) {
 				expect(error).to.have.status(401);
 			}
@@ -56,25 +56,25 @@ describe('REST: Authorization', () => {
 
 	describe('/api/auth/login', () => {
 		it('POST /api/auth/login 200', async () => {
-			const user: Partial<user> = { username: TestBed.fakeUser.username, password: TestBed.fakeUser.password };
-			let res = await TestBed.http.post('/api/auth/login').send(user);
+			const user: Partial<User> = { username: TestBed.fakeUser.username, password: TestBed.fakeUser.password };
+			const res = await TestBed.http.post('/api/auth/login').send(user);
 
 			expect(res).to.have.status(200);
 			expect(res).to.have.property('body');
 
-			const tokenResponse: tokenResponse = res.body;
-			expect(tokenResponse).to.have.property('token');
-			expect(tokenResponse).property('token').to.contain('bearer ');
-			expect(tokenResponse.user).to.have.property('username');
-			expect(tokenResponse.user).property('username').to.equal(TestBed.fakeUser.username);
+			const body: TokenResponse = res.body;
+			expect(body).to.have.property('token');
+			expect(body).property('token').to.contain('bearer ');
+			expect(body.user).to.have.property('username');
+			expect(body.user).property('username').to.equal(TestBed.fakeUser.username);
 		});
 
 
 		it('POST /api/auth/login 401', async () => {
-			const user: Partial<user> = { username: TestBed.fakeUser.username, password: TestBed.fakeUser.password + 'bad' };
+			const user: Partial<User> = { username: TestBed.fakeUser.username, password: TestBed.fakeUser.password + 'bad' };
 
 			try {
-				let res = await TestBed.http.post('/api/auth/login').send(user);
+				const res = await TestBed.http.post('/api/auth/login').send(user);
 			} catch (error) {
 				expect(error).to.have.status(401);
 			}
@@ -88,13 +88,13 @@ describe('REST: Authorization', () => {
 
 	describe('/api/auth/register', () => {
 		it('POST /api/auth/register 200', async () => {
-			const user: Partial<user> = {
+			const user: Partial<User> = {
 				username: TestBed.fakeUser.username + '2',
 				password: TestBed.fakeUser.password + '2',
 				role: accessRoles.user
 			};
 
-			let res = await TestBed.http.post('/api/auth/register').send(user);
+			const res = await TestBed.http.post('/api/auth/register').send(user);
 
 			expect(res).status(200);
 			expect(res).to.have.property('body');
@@ -104,12 +104,15 @@ describe('REST: Authorization', () => {
 
 
 		it('POST /api/auth/register 400', async () => {
-			const noUsername: Partial<user> = { password: TestBed.fakeUser.password + '2', role: accessRoles.user };
-			const noPassword: Partial<user> = { username: TestBed.fakeUser.username + '2', role: accessRoles.user };
-			const noRole: Partial<user> = { username: TestBed.fakeUser.username + '2', password: TestBed.fakeUser.password + '2' };
-			const badRole: Partial<user> = { username: TestBed.fakeUser.username + '2', password: TestBed.fakeUser.password + '2', role: <any>'bad' };
+			const noUsername: Partial<User> = { password: TestBed.fakeUser.password + '2', role: accessRoles.user };
+			const noPassword: Partial<User> = { username: TestBed.fakeUser.username + '2', role: accessRoles.user };
+			const noRole: Partial<User> = { username: TestBed.fakeUser.username + '2', password: TestBed.fakeUser.password + '2' };
+			const badRole: Partial<User> = {
+				username: TestBed.fakeUser.username + '2',
+				password: TestBed.fakeUser.password + '2', role: <any>'bad'
+			};
 
-			let [noUsernameRes, noPasswordRes, noRoleRes, badRoleRes] = await Promise.all([
+			const [noUsernameRes, noPasswordRes, noRoleRes, badRoleRes] = await Promise.all([
 				TestBed.http.post('/api/auth/register').send(noUsername),
 				TestBed.http.post('/api/auth/register').send(noPassword),
 				TestBed.http.post('/api/auth/register').send(noRole),
@@ -143,13 +146,13 @@ describe('REST: Authorization', () => {
 
 
 		it('POST /api/auth/register 409', async () => {
-			const user: Partial<user> = {
+			const user: Partial<User> = {
 				username: TestBed.fakeUser.username,
 				password: TestBed.fakeUser.password,
 				role: accessRoles.admin
 			};
 
-			let res = await TestBed.http.post('/api/auth/register').send(user);
+			const res = await TestBed.http.post('/api/auth/register').send(user);
 
 			expect(res).status(409);
 			expect(res).to.have.property('body');
@@ -172,7 +175,7 @@ describe('REST: Authorization', () => {
 				confirm: TestBed.fakeUser.password + '2',
 			};
 
-			let res = await TestBed.http.post('/api/auth/updatepassword').send(user).set('Authorization', TestBed.token);
+			const res = await TestBed.http.post('/api/auth/updatepassword').send(user).set('Authorization', TestBed.token);
 
 			expect(res).status(200);
 			expect(res).to.have.property('body');
@@ -192,7 +195,7 @@ describe('REST: Authorization', () => {
 			};
 
 
-			let [noCurrentPasswordRes, noPasswordRes, noConfirmRes, confirmMismatchRes] = await Promise.all([
+			const [noCurrentPasswordRes, noPasswordRes, noConfirmRes, confirmMismatchRes] = await Promise.all([
 				TestBed.http.post('/api/auth/updatepassword').send(noCurrentPassword).set('Authorization', TestBed.token),
 				TestBed.http.post('/api/auth/updatepassword').send(noPassword).set('Authorization', TestBed.token),
 				TestBed.http.post('/api/auth/updatepassword').send(noConfirm).set('Authorization', TestBed.token),
@@ -237,7 +240,7 @@ describe('REST: Authorization', () => {
 				confirm: TestBed.fakeUser.password + '2'
 			};
 
-			let [noTokenAttemptRes, wrongCurrentPasswordAttemptRes] = await Promise.all([
+			const [noTokenAttemptRes, wrongCurrentPasswordAttemptRes] = await Promise.all([
 				TestBed.http.post('/api/auth/updatepassword').send(noTokenAttempt),
 				TestBed.http.post('/api/auth/updatepassword').send(wrongCurrentPasswordAttempt).set('Authorization', TestBed.token),
 			]);

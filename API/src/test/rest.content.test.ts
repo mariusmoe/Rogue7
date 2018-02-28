@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { TestBed } from './TestBed';
 
-import { Content, content } from '../models/content';
+import { ContentModel, Content } from '../models/content';
 import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
 
 
@@ -12,9 +12,9 @@ import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
 describe('REST: Content', () => {
 
 	before(() => {
-		TestBed.stubFindOne(Content);
-		TestBed.stubFind(Content);
-		TestBed.stubSave(Content);
+		TestBed.stubFindOne(ContentModel);
+		TestBed.stubFind(ContentModel);
+		TestBed.stubSave(ContentModel);
 	});
 
 	after(() => {

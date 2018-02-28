@@ -13,7 +13,7 @@ import { timeout } from 'rxjs/operators';
 @Injectable()
 export class SteamService {
 	// Remembers one server at a time
-	private serverData = new BehaviorSubject<GameDig>(null);
+	private _serverData = new BehaviorSubject<GameDig>(null);
 
 
 	constructor(
@@ -21,18 +21,20 @@ export class SteamService {
 		private router: Router) {
 	}
 
+	// #region HTTP methods
+
 	/**
 	 * Get the stored server data
 	 * @return {BehaviorSubject<GameDig>} the stored server data
 	 */
-	getServerData(): BehaviorSubject<GameDig> {
-		return this.serverData;
+	public getServerData(): BehaviorSubject<GameDig> {
+		return this._serverData;
 	}
 
 	/**
 	 * Query for all steam servers
 	 */
-	requestSteamServers(): Observable<SteamServer[]> {
+	public requestSteamServers(): Observable<SteamServer[]> {
 		return this.http.get<SteamServer[]>(environment.URL.steam.servers).pipe(timeout(environment.TIMEOUT));
 	}
 
@@ -40,7 +42,7 @@ export class SteamService {
 	 * Query the server for updated Steam Server data
 	 * @param  {string} route the route assgined for the steam server
 	 */
-	requestSteamServer(route: string): Observable<SteamServer> {
+	public requestSteamServer(route: string): Observable<SteamServer> {
 		return this.http.get<SteamServer>(environment.URL.steam.servers + '/' + route).pipe(timeout(environment.TIMEOUT));
 	}
 
@@ -48,19 +50,21 @@ export class SteamService {
 	 * Query the server for updated Steam Server data
 	 * @param  {string} route the route assgined for the steam server
 	 */
-	querySteamServerData(route: string) {
-		this.http.get<GameDig>(environment.URL.steam.servers + '/' + route + '/data').pipe(timeout(environment.TIMEOUT))
-			.subscribe(
-			data => {
-				data.lastUpdate = new Date();
-				const now = new Date().valueOf();
-				for (const player of data.players) {
-					player.timeDate = new Date(now - player.time * 1000);
+	public querySteamServerData(route: string) {
+		this.http.get<GameDig>(environment.URL.steam.servers + '/' + route + '/data')
+			.pipe(timeout(environment.TIMEOUT)).subscribe(
+				data => {
+					data.lastUpdate = new Date();
+					const now = new Date().valueOf();
+					for (const player of data.players) {
+						player.timeDate = new Date(now - player.time * 1000);
+					}
+					console.log(data);
+					this._serverData.next(data);
 				}
-				console.log(data);
-				this.serverData.next(data);
-			},
-			data => { this.serverData.next(data); }
+				// err => { this._serverData.next(err); }
 			);
 	}
+
+	// #endregion
 }

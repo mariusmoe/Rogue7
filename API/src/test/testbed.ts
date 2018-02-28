@@ -8,7 +8,7 @@ import { Setup } from '../libs/setup';
 import { AppRouter } from '../router';
 
 import { Model, Document } from 'mongoose';
-import { User, user } from '../models/user';
+import { UserModel, User } from '../models/user';
 import { sign } from 'jsonwebtoken';
 
 
@@ -19,7 +19,7 @@ interface Database {
 
 class TestBedSingleton {
 	private _http: ChaiHttp.Agent;
-	private _fakeUser: user;
+	private _fakeUser: User;
 	private _token: string;
 	private _stubs: SinonStub[] = [];
 
@@ -34,7 +34,7 @@ class TestBedSingleton {
 		this._http = (<any>request(app)).keepOpen(); // TODO: Update @types/chai-http
 
 		// Create initial user
-		this._fakeUser = new User({
+		this._fakeUser = new UserModel({
 			_id: '1234567890',
 			username: 'Test',
 			username_lower: 'test',
@@ -49,7 +49,7 @@ class TestBedSingleton {
 
 		try {
 			this.stubUserComparePassword();
-			this.stubFindById(User);
+			this.stubFindById(UserModel);
 		} catch (e) {
 			// soft
 		}
@@ -59,7 +59,7 @@ class TestBedSingleton {
 		return this._http;
 	}
 
-	get fakeUser(): user {
+	get fakeUser(): User {
 		return this._fakeUser;
 	}
 
@@ -75,7 +75,7 @@ class TestBedSingleton {
 	 * @return {SinonStub}             the stub
 	 */
 	private stubUserComparePassword(): SinonStub {
-		const s = stub(User.prototype, 'comparePassword').callsFake(
+		const s = stub(UserModel.prototype, 'comparePassword').callsFake(
 			(candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void) => {
 				cb(null, candidatePassword === this._fakeUser.password);
 				return null;

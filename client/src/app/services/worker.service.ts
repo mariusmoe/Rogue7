@@ -11,8 +11,6 @@ import { MatSnackBar } from '@angular/material';
 @Injectable()
 export class WorkerService {
 
-	// TODO: UNDERSTAND THIS!!
-
 	constructor(
 		@Inject(PLATFORM_ID) private platformId: Object,
 		private updates: SwUpdate,
@@ -23,7 +21,7 @@ export class WorkerService {
 		if (!isPlatformBrowser(platformId)) { return; }
 
 
-		// TODO: revert this back
+		// TODO: revert this back when it has been fixed
 		// interval(6 * 60 * 60).subscribe(() => updates.checkForUpdate());
 		ngZone.runOutsideAngular(() => {
 			interval(6 * 60 * 60).subscribe(() => {

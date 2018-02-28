@@ -46,7 +46,7 @@ class App {
 			let server: Server;
 			if (configUtil.getEnv('NODE_ENV') === 'production') {
 				// PRODUCTION
-				var options = {
+				const options = {
 					// cert: readFileSync('/path/to/cert'),
 					// key: readFileSync('/path/to/privkey')
 				};

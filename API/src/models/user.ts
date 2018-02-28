@@ -40,7 +40,7 @@ const schema = new Schema({
 	},
 });
 
-export interface user extends Document {
+export interface User extends Document {
 	username: string;
 	username_lower: string;
 	password?: string;
@@ -50,20 +50,20 @@ export interface user extends Document {
 
 
 // Before saving do the following
-schema.pre('save', function (next: NextFunction) {
-	const user: user = this;
-	if (!user.isModified('password')) { return next(); }
-	hash(user.password, SALT_FACTOR, (err, hashed) => {
+schema.pre('save', function(next: NextFunction) {
+	const u: User = this;
+	if (!u.isModified('password')) { return next(); }
+	hash(u.password, SALT_FACTOR, (err, hashed) => {
 		if (err) { return next(err); }
-		user.password = hashed;
+		u.password = hashed;
 		next();
 	});
 });
 
 // Compare password
 schema.methods.comparePassword = function (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void) {
-	const user: user = this;
-	compare(candidatePassword, user.password, (err, isMatch) => {
+	const u: User = this;
+	compare(candidatePassword, u.password, (err, isMatch) => {
 		if (err) { return cb(err); }
 
 		cb(null, isMatch);
@@ -71,4 +71,4 @@ schema.methods.comparePassword = function (candidatePassword: string, cb: (err: 
 };
 
 
-export let User = model<user>('User', schema);
+export let UserModel = model<User>('User', schema);

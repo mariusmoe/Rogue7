@@ -1,5 +1,6 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { PageEvent } from '@angular/material';
 
 import { CMSService, MobileService } from '@app/services';
 import { CmsContent } from '@app/models';
@@ -15,12 +16,30 @@ import { takeUntil } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchResultsComponent implements OnInit {
-	private ngUnsubscribe = new Subject();
 
-	public searchResults: CmsContent[];
-	public displayedResults = new BehaviorSubject<CmsContent[]>(null);
+	// #region Public fields
+
 	public pageSize = 10;
 	public pageSizes = [10, 25, 50, 100];
+
+	// #endregion
+
+	// #region Public Properties
+
+	public get searchResults() { return this._searchResults; }
+	public get displayedResults() { return this._displayedResults; }
+
+	// #endregion
+
+	// #region Private fields
+
+	private _ngUnsub = new Subject();
+	private _searchResults: CmsContent[];
+	private _displayedResults = new BehaviorSubject<CmsContent[]>(null);
+
+	// #endregion
+
+	// #region Constructor
 
 	constructor(
 		private router: Router,
@@ -29,31 +48,42 @@ export class SearchResultsComponent implements OnInit {
 		public mobileService: MobileService) {
 	}
 
+	// #endregion
+
+	// #region Interface implementations
+
 	ngOnInit() {
 		this.setResults();
 
-		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
 			if (e instanceof NavigationEnd) { this.setResults(); }
 		});
 	}
 
-	/**
-	 * Paginator helper function
-	 * @param  {any}    event paginator event
-	 */
-	paginator(event: any) {
-		this.pageSize = event.pageSize;
-		const start = event.pageIndex * event.pageSize;
-		this.displayedResults.next(this.searchResults.slice(start, start + event.pageSize));
-	}
+	// #endregion
 
+	// #region Private methods
 
 	/**
 	 * Set searchResults helper
 	 */
 	private setResults() {
-		this.searchResults = this.route.snapshot.data['SearchResults'] || [];
-		this.displayedResults.next(this.searchResults.slice(0, this.pageSize));
+		this._searchResults = this.route.snapshot.data['SearchResults'] || [];
+		this._displayedResults.next(this._searchResults.slice(0, this.pageSize));
+	}
+
+	// #endregion
+
+	// #region Event Handlers
+
+	/**
+	 * Paginator helper function
+	 * @param  {any}    event paginator event
+	 */
+	paginator(event: PageEvent) {
+		this.pageSize = event.pageSize;
+		const start = event.pageIndex * event.pageSize;
+		this._displayedResults.next(this._searchResults.slice(start, start + event.pageSize));
 	}
 
 	/**
@@ -65,4 +95,6 @@ export class SearchResultsComponent implements OnInit {
 	trackBy(index: number, item: CmsContent): string {
 		return item.title;
 	}
+
+	// #endregion
 }

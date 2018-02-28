@@ -9,8 +9,8 @@ import { takeUntil, share } from 'rxjs/operators';
 
 @Injectable()
 export class MobileService {
-	private ngUnsubscribe = new Subject();
-	private isMobileSubject = new BehaviorSubject<boolean>(false);
+	private _ngUnsub = new Subject();
+	private _isMobileSubject = new BehaviorSubject<boolean>(false);
 
 	private mobileDevices = [
 		Breakpoints.Handset,
@@ -21,16 +21,16 @@ export class MobileService {
 	constructor(
 		private breakpointObserver: BreakpointObserver) {
 		// Handle Mobile devices
-		if (breakpointObserver.isMatched(this.mobileDevices)) { this.isMobileSubject.next(true); }
+		if (breakpointObserver.isMatched(this.mobileDevices)) { this._isMobileSubject.next(true); }
 
 		// Handle Mobile breakpoint change
-		this.breakpointObserver.observe(this.mobileDevices).pipe(takeUntil(this.ngUnsubscribe), share()).subscribe(result => {
-			this.isMobileSubject.next(result.matches);
+		this.breakpointObserver.observe(this.mobileDevices).pipe(takeUntil(this._ngUnsub), share()).subscribe(result => {
+			this._isMobileSubject.next(result.matches);
 		});
 	}
 
 	isMobile(): BehaviorSubject<boolean> {
-		return this.isMobileSubject;
+		return this._isMobileSubject;
 	}
 
 }

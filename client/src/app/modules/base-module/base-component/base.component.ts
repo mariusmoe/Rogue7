@@ -4,20 +4,20 @@ import { MatIconRegistry, MatDrawer } from '@angular/material';
 import { Router, ActivationStart, ActivationEnd } from '@angular/router';
 
 import { MobileService, AuthService, WorkerService } from '@app/services';
-//import { RoutingAnim } from '@app/animations';
+// import { RoutingAnim } from '@app/animations';
 
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'base-component',
-	//animations: [RoutingAnim],
+	// animations: [RoutingAnim],
 	templateUrl: './base.component.html',
 	styleUrls: ['./base.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BaseComponent implements OnInit, OnDestroy {
-	private ngUnsubscribe = new Subject();
+	private _ngUnsub = new Subject();
 	@ViewChild('sidenavLeft') private sidenavLeft: MatDrawer;
 	@ViewChild('sidenavRight') private sidenavRight: MatDrawer;
 
@@ -36,10 +36,10 @@ export class BaseComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.mobileService.isMobile().pipe(takeUntil(this.ngUnsubscribe)).subscribe(isMobile => {
+		this.mobileService.isMobile().pipe(takeUntil(this._ngUnsub)).subscribe(isMobile => {
 			if (!isMobile) { this.closeSideNavs(); }
 		});
-		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
 			this.closeSideNavs();
 
 			if (e instanceof ActivationStart) {
@@ -51,8 +51,8 @@ export class BaseComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.ngUnsubscribe.next();
-		this.ngUnsubscribe.complete();
+		this._ngUnsub.next();
+		this._ngUnsub.complete();
 	}
 
 	/**

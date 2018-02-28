@@ -15,7 +15,7 @@ import { ModalComponent } from '@app/modules/shared-module/modals/modal.componen
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChangePasswordComponent {
-	changePasswordForm: FormGroup;
+	public changePasswordForm: FormGroup;
 
 	constructor(
 		private dialog: MatDialog,
@@ -32,7 +32,7 @@ export class ChangePasswordComponent {
 	/**
 	 * Submits the changePasswordForm
 	 */
-	submitForm() {
+	public submitForm() {
 		const user: UpdatePasswordUser = this.changePasswordForm.value;
 		const sub = this.authService.updatePassword(user).subscribe(
 			result => {

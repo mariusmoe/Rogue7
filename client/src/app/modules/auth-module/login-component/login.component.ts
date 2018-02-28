@@ -25,9 +25,10 @@ enum STATES {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-	private ngUnsubscribe = new Subject();
+	private _ngUnsub = new Subject();
+
 	public loginForm: FormGroup;
-	STATES = STATES;
+	public STATES = STATES;
 	public state = new BehaviorSubject<STATES>(STATES.READY);
 
 	constructor(
@@ -38,11 +39,11 @@ export class LoginComponent {
 			'username': ['', Validators.required],
 			'password': ['', Validators.required]
 		});
-		authService.getUser().pipe(takeUntil(this.ngUnsubscribe)).subscribe(user => {
+		authService.getUser().pipe(takeUntil(this._ngUnsub)).subscribe(user => {
 			if (!user) { this.state.next(STATES.READY); }
 		});
 
-		this.state.pipe(takeUntil(this.ngUnsubscribe)).subscribe(state => {
+		this.state.pipe(takeUntil(this._ngUnsub)).subscribe(state => {
 			if (state === this.STATES.LOADING) {
 				this.loginForm.get('username').disable();
 				this.loginForm.get('password').disable();
@@ -57,7 +58,7 @@ export class LoginComponent {
 	/**
 	 * Submits the login form
 	 */
-	logIn() {
+	public logIn() {
 		this.state.next(STATES.LOADING);
 		const user: User = this.loginForm.getRawValue();
 		const sub = this.authService.login(user).subscribe(

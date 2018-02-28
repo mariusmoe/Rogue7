@@ -18,14 +18,14 @@ export class HeaderComponent {
 	/**
 	 * Toggles the left sidepanel in mobile view
 	 */
-	toggleLeft(): void {
+	public toggleLeft(): void {
 		this.leftNav.emit(null);
 	}
 
 	/**
 	 * Toggles the right sidepanel in mobile view
 	 */
-	toggleRight(): void {
+	public toggleRight(): void {
 		this.rightNav.emit(null);
 	}
 }

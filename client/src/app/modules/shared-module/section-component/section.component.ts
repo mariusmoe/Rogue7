@@ -7,7 +7,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SectionComponent {
-	@Input() header: string = "";
+	@Input() public header: '';
 
 	constructor() { }
 }

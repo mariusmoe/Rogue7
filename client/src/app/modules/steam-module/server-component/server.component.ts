@@ -16,7 +16,8 @@ import { takeUntil } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ServerComponent implements OnInit, OnDestroy {
-	private ngUnsubscribe = new Subject();
+	private _ngUnsub = new Subject();
+
 	public serverSubject = new BehaviorSubject<SteamServer>(null);
 	public serverRoute: string;
 
@@ -29,7 +30,7 @@ export class ServerComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.serverSubject.next(this.route.snapshot.data['SteamServer']);
-		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
 			if (e instanceof NavigationEnd) {
 				this.serverSubject.next(this.route.snapshot.data['SteamServer']);
 			}
@@ -47,14 +48,14 @@ export class ServerComponent implements OnInit, OnDestroy {
 		this.steamService.querySteamServerData(this.serverRoute);
 
 		// every 30 sec, it asks again.
-		interval(30 * 1000).pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+		interval(30 * 1000).pipe(takeUntil(this._ngUnsub)).subscribe(() => {
 			this.steamService.querySteamServerData(this.serverRoute);
 		});
 	}
 
 	ngOnDestroy() {
-		this.ngUnsubscribe.next();
-		this.ngUnsubscribe.complete();
+		this._ngUnsub.next();
+		this._ngUnsub.complete();
 	}
 
 

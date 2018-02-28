@@ -7,12 +7,15 @@ enum TwitchType {
 	Collection = 'collection'
 }
 
+
+// #region Component decorator
+
 @Component({
-	selector: 'nglink',
+	selector: 'dynamic-link',
 	template: `
-		<ng-container *ngIf="!isVideo(); else video;" [ngSwitch]="IsLocalUrl">
-			<a *ngSwitchCase="true" [routerLink]="link" [ngStyle]="style">{{text}}</a>
-			<a *ngSwitchCase="false" [href]="getLink()" [ngStyle]="style">{{text}}</a>
+		<ng-container *ngIf="!isVideo; else video;" [ngSwitch]="isRemoteUrl">
+			<a *ngSwitchCase="true" [href]="safeLink" [ngStyle]="style">{{text}}</a>
+			<a *ngSwitchCase="false" [routerLink]="link" [ngStyle]="style">{{text}}</a>
 		</ng-container>
 		<ng-template #video>
 			<div #videoHost></div>
@@ -20,15 +23,41 @@ enum TwitchType {
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NgLinkComponent implements OnInit, AfterViewInit {
+
+// #endregion
+
+export class DynamicLinkComponent implements OnInit, AfterViewInit {
+
+	// #region Input fields
+
 	@Input() link: string;
 	@Input() text: string;
 
-	private _isLocalUrl = false;
-	public get IsLocalUrl(): boolean { return this._isLocalUrl; }
+	// #endregion
 
+	// #region Properties
+
+	public get isRemoteUrl(): boolean { return this._isRemoteUrl; }
+	public get isVideo(): boolean { return this.link.includes('youtube') || this.link.includes('twitch'); }
+
+	public get safeLink(): string | SafeUrl {
+		if (this.link.startsWith('steam://')) {
+			return this.san.bypassSecurityTrustUrl(this.link);
+		}
+		return this.link;
+	}
+
+	// #endregion
+
+	// #region Private fields
+
+	private _isRemoteUrl = true;
 	private _iframe: HTMLElement;
 	private _img: HTMLElement;
+
+	// #endregion
+
+	// #region Constructor
 
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
@@ -38,33 +67,32 @@ export class NgLinkComponent implements OnInit, AfterViewInit {
 
 	}
 
+	// #endregion
+
+	// #region Interface implementations
+
 	ngOnInit() {
-		const origin = this.document!.location.origin;
+		if (!this.document) { return; }
+		const origin = this.document.location.origin;
 		if (this.link.startsWith('/') || this.link.startsWith(origin)) {
 			this.link = this.link.replace(origin, '');
-			this._isLocalUrl = true;
+			this._isRemoteUrl = false;
 		}
 
 	}
-
-	public getLink(): string | SafeUrl {
-		if (this.link.startsWith('steam://')) {
-			return this.san.bypassSecurityTrustUrl(this.link);
-		}
-		return this.link;
-	}
-
 
 	ngAfterViewInit() {
-		if (!this.isVideo()) { return; }
+		if (!this.isVideo) { return; }
 		// Protect against template issues
 		if (!this.el.nativeElement.parentNode) { return; }
 
 		// Create video instances
 		const url = this.link;
-		if (url.includes('youtube')) { this.createYoutubeVideo(); }
-		else if (url.includes('twitch')) { this.createTwitchVideo(); }
-		else { return; } // Do nothing
+		if (url.includes('youtube')) {
+			this.createYoutubeVideo();
+		} else if (url.includes('twitch')) {
+			this.createTwitchVideo();
+		} else { return; } // Do nothing
 
 		// Create the wrapper
 		const wrapper = this.renderer.createElement('div');
@@ -83,12 +111,9 @@ export class NgLinkComponent implements OnInit, AfterViewInit {
 		this.renderer.destroy();
 	}
 
-	/**
-	 * Returns true for links pointing to youtube or twitch
-	 */
-	public isVideo(): boolean {
-		return this.link.includes('youtube') || this.link.includes('twitch');
-	}
+	// #endregion
+
+	// #region Youtube implementation
 
 	/**
 	 * Creates a youtube embed
@@ -109,6 +134,9 @@ export class NgLinkComponent implements OnInit, AfterViewInit {
 		this.renderer.setAttribute(this._img, 'src', 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg');
 	}
 
+	// #endregion
+
+	// #region Twitch
 
 	/**
 	 * Creates a Twitch embed
@@ -135,4 +163,6 @@ export class NgLinkComponent implements OnInit, AfterViewInit {
 		this.renderer.setAttribute(this._img, 'src',
 			'data:image/bmp;base64,Qk1YAQAAAAAAADYAAAAoAAAAEAAAAAkAAAABABAAAAAAACIBAAASCwAAEgs' + 'A'.repeat(400) + '=');
 	}
+
+	// #endregion
 }

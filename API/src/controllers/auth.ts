@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { User, user, accessRoles } from '../models/user';
+import { UserModel, User, accessRoles } from '../models/user';
 import { get as configGet } from 'config';
 import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
 import { sign } from 'jsonwebtoken';
 
 const userTypes: accessRoles[] = [accessRoles.admin, accessRoles.user];
 
-export interface tokenResponse {
+export interface TokenResponse {
 	token: string;
-	user: user;
+	user: User;
 }
 
 export class AuthController {
@@ -21,8 +21,8 @@ export class AuthController {
 	 * @param  {NextFunction} next next
 	 * @return {Response}          server response: object containing token and user
 	 */
-	public static token(req: Request, res: Response) {
-		const user = <user>{ _id: req.user._id, username: req.user.username, role: req.user.role };
+	public static token(req: Request, res: Response): Response {
+		const user: Partial<User> = { _id: req.user._id, username: req.user.username, role: req.user.role };
 		return res.status(200).json({
 			token: 'bearer ' + sign(user, configGet<string>('secret'), { expiresIn: 10800 }), // expiresIn in seconds ( = 3hours)
 			user: user
@@ -38,9 +38,9 @@ export class AuthController {
 	 * @return {Response}          server response
 	 */
 	public static register(req: Request, res: Response, next: NextFunction): Response {
-		const password = <string>req.body.password,
-			role = <accessRoles>req.body.role,
-			username = <string>req.body.username;
+		const password: string = req.body.password,
+			role: accessRoles = req.body.role,
+			username: string = req.body.username;
 
 		if (!username || !password) {
 			return res.status(400).send(status(AUTH_STATUS.NO_USERNAME_OR_PASSWORD));
@@ -49,7 +49,7 @@ export class AuthController {
 			return res.status(400).send(status(AUTH_STATUS.NO_OR_BAD_ROLE));
 		}
 
-		User.findOne({ username_lower: username.toLowerCase() }, (err1, userAlreadyExists) => {
+		UserModel.findOne({ username_lower: username.toLowerCase() }, (err1, userAlreadyExists) => {
 			if (err1) { return next(err1); }
 
 			// check if the email is already in use first
@@ -57,7 +57,7 @@ export class AuthController {
 				return res.status(409).send(status(AUTH_STATUS.USERNAME_NOT_AVILIABLE));
 			}
 
-			new User({
+			new UserModel({
 				username: username,
 				username_lower: username.toLowerCase(),
 				password: password,
@@ -78,10 +78,10 @@ export class AuthController {
 	 * @return {Response}          server response:
 	 */
 	public static updatePassword(req: Request, res: Response, next: NextFunction): Response {
-		const currentPassword = <string>req.body.currentPassword,
-			password = <string>req.body.password,
-			confirm = <string>req.body.confirm,
-			user = <user>req.user;
+		const currentPassword: string = req.body.currentPassword,
+			password: string = req.body.password,
+			confirm: string = req.body.confirm,
+			user: User = <User>req.user;
 
 		if (!currentPassword || !password || !confirm) {
 			return res.status(400).send(status(AUTH_STATUS.NO_PASSWORD_OR_NEW_PASSWORDS));
@@ -113,8 +113,8 @@ export class AuthController {
 	 * @return {Response}          server response
 	 */
 	public static deleteAccount(req: Request, res: Response, next: NextFunction): Response {
-		const id = <string>req.body.id,
-			user = <user>req.user;
+		const id: string = req.body.id,
+			user: Partial<User> = req.user;
 
 		if (user.role !== accessRoles.admin) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
@@ -122,7 +122,7 @@ export class AuthController {
 		if (!id) {
 			return res.status(400).send(status(AUTH_STATUS.USER_ID_NOT_FOUND));
 		}
-		User.findByIdAndRemove(id, (err) => {
+		UserModel.findByIdAndRemove(id, (err) => {
 			if (err) { return next(err); }
 			return res.status(200).send(status(AUTH_STATUS.ACCOUNT_DELETED));
 		}).lean();

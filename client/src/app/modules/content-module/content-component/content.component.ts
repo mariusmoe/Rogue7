@@ -14,7 +14,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { takeUntil } from 'rxjs/operators';
 
-import { NgLinkComponent } from '../content-controllers/nglink.component';
+import { DynamicLinkComponent } from '../content-controllers/dynamic.link.component';
 
 
 @Component({
@@ -24,16 +24,26 @@ import { NgLinkComponent } from '../content-controllers/nglink.component';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck {
+	@Input() public set contentInput(value: CmsContent) { this.contentSubject.next(value); }
+	@Input() public previewMode = false;
+
+	// #region Public fields
+
 	public AccessRoles = AccessRoles;
 	public contentSubject = new BehaviorSubject<CmsContent>(null);
-	@Input() set contentInput(value: CmsContent) { this.contentSubject.next(value); console.log('UPDATE') }; // This triggers a lot from mat-select anim
-	@Input() previewMode = false;
 
-	private ngUnsubscribe = new Subject();
+	// #endregion
 
-	@ViewChild('contentHost') contentHost: ElementRef;
-	private _ngLinkFactory: ComponentFactory<NgLinkComponent>;
-	private embeddedComponents: ComponentRef<NgLinkComponent>[] = [];
+	// #region Private fields
+
+	private _ngUnsub = new Subject();
+	@ViewChild('contentHost') private _contentHost: ElementRef;
+	private _ngLinkFactory: ComponentFactory<DynamicLinkComponent>;
+	private _embeddedComponents: ComponentRef<DynamicLinkComponent>[] = [];
+
+	// #endregion
+
+	// #region Constructor
 
 	constructor(
 		private resolver: ComponentFactoryResolver,
@@ -44,9 +54,13 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 		public authService: AuthService,
 		public cmsService: CMSService) {
 
-		this._ngLinkFactory = resolver.resolveComponentFactory(NgLinkComponent);
+		this._ngLinkFactory = resolver.resolveComponentFactory(DynamicLinkComponent);
 
 	}
+
+	// #endregion
+
+	// #region Interface implementations
 
 	ngOnInit() {
 		// If the contentSubject already has a value, then that's great!
@@ -54,7 +68,7 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 			this.contentSubject.next(this.route.snapshot.data['CmsContent']);
 		}
 
-		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
 			if (e instanceof NavigationEnd) {
 				this.contentSubject.next(this.route.snapshot.data['CmsContent']);
 			}
@@ -62,23 +76,27 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	}
 
 	ngAfterViewInit() {
-		this.contentSubject.pipe(takeUntil(this.ngUnsubscribe)).subscribe(content => {
+		this.contentSubject.pipe(takeUntil(this._ngUnsub)).subscribe(content => {
 			this.build(content);
 			// Detect changes manually for each component.
-			this.embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
+			this._embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
 		});
 	}
 
 	ngOnDestroy() {
-		this.ngUnsubscribe.next();
-		this.ngUnsubscribe.complete();
+		this._ngUnsub.next();
+		this._ngUnsub.complete();
 		// Clean components
 		this.cleanEmbeddedComponents();
 	}
 
 	ngDoCheck() {
-		this.embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
+		this._embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
 	}
+
+	// #endregion
+
+	// #region Private methods
 
 	/**
 	 * Inserts the content into DOM
@@ -86,13 +104,13 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	 */
 	private build(cmsContent: CmsContent) {
 		// null ref checks
-		if (!this.contentHost || !this.contentHost.nativeElement || !cmsContent || !cmsContent.content) {
+		if (!this._contentHost || !this._contentHost.nativeElement || !cmsContent || !cmsContent.content) {
 			return;
 		}
 		// Clean components before rebuilding.
 		this.cleanEmbeddedComponents();
 		// Prepare content for injection
-		const e = (<HTMLElement>this.contentHost.nativeElement);
+		const e = (<HTMLElement>this._contentHost.nativeElement);
 		const nglinksel = this._ngLinkFactory.selector;
 		e.innerHTML = cmsContent.content.replace(/<a /g, `<${nglinksel} `).replace(/<\/a>/g, `</${nglinksel}>`);
 
@@ -111,28 +129,31 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 			comp.instance.link = link.getAttribute('href');
 			comp.instance.text = savedTextContent;
 
-			this.embeddedComponents.push(comp);
+			this._embeddedComponents.push(comp);
 		}
 	}
 
 	private cleanEmbeddedComponents() {
 		// destroycomponents to avoid be memory leaks
-		this.embeddedComponents.forEach(comp => comp.destroy());
-		this.embeddedComponents.length = 0;
+		this._embeddedComponents.forEach(comp => comp.destroy());
+		this._embeddedComponents.length = 0;
 	}
 
+	// #endregion
+
+	// #region Public methods
 
 	/**
 	 * Navigate the user to the editor page.
 	 */
-	editPage() {
+	public navigateToEditPage() {
 		this.router.navigateByUrl('/compose/' + this.contentSubject.getValue().route);
 	}
 
 	/**
 	 * Opens a modal asking the user to verify intent to delete the page they're viewing
 	 */
-	deletePage() {
+	public deletePage() {
 		const content = this.contentSubject.getValue();
 		const data: ModalData = {
 			headerText: `Delete ${content.title}`,
@@ -152,4 +173,6 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 		};
 		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
 	}
+
+	// #endregion
 }

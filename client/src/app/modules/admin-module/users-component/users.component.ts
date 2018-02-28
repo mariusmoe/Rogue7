@@ -19,7 +19,9 @@ import { takeUntil, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersComponent implements OnInit {
-	private ngUnsubscribe = new Subject();
+	private _ngUnsub = new Subject();
+
+	// #region Public fields
 
 	public users: User[];
 	public displayedResults = new BehaviorSubject<User[]>(null);
@@ -29,7 +31,10 @@ export class UsersComponent implements OnInit {
 	public numFilteredUsers = 0;
 
 	public filterForm: FormGroup;
-	
+
+	// #endregion
+
+	// #region Constructor
 
 	constructor(
 		private dialog: MatDialog,
@@ -42,12 +47,21 @@ export class UsersComponent implements OnInit {
 		this.updateList();
 	}
 
+	// #endregion
+
+	// #region Interface implementations
+
 	ngOnInit() {
-		this.filterForm.get('filterControl').valueChanges.pipe(distinctUntilChanged(), debounceTime(300), takeUntil(this.ngUnsubscribe)).subscribe(value => {
-			this.updateFilteredList();
-		})
+		this.filterForm.get('filterControl').valueChanges.pipe(
+			distinctUntilChanged(), debounceTime(300), takeUntil(this._ngUnsub)).subscribe(value => {
+				this.updateFilteredList();
+			}
+		);
 	}
 
+	// #endregion
+
+	// #region Private methods
 
 	/**
 	 * Updates the two lists of users; the entire user set, and the filtered and paginated view list
@@ -56,7 +70,6 @@ export class UsersComponent implements OnInit {
 		const sub = this.adminService.getAllusers().subscribe(users => {
 			this.users = users;
 			this.updateFilteredList();
-			
 			sub.unsubscribe();
 		});
 	}
@@ -68,11 +81,33 @@ export class UsersComponent implements OnInit {
 	 */
 	private updateFilteredList(index: number = 0, start: number = 0) {
 		this.pageIndex = index;
-		const filteredList = this.users.filter((user: User) => user.username.toLowerCase().includes(this.filterForm.get('filterControl').value.toLowerCase()));
+		const filteredList = this.users.filter(
+			(user: User) => user.username.toLowerCase().includes(this.filterForm.get('filterControl').value.toLowerCase())
+		);
 		this.numFilteredUsers = filteredList.length;
 		this.displayedResults.next(filteredList.slice(start, start + this.pageSize));
 	}
 
+	// #endregion
+
+	// #region Public methods
+
+	/**
+	 * Opens a user configuration modal
+	 * @param user
+	 */
+	public configUser(user: User) {
+		this.dialog.open(
+			UserModalComponent,
+			<MatDialogConfig>{ data: <UserModalData>{ user: user, userList: this.users } }
+		).afterClosed().subscribe((closedResult: boolean) => {
+			if (closedResult) { this.updateList(); }
+		});
+	}
+
+	// #endregion
+
+	// #region Event Handlers
 
 	/**
 	 * Paginator helper function
@@ -83,23 +118,15 @@ export class UsersComponent implements OnInit {
 		this.updateFilteredList(event.pageIndex, event.pageIndex * event.pageSize);
 	}
 
-	public configUser(user: User) {
-		this.dialog.open(
-			UserModalComponent,
-			<MatDialogConfig>{ data: <UserModalData>{ user: user, userList: this.users } }
-		).afterClosed().subscribe((closedResult: boolean) => {
-			if (closedResult) { this.updateList(); }
-		});
-	}
-
-
 	/**
 	 * Helper function for angular's *ngFor
 	 * @param  {number}                   index the index of the item to track
 	 * @param  {CmsContent}               item the item tracked
 	 * @return {string}                   the item's ID; used for tracking
 	 */
-	trackBy(index: number, item: User): string {
+	public trackBy(index: number, item: User): string {
 		return item._id;
 	}
+
+	// #endregion
 }

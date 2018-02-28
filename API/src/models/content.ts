@@ -45,15 +45,15 @@ schema.index(
 );
 
 
-export interface contentDoc extends Document {
-	current: content;
-	prev: content[];
+export interface ContentDoc extends Document {
+	current: Content;
+	prev: Content[];
 
 	updatedAt?: Date;
 	createdAt?: Date;
 }
 
-export interface content {
+export interface Content {
 	title: string;
 	access?: accessRoles;
 	route: string;
@@ -79,11 +79,11 @@ export interface content {
 
 // Before fetching one contentObject, do the following
 schema.pre('findOne', function (next: NextFunction) {
-	const content: contentDoc = this;
+	const content: ContentDoc = this;
 	content.populate({ path: 'current.updatedBy', select: ['username', 'role'] });
 	content.populate({ path: 'current.createdBy', select: ['username', 'role'] });
 	next();
 });
 
 
-export const Content = model<contentDoc>('Content', schema);
+export const ContentModel = model<ContentDoc>('Content', schema);

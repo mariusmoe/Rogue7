@@ -18,8 +18,15 @@ import { of } from 'rxjs/observable/of';  // will be from 'rxjs' in v6
 
 @Injectable()
 export class AuthService {
-	private userSubject = new BehaviorSubject(null);
-	private renewalSub: Subscription;
+
+	// #region Private fields
+
+	private _userSubject = new BehaviorSubject(null);
+	private _renewalSub: Subscription;
+
+	// #endregion
+
+	// #region Constructor
 
 	constructor(
 		private tokenService: TokenService,
@@ -36,9 +43,9 @@ export class AuthService {
 		this.engageRenewTokenTimer(token);
 	}
 
-	// ---------------------------------------
-	// --------------- HELPERS ---------------
-	// ---------------------------------------
+	// #endregion
+
+	// #region Private methods
 
 	/**
 	 * Updates the user data field by decoding the JWT token
@@ -48,7 +55,7 @@ export class AuthService {
 		if (!token) { return; }
 		const u = this.jwtDecode(token);
 		if (!u) { return; }
-		this.userSubject.next(u);
+		this._userSubject.next(u);
 	}
 
 	/**
@@ -58,6 +65,44 @@ export class AuthService {
 	 */
 	private jwtDecode(token: string): User {
 		return token ? JSON.parse(atob(token.split('.')[1])) : null;
+	}
+
+	/**
+	 * Returns the expiration date of a token
+	 * @param  {string} token the token to get the expiration date of
+	 * @return {Date}         the date the token expires
+	 */
+	private jwtExpirationDate(token: string): Date {
+		const user = this.jwtDecode(token);
+		if (!user || !user.hasOwnProperty('exp')) { return null; }
+
+		const date = new Date(0);
+		date.setUTCSeconds(user.exp);
+		return date;
+	}
+
+	/**
+	 * Starts a timer to renew the jwt before it exires
+	 * @param  {string}       token token to base the renewal timer on
+	 */
+	private engageRenewTokenTimer(token: string) {
+		// cancel any ongoing timers
+		if (this._renewalSub) { this._renewalSub.unsubscribe(); }
+		// Log out the user if it is too late to renew.
+		if (this.jwtIsExpired(token)) { this.logOut(); return; }
+		// Engage a new timer to go off 20 minutes before expiration token
+		const renewalDate = new Date(this.jwtExpirationDate(token).getTime() - 1000 * 60 * 20);
+		this._renewalSub = timer(renewalDate).subscribe(time => {
+			const sub = this.renewToken().subscribe(userToken => {
+				sub.unsubscribe();
+				if (userToken.token) {
+					this.engageRenewTokenTimer(userToken.token);
+					return;
+				}
+				this.openSnackBar('Session expired', '');
+				this.logOut();
+			});
+		});
 	}
 
 	/**
@@ -71,54 +116,16 @@ export class AuthService {
 		});
 	}
 
-	/**
-	 * Starts a timer to renew the jwt before it exires
-	 * @param  {string}       token token to base the renewal timer on
-	 */
-	private engageRenewTokenTimer(token: string) {
-		// cancel any ongoing timers
-		if (this.renewalSub) { this.renewalSub.unsubscribe(); }
-		// Log out the user if it is too late to renew.
-		if (this.jwtIsExpired(token)) { this.logOut(); return; }
-		// Engage a new timer to go off 20 minutes before expiration token
-		const renewalDate = new Date(this.jwtExpirationDate(token).getTime() - 1000 * 60 * 20);
-		this.renewalSub = timer(renewalDate).subscribe(time => {
-			const sub = this.renewToken().subscribe(userToken => {
-				sub.unsubscribe();
-				if (userToken.token) {
-					this.engageRenewTokenTimer(userToken.token);
-					return;
-				}
-				this.openSnackBar('Session expired', '');
-				this.logOut();
-			});
-		});
-	}
+	// #endregion
 
-	// ---------------------------------------
-	// -------------- UTILITIES --------------
-	// ---------------------------------------
+	// #region Public methods
 
 	/**
 	 * Gets the user as an observable
 	 * @return {BehaviorSubject<User>}    the user Subject
 	 */
-	getUser(): BehaviorSubject<User> {
-		return this.userSubject;
-	}
-
-	/**
-	 * Returns the expiration date of a token
-	 * @param  {string} token the token to get the expiration date of
-	 * @return {Date}         the date the token expires
-	 */
-	jwtExpirationDate(token: string): Date {
-		const user = this.jwtDecode(token);
-		if (!user || !user.hasOwnProperty('exp')) { return null; }
-
-		const date = new Date(0);
-		date.setUTCSeconds(user.exp);
-		return date;
+	public getUser(): BehaviorSubject<User> {
+		return this._userSubject;
 	}
 
 	/**
@@ -127,7 +134,7 @@ export class AuthService {
 	 * @param  {number}  offset number of seconds offset from now
 	 * @return {boolean}        whether the token has expired
 	 */
-	jwtIsExpired(token: string, offset: number = 0): boolean {
+	public jwtIsExpired(token: string, offset: number = 0): boolean {
 		const date = this.jwtExpirationDate(token);
 		// if we can't get a date, we assume its best to say that it has expired.
 		if (null === date) { return true; }
@@ -139,40 +146,47 @@ export class AuthService {
 	 * @param  {AccessRoles}      role The role to compare against
 	 * @return {boolean}          whether the user is of the given role
 	 */
-	isUserOfRole(role: AccessRoles): boolean {
+	public isUserOfRole(role: AccessRoles): boolean {
 		const user = this.getUser().getValue();
 		return user && user.role === role;
 	}
 
-
 	/**
 	 * Log out current user
 	 */
-	logOut() {
+	public logOut() {
 		this.tokenService.token = null;
-		if (this.renewalSub) { this.renewalSub.unsubscribe(); }
-		this.userSubject.next(null);
+		if (this._renewalSub) { this._renewalSub.unsubscribe(); }
+		this._userSubject.next(null);
 		this.router.navigateByUrl('/');
 	}
 
-
-	isSameUser(a: User, b: User) {
+	/**
+	 * compares the two users and returns true if they are one and the same
+	 * @param a		User
+	 * @param b		User
+	 */
+	public isSameUser(a: User, b: User) {
 		if (a._id && b._id) {
 			return a._id === b._id;
 		}
 		return a.username === b.username;
 	}
 
+	// #endregion
+
 	// ---------------------------------------
 	// ------------- HTTP METHODS ------------
 	// ---------------------------------------
+
+	// #region HTTP methods
 
 	/**
 	 * Requests to log the user in
 	 * @param  {User} user                   The user to log in
 	 * @return {Observable<boolean>}         Server's response, as an Observable
 	 */
-	login(user: User): Observable<boolean> {
+	public login(user: User): Observable<boolean> {
 		return this.http.post<UserToken>(environment.URL.auth.login, user).pipe(
 			map(userToken => {
 				// Set token
@@ -191,7 +205,7 @@ export class AuthService {
 	 * Attempt to renew JWT token
 	 * @return {Observable<boolean>} wether the JWT was successfully renewed
 	 */
-	renewToken(): Observable<UserToken> {
+	public renewToken(): Observable<UserToken> {
 		return this.http.get<UserToken>(environment.URL.auth.token).pipe(
 			map(userToken => {
 				this.tokenService.token = userToken.token;    // Set token
@@ -206,7 +220,7 @@ export class AuthService {
 	 * @param  {UpdatePasswordUser}  user the object containing the user data
 	 * @return {Observable<boolean>}      wether the password was successfully updated
 	 */
-	updatePassword(user: UpdatePasswordUser): Observable<boolean> {
+	public updatePassword(user: UpdatePasswordUser): Observable<boolean> {
 		return this.http.post<boolean>(environment.URL.auth.updatepass, user).pipe(
 			map(() => true),
 			timeout(environment.TIMEOUT),
@@ -214,6 +228,6 @@ export class AuthService {
 		); // returns message objects
 	}
 
-
+	// #endregion
 
 }

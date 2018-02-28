@@ -15,6 +15,9 @@ import { Subject } from 'rxjs/Subject';
 	changeDetection: ChangeDetectionStrategy.Default
 })
 export class UserModalComponent {
+
+	// #region Public fields
+
 	public patchUserForm: FormGroup;
 	public otherUsernames: string[];
 	public issue = new Subject<string>();
@@ -23,7 +26,11 @@ export class UserModalComponent {
 		{ value: AccessRoles.user, verbose: 'User', icon: 'verified_user' },
 		{ value: AccessRoles.admin, verbose: 'Admin', icon: 'security' }
 	];
-	
+
+	// #endregion
+
+	// #region Constructor
+
 	constructor(
 		public dialogRef: MatDialogRef<UserModalComponent>,
 		private adminService: AdminService,
@@ -40,10 +47,15 @@ export class UserModalComponent {
 		});
 	}
 
+	// #endregion
+
+	// #region Methods
+
+
 	/**
 	 * Proceeds with the task and closes the modal.
 	 */
-	submitForm(): void {
+	public submitForm(): void {
 		this.issue.next(null);
 		this.patchUserForm.disable();
 
@@ -67,13 +79,19 @@ export class UserModalComponent {
 	/**
 	 * Closes the modal without proceeding.
 	 */
-	close(): void {
+	public close(): void {
 		this.dialogRef.close(false);
 	}
 
+	/**
+	 * Form Validation that disallows values that are considered unique for the username property.
+	 * @param control
+	 */
 	private usernameTaken(control: FormControl) {
 		return this.otherUsernames.includes(control.value.toLowerCase()) ? { usernameTaken: true } : null;
 	}
+
+	// #endregion
 }
 
 

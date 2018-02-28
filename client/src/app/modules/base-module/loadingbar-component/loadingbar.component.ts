@@ -13,28 +13,27 @@ import { takeUntil, map } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingbarComponent implements OnInit {
-	private ngUnsubscribe = new Subject();
+	private _ngUnsub = new Subject();
+	private _loadingBarSub: Subscription;
 
 	public loadingBarValue = new Subject<number>();
 	public loadingBarVisible = new Subject<boolean>();
 
-	private loadingBarSub: Subscription;
-
-	constructor(public router: Router) { }
+	constructor(private router: Router) {}
 
 	ngOnInit() {
-		this.router.events.pipe(takeUntil(this.ngUnsubscribe)).subscribe(e => {
+		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
 			if (e instanceof NavigationStart) {
 				this.loadingBarValue.next(0);
 
-				if (this.loadingBarSub) { this.loadingBarSub.unsubscribe(); }
+				if (this._loadingBarSub) { this._loadingBarSub.unsubscribe(); }
 
-				this.loadingBarSub = interval(100).subscribe(num => { // every 100ms
+				this._loadingBarSub = interval(100).subscribe(num => { // every 100ms
 					if (num === 1) { this.loadingBarVisible.next(true); }
 					this.loadingBarValue.next(Math.min(90, num * 10));
 				});
 			} else if (e instanceof NavigationEnd || e instanceof NavigationCancel || e instanceof NavigationError) {
-				if (this.loadingBarSub) { this.loadingBarSub.unsubscribe(); }
+				if (this._loadingBarSub) { this._loadingBarSub.unsubscribe(); }
 
 				this.loadingBarValue.next(100); // 100 = max
 				this.loadingBarVisible.next(false);

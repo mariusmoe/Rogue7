@@ -34,7 +34,7 @@ const schema = new Schema({
 	}
 });
 
-export interface steamserver extends Document {
+export interface Steam extends Document {
 	title: string;
 	route: string;
 	type: string;
@@ -44,4 +44,4 @@ export interface steamserver extends Document {
 
 
 
-export const SteamServer = model<steamserver>('Steam', schema);
+export const SteamModel = model<Steam>('Steam', schema);

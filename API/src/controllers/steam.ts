@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { SteamServer, steamserver } from '../models/steam';
+import { SteamModel, Steam } from '../models/steam';
 import { status, ROUTE_STATUS, STEAM_STATUS } from '../libs/responseMessage';
 import * as Gamedig from 'gamedig';
 import { escape } from 'validator';
@@ -18,7 +18,7 @@ export class SteamController {
 	public static getSteamServerData(req: Request, res: Response, next: NextFunction) {
 		const route = <string>req.params.route;
 
-		SteamServer.findOne({ route: route }, (err, server) => {
+		SteamModel.findOne({ route: route }, (err, server) => {
 			if (!server) {
 				return res.status(422).send(status(STEAM_STATUS.SERVER_NOT_FOUND));
 			}
@@ -48,7 +48,7 @@ export class SteamController {
 	 */
 	public static getSteamServerList(req: Request, res: Response, next: NextFunction) {
 
-		SteamServer.find({}, (err, serverList) => {
+		SteamModel.find({}, (err, serverList) => {
 			if (err) { next(err); }
 			if (!serverList) {
 				return res.status(404).send(status(STEAM_STATUS.NO_ROUTES));
@@ -68,7 +68,7 @@ export class SteamController {
 	public static getSteamServer(req: Request, res: Response, next: NextFunction) {
 		const route = <string>req.params.route;
 
-		SteamServer.findOne({ route: route }, (err, server) => {
+		SteamModel.findOne({ route: route }, (err, server) => {
 			// if (err) { next(err); }
 			if (server) {
 				return res.status(200).send(server);
@@ -87,12 +87,12 @@ export class SteamController {
 	 */
 	public static createSteamServer(req: Request, res: Response, next: NextFunction) {
 		const route = <string>req.params.route,
-			data = <steamserver>req.body;
+			data = <Steam>req.body;
 
 		if (!data || !data.title || !data.route || !data.type || !data.address || !data.port) {
 			return res.status(422).send(status(STEAM_STATUS.DATA_UNPROCESSABLE));
 		}
-		const server = new SteamServer({
+		const server = new SteamModel({
 			title: escape(data.title),
 			route: escape(data.route.replace(/\//g, '')).toLowerCase(),
 			type: data.type,
@@ -118,14 +118,14 @@ export class SteamController {
      */
 	public static patchSteamServer(req: Request, res: Response, next: NextFunction) {
 		const route = <string>req.params.route,
-			data = <steamserver>req.body;
+			data = <Steam>req.body;
 
 		if (!data || !data.title || !data.route || !data.type || !data.address || !data.port) {
 			return res.status(422).send(status(STEAM_STATUS.DATA_UNPROCESSABLE));
 		}
 
 		// insert ONLY sanitized and escaped data!
-		SteamServer.findOneAndUpdate({ route: route }, {
+		SteamModel.findOneAndUpdate({ route: route }, {
 			$set: {
 				title: escape(data.title),
 				route: escape(data.route.replace(/\//g, '')).toLowerCase(),
@@ -152,7 +152,7 @@ export class SteamController {
 	public static deleteSteamServer(req: Request, res: Response, next: NextFunction) {
 		const route = <string>req.params.route;
 
-		SteamServer.remove({ route: route }, (err) => {
+		SteamModel.remove({ route: route }, (err) => {
 			// if (err) { next(err); }
 			if (err) { return res.status(404).send(status(STEAM_STATUS.CONTENT_NOT_FOUND)); }
 			return res.status(200).send(status(STEAM_STATUS.CONTENT_DELETED));

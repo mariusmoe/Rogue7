@@ -14,10 +14,14 @@ import { takeUntil } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NavComponent {
-	private ngUnsubscribe = new Subject();
+	private _ngUnsub = new Subject();
 
-	contentSubject = new BehaviorSubject(null);
-	steamServersSubject = new BehaviorSubject<SteamServer[]>(null);
+	private _contentSubject = new BehaviorSubject(null);
+	private _steamServersSubject = new BehaviorSubject<SteamServer[]>(null);
+
+	public get contentSubject() { return this._contentSubject; }
+	public get steamServersSubject() { return this._steamServersSubject; }
+
 
 	/**
 	 * Sort arrangement function for CmsContent, CmsFolders and SteamServer, based on either's title.
@@ -36,21 +40,21 @@ export class NavComponent {
 		private steamService: SteamService) {
 
 		// Whenever a user logs in or out, do update
-		authService.getUser().pipe(takeUntil(this.ngUnsubscribe)).subscribe(user => {
+		authService.getUser().pipe(takeUntil(this._ngUnsub)).subscribe(user => {
 			cmsService.getContentList(true); // force update
 			steamService.requestSteamServers();
 		});
 
 		// Subscribe to content updates, and keep the subscription until we get a new userSubject.next
-		cmsService.getContentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe(
+		cmsService.getContentList().pipe(takeUntil(this._ngUnsub)).subscribe(
 			contentList => this.updateContentList(contentList)
 		);
 
 		// Subscribe to steam server updates
-		steamService.requestSteamServers().pipe(takeUntil(this.ngUnsubscribe)).subscribe(serverList => {
+		steamService.requestSteamServers().pipe(takeUntil(this._ngUnsub)).subscribe(serverList => {
 			if (!serverList) { return; }
 			serverList.sort(NavComponent.sortMethod);
-			this.steamServersSubject.next(serverList);
+			this._steamServersSubject.next(serverList);
 		});
 	}
 
@@ -83,7 +87,7 @@ export class NavComponent {
 		folders.sort(NavComponent.sortMethod);
 		for (const folder of folders) { folder.content.sort(NavComponent.sortMethod); }
 		// Push
-		this.contentSubject.next({
+		this._contentSubject.next({
 			rootContent: rootContent,
 			folders: folders
 		});

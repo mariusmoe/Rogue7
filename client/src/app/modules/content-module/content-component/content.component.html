@@ -8,7 +8,7 @@
 					<mat-icon>more_vert</mat-icon>
 				</button>
 				<mat-menu #pageControls="matMenu" xPosition="before">
-					<button mat-menu-item (click)="editPage()">
+					<button mat-menu-item (click)="navigateToEditPage()">
 						<mat-icon>mode_edit</mat-icon> Edit
 					</button>
 					<button mat-menu-item (click)="deletePage()" [disabled]="contentObject.route === 'home'">

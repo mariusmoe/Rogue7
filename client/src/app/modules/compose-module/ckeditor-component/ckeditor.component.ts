@@ -13,7 +13,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor';
 
 @Component({
-	selector: 'ckeditor',
+	selector: 'ck-editor',
 	templateUrl: './ckeditor.component.html',
 	styleUrls: ['./ckeditor.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,24 +22,49 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 	@ViewChild('content') editorBox: ElementRef;
 	@Output() onChange = new EventEmitter<string>();
 
-	public get isReadOnly() { return (this.editor && this.editor.isReadOnly); }
-	public set isReadOnly(value: boolean) { this.editor.isReadOnly = value; }
+	// #region Properties
+
+	public get isReadOnly() { return (this._editor && this._editor.isReadOnly); }
+	public set isReadOnly(value: boolean) { this._editor.isReadOnly = value; }
+
+	public get value(): string { return this._editor.getData(); }
+	public set value(value: string) {
+		if (!this._editor) {
+			this._value = value;
+			return;
+		}
+		this._editor.setData(value);
+	}
+
+	public get loadStatus(): BehaviorSubject<boolean> { return this._hasLoaded; }
+
+	// #endregion
+
+	// #region Private fields
 
 	private _value: string;
 
-	private editor: CKEditor;
-	private hasLoaded = new BehaviorSubject<boolean>(false);
+	private _editor: CKEditor;
+	private _hasLoaded = new BehaviorSubject<boolean>(false);
 
-	settings = {
+	private _settings = {
 		image: {
 			toolbar: ['imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight'],
 			styles: ['imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight']
 		}
 	};
 
+	// #endregion
+
+	// #region Constructor
+
 	constructor(
 		public mobileService: MobileService,
 		@Inject(DOCUMENT) private document: Document) { }
+
+	// #endregion
+
+	// #region Interface implementations
 
 	ngOnInit() {
 		// Load CKEditor if it already exists
@@ -52,55 +77,33 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		// User might navigate away before the editor gets to load.
-		if (this.editor) {
-			this.editor.destroy();
+		if (this._editor) {
+			this._editor.destroy();
 		}
 	}
+
+	// #endregion
+
+	// #region Private methods
 
 	/**
 	 * Loads CKEditor and sets the editor var
 	 */
 	private loadCKEditor() {
-		if (this.editor) { return; }
-		ClassicEditor.create(this.editorBox.nativeElement, this.settings)
+		if (this._editor) { return; }
+		ClassicEditor.create(this.editorBox.nativeElement, this._settings)
 			.then(editor => {
-				this.editor = editor;
-				this.editor.listenTo(this.editor.document, 'changesDone', () => {
-					this.onChange.emit(this.editor.getData());
+				this._editor = editor;
+				this._editor.listenTo(this._editor.document, 'changesDone', () => {
+					this.onChange.emit(this._editor.getData());
 				});
-				if (this._value) { this.editor.setData(this._value); }
+				if (this._value) { this._editor.setData(this._value); }
 				// notify loaded
-				this.hasLoaded.next(true);
+				this._hasLoaded.next(true);
 			}).catch(err => {
 			});
 	}
 
+	// #endregion
 
-	/**
-	 * Returns the HTML value of the editor
-	 * @return {string} the HTML representation of the content
-	 */
-	get Value(): string {
-		return this.editor.getData();
-	}
-
-	/**
-	 * Sets the HTML value of the editor
-	 * @param  {string} value the HTML representation of the content
-	 */
-	set Value(value: string) {
-		if (!this.editor) {
-			this._value = value;
-			return;
-		}
-		this.editor.setData(value);
-	}
-
-	/**
-	 * Get wether the editor has loaded and any value has been set.
-	 * @return {BehaviorSubject<boolean>} [description]
-	 */
-	public loadStatus(): BehaviorSubject<boolean> {
-		return this.hasLoaded;
-	}
 }

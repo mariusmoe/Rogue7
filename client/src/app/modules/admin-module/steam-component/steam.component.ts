@@ -14,8 +14,8 @@ import { takeUntil } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SteamComponent implements OnDestroy {
-	private ngUnsubscribe = new Subject();
-	forms: FormGroup[];
+	private _ngUnsub = new Subject();
+	public forms: FormGroup[];
 
 
 	// TODO: FIX ME!
@@ -38,8 +38,8 @@ export class SteamComponent implements OnDestroy {
 	}
 
 	ngOnDestroy() {
-		this.ngUnsubscribe.next();
-		this.ngUnsubscribe.complete();
+		this._ngUnsub.next();
+		this._ngUnsub.complete();
 	}
 
 	addServer() {

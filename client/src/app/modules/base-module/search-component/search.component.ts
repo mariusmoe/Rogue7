@@ -12,7 +12,7 @@ import { CMSService, MobileService } from '@app/services';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent implements OnInit {
-	form: FormGroup;
+	public form: FormGroup;
 
 	constructor(
 		public mobileService: MobileService,
@@ -36,7 +36,7 @@ export class SearchComponent implements OnInit {
 	/**
 	 * Perform a search and navigate to the search page
 	 */
-	search() {
+	public search() {
 		this.router.navigateByUrl('/search/' + this.form.get('search').value);
 		// this.form.get('search').setValue('');
 	}
@@ -44,7 +44,7 @@ export class SearchComponent implements OnInit {
 	/**
 	 * Clears the search result
 	 */
-	clear() {
+	public clear() {
 		this.form.get('search').setValue('');
 	}
 

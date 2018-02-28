@@ -15,7 +15,7 @@ export class Setup {
 	public static initiate(app: Express) {
 		// Compress / gzip outgoing
 		app.use(compression(<compression.CompressionOptions>{
-			filter: (req: Request) => { return !req.headers['x-no-compression']; }
+			filter: (req: Request) => !req.headers['x-no-compression']
 		}));
 
 		// Pretty print
@@ -33,7 +33,7 @@ export class Setup {
 
 		// Logging
 		if (configUtil.getEnv('NODE_ENV') !== 'test') {
-			//use morgan to log at command line
+			// use morgan to log at command line
 			app.use(logger(configGet<string>('loggingMode')));
 		}
 
@@ -44,7 +44,8 @@ export class Setup {
 				res.setHeader('Access-Control-Allow-Origin', origin);
 			}
 			res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, PATCH, OPTIONS');
-			res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
+			res.header('Access-Control-Allow-Headers',
+				'Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials');
 			res.header('Access-Control-Allow-Credentials', 'true');
 			next();
 		});

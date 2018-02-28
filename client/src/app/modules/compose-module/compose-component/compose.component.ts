@@ -1,15 +1,12 @@
 // #region Imports
 
-import {
-	Component, OnDestroy, ViewChild, ChangeDetectionStrategy,
-	ViewContainerRef, PLATFORM_ID, Inject
-} from '@angular/core';
-import { FormGroup, AbstractControl, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnDestroy, ViewChild, ChangeDetectionStrategy, ViewContainerRef, PLATFORM_ID, Inject } from '@angular/core';
+import { NgForm, FormGroupDirective, FormGroup, FormControl, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, CanDeactivate } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, DatePipe } from '@angular/common';
 
 import { ModalData } from '@app/models';
-import { MatDialog, MatDialogConfig, MatSelectChange } from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSelectChange, ErrorStateMatcher } from '@angular/material';
 import { ModalComponent } from '@app/modules/shared-module/modals/modal.component';
 
 import { CMSService, AuthService, MobileService } from '@app/services';
@@ -25,9 +22,19 @@ import { takeUntil, debounceTime } from 'rxjs/operators';
 
 // #endregion
 
+// #region Utility classes
+
 enum VersionHistory {
 	Draft = -1
 }
+
+export class FormErrorInstant implements ErrorStateMatcher {
+	isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+		return !!(control && control.errors && (control.touched || control.value.length > 0));
+	}
+}
+
+// #endregion
 
 @Component({
 	selector: 'compose-component',
@@ -36,13 +43,15 @@ enum VersionHistory {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeComponent> {
+
 	// #region Public fields
 
-	public contentForm: FormGroup; // Form
+	public readonly contentForm: FormGroup; // Form
+	public readonly formErrorInstant = new FormErrorInstant(); // Form validation errors trigger instantly
 	public originalContent: CmsContent; // When editing, the original content is kept here
 	// Access
-	public AccessRoles = AccessRoles;
-	public accessChoices: CmsAccess[] = [
+	public readonly AccessRoles = AccessRoles;
+	public readonly accessChoices: CmsAccess[] = [
 		{ value: AccessRoles.everyone, verbose: 'Everyone', icon: 'group' },
 		{ value: AccessRoles.user, verbose: 'Users', icon: 'verified_user' },
 		{ value: AccessRoles.admin, verbose: 'Admins', icon: 'security' }
@@ -53,15 +62,18 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 	public versionIndex: number = VersionHistory.Draft;
 	public history: CmsContent[] = null;
 
+	public readonly maxShortInputLength = 25;
+	public readonly maxLongInputLength = 50;
+
 	// #endregion
 
 	// #region Private fields
 
-	@ViewChild(CKEditorComponent) editor: CKEditorComponent;
-	private currentDraft: CmsContent; // used with the versioning
+	@ViewChild(CKEditorComponent) private _editor: CKEditorComponent;
+	private _currentDraft: CmsContent; // used with the versioning
 
-	private ngUnsubscribe = new Subject();
-	private hasSaved = false;
+	private _ngUnsub = new Subject();
+	private _hasSaved = false;
 
 	// #endregion
 
@@ -69,50 +81,80 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 
 	constructor(
 		@Inject(PLATFORM_ID) private platformId: Object,
+		private datePipe: DatePipe,
 		private router: Router,
 		private route: ActivatedRoute,
 		private fb: FormBuilder,
 		private dialog: MatDialog,
-		public cmsService: CMSService,
-		public mobileService: MobileService,
-		public authService: AuthService) {
+		private cmsService: CMSService,
+		private authService: AuthService,
+		public mobileService: MobileService) {
 
 		// Do not load on the server. Only load for browser applications.
 		if (!isPlatformBrowser(platformId)) { return; }
 
-
 		// Form
 		this.contentForm = fb.group({
-			'route': ['', this.disallowed(cmsService.getContentList(), 'route').bind(this)],
-			'title': ['', this.disallowed(cmsService.getContentList(), 'title').bind(this)],
-			'description': ['', Validators.required],
+			'route': ['', Validators.compose([
+				Validators.maxLength(this.maxShortInputLength),
+				this.disallowed(cmsService.getContentList(), 'route').bind(this)
+			])],
+			'title': ['', Validators.compose([
+				Validators.maxLength(this.maxShortInputLength),
+				this.disallowed(cmsService.getContentList(), 'title').bind(this)
+			])],
+			'description': ['', Validators.compose([
+				Validators.required,
+				Validators.maxLength(this.maxLongInputLength)
+			])],
 			'access': [AccessRoles.everyone, Validators.required],
 			'nav': [true],
-			'folder': [''],
+			'folder': ['', Validators.maxLength(this.maxShortInputLength)],
 			'content': ['', Validators.required],
 		});
-		this.currentDraft = this.contentForm.getRawValue();
+
+		this._currentDraft = this.contentForm.getRawValue();
+
+		// Router: Check if we are editing or creating content. Load from API
+		const editingContentRoute = route.snapshot.params['route'];
+		if (editingContentRoute) {
+			this.cmsService.requestContent(editingContentRoute).subscribe(data => {
+				this.originalContent = data;
+				this._currentDraft = data;
+
+				this.contentForm.patchValue(data);
+				this.setFormDisabledState();
+
+				this._editor.value = data.content;
+			}, err => {
+				router.navigateByUrl('/compose');
+			});
+
+			this.cmsService.requestContentHistory(editingContentRoute).subscribe(historyList => {
+				this.history = historyList;
+			});
+		}
 
 		// Hook (non-dirty) route to title.
 		const routeEdit = this.contentForm.get('route'), titleEdit = this.contentForm.get('title');
 		let oldTitleValue = titleEdit.value;
-		this.contentForm.get('title').valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(newVal => {
+		this.contentForm.get('title').valueChanges.pipe(takeUntil(this._ngUnsub)).subscribe(newVal => {
 			// Update routeEdit IFF the user specifically edits title without having touched route, and the values are equal
-			if (titleEdit.dirty && !routeEdit.dirty && !routeEdit.disabled && (oldTitleValue == routeEdit.value)) {
+			if (titleEdit.dirty && !routeEdit.dirty && !routeEdit.disabled && (oldTitleValue === routeEdit.value)) {
 				routeEdit.setValue(newVal);
 			}
 			oldTitleValue = newVal;
 		});
 
 		// Hook form change
-		this.contentForm.valueChanges.pipe(takeUntil(this.ngUnsubscribe), debounceTime(10)).subscribe((newVal: CmsContent) => {
+		this.contentForm.valueChanges.pipe(takeUntil(this._ngUnsub), debounceTime(10)).subscribe((newVal: CmsContent) => {
 			if (this.versionIndex === VersionHistory.Draft) {
-				this.currentDraft = newVal;
+				this._currentDraft = newVal;
 			}
 		});
 
 		// Create Folder autocomplete list
-		this.cmsService.getContentList().pipe(takeUntil(this.ngUnsubscribe)).subscribe(contentList => {
+		this.cmsService.getContentList().pipe(takeUntil(this._ngUnsub)).subscribe(contentList => {
 			if (!contentList) { return; }
 			const folders: string[] = [];
 			for (const content of contentList) {
@@ -121,26 +163,6 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 				}
 			}
 			this.folders = folders.sort();
-		});
-
-		// Router: Check if we are editing or creating content
-		const editingContentRoute = route.snapshot.params['route'];
-		if (!editingContentRoute) { return; }
-
-		this.cmsService.requestContent(editingContentRoute).subscribe(data => {
-			this.originalContent = data;
-			this.currentDraft = data;
-
-			this.contentForm.patchValue(data);
-			this.setFormDisabledState();
-
-			this.editor.Value = data.content;
-		}, err => {
-			router.navigateByUrl('/compose');
-		});
-
-		this.cmsService.requestContentHistory(editingContentRoute).subscribe(historyList => {
-			this.history = historyList;
 		});
 	}
 
@@ -154,6 +176,11 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 	 */
 	public editorChanged(newValue: string) {
 		this.contentForm.get('content').setValue(newValue);
+		// because we programatically change the form, it is not marked as dirty.
+		// We thusly do that ourselves.
+		if (!this.contentForm.dirty) {
+			this.contentForm.markAsDirty();
+		}
 	}
 
 	/**
@@ -165,16 +192,13 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 
 		if (c) {
 			this.contentForm.patchValue(c, { emitEvent: false });
-			this.editor.Value = c.content;
-			this.contentForm.disable();
-			this.editor.isReadOnly = true;
+			this._editor.value = c.content;
+			this.setFormDisabledState();
 			return;
 		}
 
-		this.contentForm.patchValue(this.currentDraft, { emitEvent: false });
-		this.editor.Value = this.currentDraft.content;
-		this.contentForm.enable();
-		this.editor.isReadOnly = false;
+		this.contentForm.patchValue(this._currentDraft, { emitEvent: false });
+		this._editor.value = this._currentDraft.content;
 		this.setFormDisabledState();
 	}
 
@@ -183,8 +207,8 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 	// #region Interface implementations
 
 	ngOnDestroy() {
-		this.ngUnsubscribe.next();
-		this.ngUnsubscribe.complete();
+		this._ngUnsub.next();
+		this._ngUnsub.complete();
 	}
 
 	/**
@@ -192,7 +216,7 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 	 */
 	canDeactivate() {
 		// if we've saved, we're fine deactivating!
-		if (this.hasSaved) { return true; }
+		if (this._hasSaved) { return true; }
 
 		// if we're not dirty, we can also deactivate
 		if (!this.contentForm.dirty) { return true; }
@@ -245,6 +269,30 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 
 	// #region Methods
 
+	/**
+	 * Presents the user with a modal asking if the he/she wants to apply the old version
+	 * a
+	 */
+	public restoreOldVersion() {
+		const c = this.history ? this.history[this.versionIndex] : null;
+		if (!c) { return; }
+
+		const data: ModalData = {
+			headerText: `Restore version ${this.getHistoryItemFormatted(c.version + 1, this.datePipe.transform(c.updatedAt))}`,
+			bodyText: 'Do you wish to replace your current draft with this version?',
+			proceedText: 'Proceed', proceedColor: 'warn',
+			cancelText: 'Cancel',
+
+			proceed: () => {
+				this.versionIndex = VersionHistory.Draft;
+				this._currentDraft = c;
+				this.setFormDisabledState(); // Enable controls (and allow validation)
+			}
+		};
+
+		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
+	}
+
 
 	/**
 	 * Submits the form and hands it over to the cmsService
@@ -260,13 +308,16 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 					sub.unsubscribe();
 					if (newContent) {
 						this.cmsService.getContentList(true);
-						this.hasSaved = true;
+						this._hasSaved = true;
 						this.router.navigateByUrl(newContent.route);
 					}
 				},
-				error => { sub.unsubscribe(); },
+				error => {
+					// TODO: Tell the user why it failed
+					sub.unsubscribe();
+				},
 			);
-		}
+		};
 
 		if (this.originalContent) {
 			// use this.inputContent.route instead of the new route, as we want to update
@@ -286,10 +337,25 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		return this.accessChoices.find(choice => this.contentForm.get('access').value === choice.value);
 	}
 
+	public getHistoryItemFormatted(ver: number, text: string): string {
+		return `${ver}. ${text}`;
+	}
+
+
 	/**
 	 * toggles the disabled status of the folder field
 	 */
 	public setFormDisabledState() {
+		// Disable form for old versions
+		if (this.versionIndex !== VersionHistory.Draft) {
+			this.contentForm.disable();
+			this._editor.isReadOnly = true;
+			return;
+		}
+		// Enable form for draft
+		this.contentForm.enable();
+		this._editor.isReadOnly = false;
+
 		if (this.contentForm.get('nav').value) {
 			this.contentForm.get('folder').enable();
 		} else {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { user, accessRoles } from '../models/user';
-import { Content, content } from '../models/content';
+import { User, accessRoles } from '../models/user';
+import { ContentModel, Content } from '../models/content';
 import { status, ROUTE_STATUS, CMS_STATUS } from '../libs/responseMessage';
 import { escape, isURL } from 'validator';
 import { sanitize, stripHTML } from '../libs/sanitizer';
@@ -28,8 +28,8 @@ export class CMSController {
 	 * @param  {NextFunction} next next
 	 * @return {Response}          server response: a list of partial content information
 	 */
-	public static getContentList(req: Request, res: Response, next: NextFunction) {
-		const user = <user>req.user;
+	public static getContentList(req: Request, res: Response, next: NextFunction): void {
+		const user: User = <User>req.user;
 
 		const accessRights: accessRoles[] = [accessRoles.everyone];
 		if (user) {
@@ -37,18 +37,19 @@ export class CMSController {
 			if (user.role === accessRoles.admin) { accessRights.push(accessRoles.admin); }
 		}
 
-		Content.aggregate(
+		ContentModel.aggregate(
 			[
 				{ $match: { 'current.access': { $in: accessRights } } },
-				{ $replaceRoot: { newRoot: "$current" } },
+				{ $replaceRoot: { newRoot: '$current' } },
 				{ $project: { title: 1, route: 1, access: 1, folder: 1, description: 1, nav: 1 } }
 			],
-			(err: any, contentList: content[]) => {
+			(err: any, contentList: Content[]) => {
 				if (err) { next(err); }
 				if (!contentList) {
-					return res.status(404).send(status(CMS_STATUS.NO_ROUTES));
+					res.status(404).send(status(CMS_STATUS.NO_ROUTES));
+					return;
 				}
-				return res.status(200).send(contentList);
+				res.status(200).send(contentList);
 			}
 		);
 	}
@@ -62,13 +63,13 @@ export class CMSController {
 	 * @return {Response}          server response: the content object
 	 */
 	public static getContent(req: Request, res: Response, next: NextFunction) {
-		const route = <string>req.params.route,
-			user = <user>req.user;
+		const route: string = req.params.route,
+			user: User = <User>req.user;
 
-		Content.findOne({ 'current.route': route }, {
+		ContentModel.findOne({ 'current.route': route }, {
 			'current.content_searchable': false, prev: false
 		}, (err, contentDoc) => {
-			//if (err) { next(err); }
+			// if (err) { next(err); }
 			if (!contentDoc) {
 				return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
 			}
@@ -93,14 +94,14 @@ export class CMSController {
 	 * @return {Response}          server response: the content history array
 	 */
 	public static getContentHistory(req: Request, res: Response, next: NextFunction) {
-		const route = <string>req.params.route,
-			user = <user>req.user;
+		const route: string = req.params.route,
+			user: User = <User>req.user;
 
 		if (user.role !== accessRoles.admin) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
-		Content.findOne({ 'current.route': route }, {
+		ContentModel.findOne({ 'current.route': route }, {
 			current: true, prev: true
 		}, (err, contentDoc) => {
 			if (!contentDoc) {
@@ -121,8 +122,8 @@ export class CMSController {
 	 * @return {Response}          server response: the contentDoc.current object
 	 */
 	public static createContent(req: Request, res: Response, next: NextFunction) {
-		const data = <content>req.body,
-			user = <user>req.user;
+		const data: Content = req.body,
+			user: User = <User>req.user;
 
 		if (!data || !data.route || !data.content || !data.access || !data.title) {
 			return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
@@ -133,7 +134,7 @@ export class CMSController {
 
 		// insert ONLY sanitized and escaped data!
 		const sanitizedContent = sanitize(data.content);
-		const newCurrent: content = {
+		const newCurrent: Content = {
 			title: escape(data.title),
 			route: escape(data.route.replace(/\//g, '')).toLowerCase(),
 			access: data.access,
@@ -150,7 +151,7 @@ export class CMSController {
 		};
 		if (data.folder) { newCurrent.folder = stripHTML(data.folder).replace(/\//g, ''); }
 
-		new Content({ current: newCurrent }).save((err, newContentDoc) => {
+		new ContentModel({ current: newCurrent }).save((err, newContentDoc) => {
 			console.log(err);
 			if (!newContentDoc) { return res.status(500).send(status(CMS_STATUS.DATA_UNABLE_TO_SAVE)); }
 			return res.status(200).send(newContentDoc.current);
@@ -169,16 +170,16 @@ export class CMSController {
 	 * @return {Response}          server response: the updated content object
 	 */
 	public static patchContent(req: Request, res: Response, next: NextFunction) {
-		const route = <string>req.params.route,
-			data = <content>req.body,
-			user = <user>req.user;
+		const route: string = req.params.route,
+			data: Content = req.body,
+			user: User = <User>req.user;
 
 		if (!data || !data.route || !data.content || !data.access || !data.title) {
 			return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
 		}
 
 		// Fetch current version
-		Content.findOne({ 'current.route': route }, { prev: false }, (err, contentDoc) => {
+		ContentModel.findOne({ 'current.route': route }, { prev: false }, (err, contentDoc) => {
 			if (!contentDoc) {
 				return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
 			}
@@ -201,7 +202,7 @@ export class CMSController {
 				createdAt: contentDoc.current.createdAt
 			};
 
-			Content.findByIdAndUpdate(
+			ContentModel.findByIdAndUpdate(
 				contentDoc._id,
 				{
 					$set: { current: patched },
@@ -225,9 +226,9 @@ export class CMSController {
 	 * @return {Response}          server response: message declaring success or failure
 	 */
 	public static deleteContent(req: Request, res: Response, next: NextFunction) {
-		const route = <string>req.params.route;
+		const route: string = req.params.route;
 
-		Content.remove({ 'current.route': route }, (err) => {
+		ContentModel.remove({ 'current.route': route }, (err) => {
 			// if (err) { next(err); }
 			if (err) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
 			return res.status(200).send(status(CMS_STATUS.CONTENT_DELETED));
@@ -244,8 +245,8 @@ export class CMSController {
 	 * @return {Response}          server response: the search results
 	 */
 	public static searchContent(req: Request, res: Response, next: NextFunction) {
-		const searchTerm = <string>req.params.searchTerm || '',
-			user = <user>req.user;
+		const searchTerm: string = req.params.searchTerm || '',
+			user: User = <User>req.user;
 
 		const accessRights: accessRoles[] = [accessRoles.everyone];
 		if (user) {
@@ -253,7 +254,7 @@ export class CMSController {
 			if (user.role === accessRoles.admin) { accessRights.push(accessRoles.admin); }
 		}
 
-		Content.find(
+		ContentModel.find(
 			{ $text: { $search: searchTerm }, 'current.access': { $in: accessRights } },
 			{
 				'current.title': 1, 'current.route': 1, 'current.folder': 1, 'current.description': 1,

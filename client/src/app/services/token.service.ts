@@ -6,10 +6,7 @@ export class TokenService {
 
 	private _platformID: Object;
 
-	constructor( @Inject(PLATFORM_ID) private platformId: Object) {
-		this._platformID = platformId;
-	}
-
+	// #region properties
 
 	get token(): string {
 		if (isPlatformBrowser(this._platformID)) {
@@ -17,7 +14,6 @@ export class TokenService {
 		}
 		return '';
 	}
-
 	set token(newToken: string) {
 		if (isPlatformBrowser(this._platformID)) {
 			if (newToken) {
@@ -27,4 +23,15 @@ export class TokenService {
 			localStorage.removeItem('token');
 		}
 	}
+
+	// #endregion
+
+	// #region Constructor
+
+	constructor( @Inject(PLATFORM_ID) private platformId: Object) {
+		this._platformID = platformId;
+	}
+
+	// #endregion
+
 }

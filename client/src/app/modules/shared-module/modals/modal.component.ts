@@ -13,10 +13,11 @@ import { ModalData } from '@app/models';
 })
 export class ModalComponent {
 
+	// #region Constructor
+
 	constructor(
 		public dialogRef: MatDialogRef<ModalComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: ModalData) {
-
 
 		dialogRef.afterClosed().subscribe(proceeding => {
 			if (proceeding) {
@@ -27,17 +28,23 @@ export class ModalComponent {
 		});
 	}
 
+	// #endregion
+
+	// #region Methods
+
 	/**
 	 * Proceeds with the task and closes the modal.
 	 */
-	proceed(): void {
+	public proceed(): void {
 		this.dialogRef.close(true);
 	}
 
 	/**
 	 * Closes the modal without proceeding.
 	 */
-	cancel(): void {
+	public cancel(): void {
 		this.dialogRef.close(false);
 	}
+
+	// #endregion
 }
