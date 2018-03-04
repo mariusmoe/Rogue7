@@ -1,7 +1,8 @@
 import {
-	Component, OnInit, OnDestroy, ViewChild, ElementRef,
-	Input, Output, EventEmitter, ChangeDetectionStrategy, Inject
+	Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Inject, ChangeDetectionStrategy
 } from '@angular/core';
+
+import { FormControl } from '@angular/forms';
 
 import { DOCUMENT } from '@angular/platform-browser';
 
@@ -19,27 +20,17 @@ import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic/build/ckeditor
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CKEditorComponent implements OnInit, OnDestroy {
+	// editor
 	@ViewChild('content') editorBox: ElementRef;
-	@Output() onChange = new EventEmitter<string>();
+	private _editor: CKEditor;
+	private _control: FormControl;
 
-	public get isReadOnly() { return (this._editor && this._editor.isReadOnly); }
-	public set isReadOnly(value: boolean) { this._editor.isReadOnly = value; }
-
-	public get value(): string { return this._editor.getData(); }
-	public set value(value: string) {
-		if (!this._editor) {
-			this._value = value;
-			return;
-		}
-		this._editor.setData(value);
+	@Input() public set control(value: FormControl) {
+		if (this._control) { return; }
+		this._control = value;
 	}
 
-	public get loadStatus(): BehaviorSubject<boolean> { return this._hasLoaded; }
-
-	private _value: string;
-	private _editor: CKEditor;
-	private _hasLoaded = new BehaviorSubject<boolean>(false);
-	private _settings = {
+	private readonly _settings = {
 		image: {
 			toolbar: ['imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight'],
 			styles: ['imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight']
@@ -52,36 +43,46 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 
 
 	ngOnInit() {
-		// Load CKEditor if it already exists
-		if (typeof ClassicEditor !== 'undefined') {
-			this.loadCKEditor();
-			return;
-		}
+		if (typeof ClassicEditor === 'undefined') { return; }
+		if (this._editor) { return; } // if editor ALREADY exist.
+		if (!this._control) { return; } // if control DOESNT exist.
+
+		// Load CKEditor
+		ClassicEditor.create(this.editorBox.nativeElement, this._settings).then(editor => {
+			this._editor = editor;
+
+			// Disabled / ReadOnly flags
+			this._editor.isReadOnly = this._control.disabled;
+
+			this._control.registerOnDisabledChange((disabled) => {
+				this._editor.isReadOnly = disabled;
+			});
+
+			// Set Value
+			this._editor.setData(this._control.value);
+
+			this._control.valueChanges.subscribe((value: string) => {
+				if (this._editor.getData() === value) { return; }
+				// Set editor value
+				this._editor.setData(value);
+			});
+
+			// Create editor event listener
+			this._editor.listenTo(this._editor.document, 'changesDone', () => {
+				if (this._editor.getData() === this._control.value) { return; }
+				// Set control value
+				this._control.setValue(this._editor.getData());
+				// Mark as dirty
+				if (!this._control.dirty) { this._control.markAsDirty(); }
+			});
+		}).catch(err => {
+
+		});
 	}
 
 	ngOnDestroy() {
 		// User might navigate away before the editor gets to load.
-		if (this._editor) {
-			this._editor.destroy();
-		}
+		if (this._editor) { this._editor.destroy(); }
 	}
 
-
-	/**
-	 * Loads CKEditor and sets the editor var
-	 */
-	private loadCKEditor() {
-		if (this._editor) { return; }
-		ClassicEditor.create(this.editorBox.nativeElement, this._settings)
-			.then(editor => {
-				this._editor = editor;
-				this._editor.listenTo(this._editor.document, 'changesDone', () => {
-					this.onChange.emit(this._editor.getData());
-				});
-				if (this._value) { this._editor.setData(this._value); }
-				// notify loaded
-				this._hasLoaded.next(true);
-			}).catch(err => {
-			});
-	}
 }

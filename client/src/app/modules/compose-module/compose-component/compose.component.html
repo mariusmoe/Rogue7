@@ -94,7 +94,7 @@
 
 			<mat-tab label="Content">
 				<!-- CONTENT -->
-				<ck-editor class="editor" (onChange)="editorChanged($event)"></ck-editor>
+				<ck-editor class="editor" [control]="contentForm.get('content')"></ck-editor>
 			</mat-tab>
 
 
