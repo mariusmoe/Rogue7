@@ -1,7 +1,7 @@
-﻿import { Request, Response, NextFunction } from 'express';
+﻿import { Request as Req, Response as Res, NextFunction as Next } from 'express';
 import { UserModel, User, accessRoles } from '../models/user';
 import { get as configGet } from 'config';
-import { status, ROUTE_STATUS, USERS_STATUS } from '../libs/responseMessage';
+import { status, ROUTE_STATUS, USERS_STATUS } from '../libs/validate';
 
 const userTypes: accessRoles[] = [accessRoles.admin, accessRoles.user];
 
@@ -11,56 +11,61 @@ export class UsersController {
 
 	/**
 	 * Gets All registered users
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
 	 */
-	public static getAllUsers(req: Request, res: Response, next: NextFunction) {
-		UserModel.find({}, { username: 1, role: 1, }, (err, users) => {
-			if (err) { return next(err); }
-			return res.status(200).send(users);
-		}).lean().sort('username_lower');
+	public static async getAllUsers(req: Req, res: Res, next: Next) {
+		const users = <User[]>await UserModel.find({}, { username: 1, role: 1, }).lean().sort('username_lower');
+		if (!users) { return res.status(404); } // TODO: Fix me
+		return res.status(200).send(users);
 	}
 
 	/**
 	 * Sets a user role
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
 	 */
-	public static patchUser(req: Request, res: Response, next: NextFunction) {
-		const user = <User>req.body,
-			adminUser = <User>req.user,
-			routeId = <string>req.params.id;
+	public static async patchUser(req: Req, res: Res, next: Next) {
+		const user: User = req.body,
+			adminUser: User = <User>req.user,
+			routeId: string = req.params.id,
+			username_low = user.username.toLowerCase();
 
-		if (adminUser.role !== accessRoles.admin) {
+		if (!adminUser.isOfRank(accessRoles.admin)) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
-		if (!user || !user._id || !user.username || !user.role || !user || routeId !== user._id) {
+		if (routeId !== user._id) {
 			return res.status(400).send(status(USERS_STATUS.DATA_UNPROCESSABLE));
 		}
 
-		const applyUser: Partial<User> = {
-			_id: user._id,
-			username: user.username,
-			username_lower: user.username.toLowerCase(),
-			role: user.role,
-		};
+		const patchUser = (err: any, patchingUser: User) => {
+			if (err) { return res.status(400).send(status(USERS_STATUS.DATA_UNPROCESSABLE)); }
 
-		UserModel.findOne({ username_lower: applyUser.username_lower }, (err, foundUser) => {
-			if (err || (foundUser && foundUser._id !== user._id)) {
-				return res.status(400).send(status(USERS_STATUS.USERNAME_NOT_AVILIABLE));
-			}
-
-			UserModel.findByIdAndUpdate(user._id, applyUser, (err2, updated) => {
+			patchingUser.username = user.username;
+			patchingUser.username_lower = username_low;
+			patchingUser.role = user.role;
+			patchingUser.save((err2, updated) => {
 				if (err2) { return next(err2); }
 				if (updated) {
 					return res.status(200).send(status(USERS_STATUS.USER_ROLE_UPDATED));
-				} else { // user obj with bad id
-					return res.status(400).send(status(USERS_STATUS.DATA_UNPROCESSABLE));
 				}
+				// user obj with bad id
+				return res.status(400).send(status(USERS_STATUS.DATA_UNPROCESSABLE));
 			});
-		}).lean();
+		};
+
+		const foundUser = await UserModel.findOne({ username_lower: username_low });
+
+		if (foundUser && (foundUser.id !== user._id)) { // intentional .id
+			return res.status(400).send(status(USERS_STATUS.USERNAME_NOT_AVILIABLE));
+		}
+
+		if (foundUser && foundUser.id === user._id) {
+			return patchUser(null, foundUser);
+		}
+		UserModel.findById(user._id, patchUser);
 	}
 }

@@ -3,18 +3,15 @@ import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
 export class TokenService {
-
 	private _platformID: Object;
 
-	// #region properties
-
-	get token(): string {
+	public get token(): string {
 		if (isPlatformBrowser(this._platformID)) {
 			return localStorage.getItem('token');
 		}
 		return '';
 	}
-	set token(newToken: string) {
+	public set token(newToken: string) {
 		if (isPlatformBrowser(this._platformID)) {
 			if (newToken) {
 				localStorage.setItem('token', newToken);
@@ -24,14 +21,8 @@ export class TokenService {
 		}
 	}
 
-	// #endregion
-
-	// #region Constructor
-
 	constructor( @Inject(PLATFORM_ID) private platformId: Object) {
 		this._platformID = platformId;
 	}
-
-	// #endregion
 
 }

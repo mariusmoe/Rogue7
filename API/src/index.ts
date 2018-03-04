@@ -1,14 +1,16 @@
 import * as express from 'express';
 import { get as configGet, util as configUtil } from 'config';
+import { TestBed } from './test/testbed';
 
 // setup
+require('source-map-support').install();
 import { Setup } from './libs/setup';
 
 // routing
 import { AppRouter } from './router';
 
 // boot
-import { connect as MongooseConnect } from 'mongoose';
+import * as mongooose from 'mongoose';
 import { createServer, Server } from 'http';
 // import * as https from 'https';
 import { readFileSync } from 'fs';
@@ -33,13 +35,14 @@ class App {
 	}
 
 	private boot() {
-		const uri = process.argv[2] || process.env.db || configGet<string>('database');
+		const uri = process.env.db || configGet<string>('database');
 
-		MongooseConnect(uri, (error) => {
+		mongooose.connect(uri, (error) => {
 			if (error) {
 				// if error is true, the problem is often with mongoDB not connection
 				console.log('ERROR can\'t connect to mongoDB. Did you forget to run mongod?');
 				console.log(error);
+				mongooose.disconnect();
 				process.exit(1);
 				return;
 			}
@@ -58,13 +61,15 @@ class App {
 				server = createServer(this.app);
 			}
 			server.listen(this.app.get('port'), () => {
-				if (configUtil.getEnv('NODE_ENV') === 'test') { return; }
 				console.log(`Sotingane running on - Port ${this.app.get('port')}...`);
 				console.timeEnd('Launch time');
+
+				if (configUtil.getEnv('NODE_ENV') === 'test') {
+					TestBed.start(this.app);
+				}
 			});
 		});
 	}
 }
-
 
 export default new App().app;

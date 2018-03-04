@@ -1,5 +1,3 @@
-// #region Imports
-
 import { Component, OnDestroy, ViewChild, ChangeDetectionStrategy, ViewContainerRef, PLATFORM_ID, Inject } from '@angular/core';
 import { NgForm, FormGroupDirective, FormGroup, FormControl, AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, CanDeactivate } from '@angular/router';
@@ -20,9 +18,6 @@ import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil, debounceTime } from 'rxjs/operators';
 
-// #endregion
-
-// #region Utility classes
 
 enum VersionHistory {
 	Draft = -1
@@ -34,8 +29,6 @@ export class FormErrorInstant implements ErrorStateMatcher {
 	}
 }
 
-// #endregion
-
 @Component({
 	selector: 'compose-component',
 	templateUrl: './compose.component.html',
@@ -43,9 +36,6 @@ export class FormErrorInstant implements ErrorStateMatcher {
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeComponent> {
-
-	// #region Public fields
-
 	public readonly contentForm: FormGroup; // Form
 	public readonly formErrorInstant = new FormErrorInstant(); // Form validation errors trigger instantly
 	public originalContent: CmsContent; // When editing, the original content is kept here
@@ -65,19 +55,11 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 	public readonly maxShortInputLength = 25;
 	public readonly maxLongInputLength = 50;
 
-	// #endregion
-
-	// #region Private fields
-
 	@ViewChild(CKEditorComponent) private _editor: CKEditorComponent;
 	private _currentDraft: CmsContent; // used with the versioning
 
 	private _ngUnsub = new Subject();
 	private _hasSaved = false;
-
-	// #endregion
-
-	// #region Constructor
 
 	constructor(
 		@Inject(PLATFORM_ID) private platformId: Object,
@@ -166,10 +148,6 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		});
 	}
 
-	// #endregion
-
-	// #region Event handlers
-
 	/**
 	 * Event handler for when the editor value changes.
 	 * @param newValue
@@ -202,18 +180,13 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		this.setFormDisabledState();
 	}
 
-	// #endregion
-
-	// #region Interface implementations
-
 	ngOnDestroy() {
 		this._ngUnsub.next();
 		this._ngUnsub.complete();
 	}
 
-	/**
-	 * Implements interface: CanDeactivate<ComposeComponent>
-	 */
+
+	// Implements interface: CanDeactivate<ComposeComponent>
 	canDeactivate() {
 		// if we've saved, we're fine deactivating!
 		if (this._hasSaved) { return true; }
@@ -237,10 +210,6 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		return answer;
 	}
 
-	// #endregion
-
-	// #region Form validation
-
 	/**
 	 * Form Validation that disallows values that are considered unique for the given property.
 	 * @param contentList
@@ -262,12 +231,6 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 			}
 		};
 	}
-
-
-
-	// #endregion
-
-	// #region Methods
 
 	/**
 	 * Presents the user with a modal asking if the he/she wants to apply the old version
@@ -292,7 +255,6 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 
 		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
 	}
-
 
 	/**
 	 * Submits the form and hands it over to the cmsService
@@ -362,6 +324,4 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 			this.contentForm.get('folder').disable();
 		}
 	}
-
-	// #endregion
 }

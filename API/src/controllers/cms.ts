@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request as Req, Response as Res, NextFunction as Next } from 'express';
 import { User, accessRoles } from '../models/user';
-import { ContentModel, Content } from '../models/content';
-import { status, ROUTE_STATUS, CMS_STATUS } from '../libs/responseMessage';
+import { ContentModel, Content, ContentDoc } from '../models/content';
+import { status, ROUTE_STATUS, CMS_STATUS } from '../libs/validate';
 import { escape, isURL } from 'validator';
 import { sanitize, stripHTML } from '../libs/sanitizer';
 
@@ -23,12 +23,12 @@ export class CMSController {
 
 	/**
 	 * Gets all content routes that the user has access to
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
-	 * @return {Response}          server response: a list of partial content information
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
+	 * @return {Res}		server response: a list of partial content information
 	 */
-	public static getContentList(req: Request, res: Response, next: NextFunction): void {
+	public static async getContentList(req: Req, res: Res, next: Next) {
 		const user: User = <User>req.user;
 
 		const accessRights: accessRoles[] = [accessRoles.everyone];
@@ -37,78 +37,70 @@ export class CMSController {
 			if (user.role === accessRoles.admin) { accessRights.push(accessRoles.admin); }
 		}
 
-		ContentModel.aggregate(
-			[
-				{ $match: { 'current.access': { $in: accessRights } } },
-				{ $replaceRoot: { newRoot: '$current' } },
-				{ $project: { title: 1, route: 1, access: 1, folder: 1, description: 1, nav: 1 } }
-			],
-			(err: any, contentList: Content[]) => {
-				if (err) { next(err); }
-				if (!contentList) {
-					res.status(404).send(status(CMS_STATUS.NO_ROUTES));
-					return;
-				}
-				res.status(200).send(contentList);
-			}
-		);
+		const contentList: Content[] = await ContentModel.aggregate([
+			{ $match: { 'current.access': { $in: accessRights } } },
+			{ $replaceRoot: { newRoot: '$current' } },
+			{ $project: { title: 1, route: 1, access: 1, folder: 1, description: 1, nav: 1 } }
+		]);
+		if (!contentList) {
+			return res.status(404).send(status(CMS_STATUS.NO_ROUTES));
+		}
+		res.status(200).send(contentList);
 	}
 
 
 	/**
 	 * Gets content of a given route, declared by the param
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
-	 * @return {Response}          server response: the content object
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
+	 * @return {Res}		server response: the content object
 	 */
-	public static getContent(req: Request, res: Response, next: NextFunction) {
+	public static async getContent(req: Req, res: Res, next: Next) {
 		const route: string = req.params.route,
 			user: User = <User>req.user;
 
-		ContentModel.findOne({ 'current.route': route }, {
+		const contentDoc = <ContentDoc>await ContentModel.findOne({ 'current.route': route }, {
 			'current.content_searchable': false, prev: false
-		}, (err, contentDoc) => {
-			// if (err) { next(err); }
-			if (!contentDoc) {
-				return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
-			}
-			const access = contentDoc.current.access === accessRoles.everyone ||
-				(user && user.role === accessRoles.admin) ||
-				(user && user.role === contentDoc.current.access);
-
-			if (!access) {
-				return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
-			}
-			return res.status(200).send(contentDoc.current);
 		}).lean();
+
+		if (!contentDoc) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
+
+		const access = contentDoc.current.access === accessRoles.everyone ||
+			(user && user.role === accessRoles.admin) ||
+			(user && user.role === contentDoc.current.access);
+
+		if (!access) {
+			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
+		}
+		return res.status(200).send(contentDoc.current);
+
 	}
 
 
 
 	/**
 	 * Gets content history of a given route
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
-	 * @return {Response}          server response: the content history array
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
+	 * @return {Res}		server response: the content history array
 	 */
-	public static getContentHistory(req: Request, res: Response, next: NextFunction) {
+	public static async getContentHistory(req: Req, res: Res, next: Next) {
 		const route: string = req.params.route,
 			user: User = <User>req.user;
 
-		if (user.role !== accessRoles.admin) {
+		if (!user.isOfRank(accessRoles.admin)) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
-		ContentModel.findOne({ 'current.route': route }, {
+		const contentDoc = await ContentModel.findOne({ 'current.route': route }, {
 			current: true, prev: true
-		}, (err, contentDoc) => {
-			if (!contentDoc) {
-				return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
-			}
-			return res.status(200).send(contentDoc.prev);
 		});
+		if (!contentDoc || contentDoc.prev.length === 0) {
+			return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
+		}
+		return res.status(200).send(contentDoc.prev);
 	}
 
 
@@ -116,24 +108,22 @@ export class CMSController {
 
 	/**
 	 * Creates new content
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
-	 * @return {Response}          server response: the contentDoc.current object
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
+	 * @return {Res}		server response: the contentDoc.current object
 	 */
-	public static createContent(req: Request, res: Response, next: NextFunction) {
+	public static async createContent(req: Req, res: Res, next: Next) {
 		const data: Content = req.body,
 			user: User = <User>req.user;
 
-		if (!data || !data.route || !data.content || !data.access || !data.title) {
-			return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
-		}
-		if ([accessRoles.admin, accessRoles.user, accessRoles.everyone].indexOf(data.access) === -1) {
-			return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
+		if (!user.isOfRank(accessRoles.admin)) {
+			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
 		// insert ONLY sanitized and escaped data!
 		const sanitizedContent = sanitize(data.content);
+
 		const newCurrent: Content = {
 			title: escape(data.title),
 			route: escape(data.route.replace(/\//g, '')).toLowerCase(),
@@ -151,12 +141,10 @@ export class CMSController {
 		};
 		if (data.folder) { newCurrent.folder = stripHTML(data.folder).replace(/\//g, ''); }
 
-		new ContentModel({ current: newCurrent }).save((err, newContentDoc) => {
-			console.log(err);
-			if (!newContentDoc) { return res.status(500).send(status(CMS_STATUS.DATA_UNABLE_TO_SAVE)); }
-			return res.status(200).send(newContentDoc.current);
+		const newContentDoc = await new ContentModel({ current: newCurrent }).save();
 
-		});
+		if (!newContentDoc) { return res.status(500).send(status(CMS_STATUS.DATA_UNABLE_TO_SAVE)); }
+		return res.status(200).send(newContentDoc.current);
 	}
 
 
@@ -164,87 +152,85 @@ export class CMSController {
 
 	/**
 	 * Updates content
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
-	 * @return {Response}          server response: the updated content object
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
+	 * @return {Res}		server response: the updated content object
 	 */
-	public static patchContent(req: Request, res: Response, next: NextFunction) {
+	public static async patchContent(req: Req, res: Res, next: Next) {
 		const route: string = req.params.route,
 			data: Content = req.body,
 			user: User = <User>req.user;
 
-		if (!data || !data.route || !data.content || !data.access || !data.title) {
-			return res.status(422).send(status(CMS_STATUS.DATA_UNPROCESSABLE));
+		if (!user.isOfRank(accessRoles.admin)) {
+			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
 		// Fetch current version
-		ContentModel.findOne({ 'current.route': route }, { prev: false }, (err, contentDoc) => {
-			if (!contentDoc) {
-				return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND));
-			}
+		const contentDoc = <ContentDoc>await ContentModel.findOne({ 'current.route': route }, { prev: false }).lean();
 
-			const sanitizedContent = sanitize(data.content);
-			const patched = {
-				title: escape(data.title),
-				route: escape(data.route.replace(/\//g, '')).toLowerCase(),
-				access: data.access,
-				version: contentDoc.current.version + 1,
-				content: sanitizedContent,
-				content_searchable: stripHTML(data.content),
-				description: sanitize(data.description),
-				image: CMSController.getImageSrcFromContent(sanitizedContent),
-				nav: !!data.nav,
-				folder: data.folder ? stripHTML(data.folder).replace(/\//g, '') : '',
-				updatedBy: user._id,
-				updatedAt: new Date(),
-				createdBy: contentDoc.current.createdBy,
-				createdAt: contentDoc.current.createdAt
-			};
+		if (!contentDoc) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
 
-			ContentModel.findByIdAndUpdate(
-				contentDoc._id,
-				{
-					$set: { current: patched },
-					$push: { prev: { $each: [contentDoc.current], $position: 0, $slice: 10 } }
-				},
-				{ new: true },
-				(err2, updated) => {
-					console.log(err2);
-					if (!updated) { return res.status(500).send(status(CMS_STATUS.DATA_UNABLE_TO_SAVE)); }
-					return res.status(200).send(updated.current);
-				}
-			);
-		}).lean();
+		const sanitizedContent = sanitize(data.content);
+		const patched = {
+			title: escape(data.title),
+			route: escape(data.route.replace(/\//g, '')).toLowerCase(),
+			access: data.access,
+			version: contentDoc.current.version + 1,
+			content: sanitizedContent,
+			content_searchable: stripHTML(data.content),
+			description: sanitize(data.description),
+			image: CMSController.getImageSrcFromContent(sanitizedContent),
+			nav: !!data.nav,
+			folder: data.folder ? stripHTML(data.folder).replace(/\//g, '') : '',
+			updatedBy: user._id,
+			updatedAt: new Date(),
+			createdBy: contentDoc.current.createdBy,
+			createdAt: contentDoc.current.createdAt
+		};
+
+		const updated = await ContentModel.findByIdAndUpdate(contentDoc._id,
+			{
+				$set: { current: patched },
+				$push: { prev: { $each: [contentDoc.current], $position: 0, $slice: 10 } }
+			},
+			{ new: true }
+		);
+
+		if (!updated) { return res.status(500).send(status(CMS_STATUS.DATA_UNABLE_TO_SAVE)); }
+		return res.status(200).send(updated.current);
 	}
 
 	/**
 	 * Deletes content of a given route, declared by the param
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
-	 * @return {Response}          server response: message declaring success or failure
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
+	 * @return {Res}		server response: message declaring success or failure
 	 */
-	public static deleteContent(req: Request, res: Response, next: NextFunction) {
-		const route: string = req.params.route;
+	public static async deleteContent(req: Req, res: Res, next: Next) {
+		const route: string = req.params.route,
+			user: User = <User>req.user;
 
-		ContentModel.remove({ 'current.route': route }, (err) => {
-			// if (err) { next(err); }
-			if (err) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
-			return res.status(200).send(status(CMS_STATUS.CONTENT_DELETED));
-		}).lean();
+		if (!user.isOfRank(accessRoles.admin)) {
+			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
+		}
+
+		await ContentModel.remove({ 'current.route': route }).lean();
+		// if (err) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
+		return res.status(200).send(status(CMS_STATUS.CONTENT_DELETED));
 	}
 
 
 
 	/**
 	 * Returns search results for a given search term provided in the body
-	 * @param  {Request}      req  request
-	 * @param  {Response}     res  response
-	 * @param  {NextFunction} next next
-	 * @return {Response}          server response: the search results
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
+	 * @return {Res}		server response: the search results
 	 */
-	public static searchContent(req: Request, res: Response, next: NextFunction) {
+	public static async searchContent(req: Req, res: Res, next: Next) {
 		const searchTerm: string = req.params.searchTerm || '',
 			user: User = <User>req.user;
 
@@ -254,17 +240,19 @@ export class CMSController {
 			if (user.role === accessRoles.admin) { accessRights.push(accessRoles.admin); }
 		}
 
-		ContentModel.find(
-			{ $text: { $search: searchTerm }, 'current.access': { $in: accessRights } },
+		const contentList: Content[] = await ContentModel.aggregate([
+			{ $match: { $text: { $search: searchTerm }, 'current.access': { $in: accessRights } } },
+			{ $sort: { score: { $meta: 'textScore' } } },
+			{ $limit: 1000 },
 			{
-				'current.title': 1, 'current.route': 1, 'current.folder': 1, 'current.description': 1,
-				'current.image': 1, 'relevance': { $meta: 'textScore' }
+				$project: {
+					'current.title': 1, 'current.route': 1, 'current.folder': 1,
+					'current.description': 1, 'current.image': 1, 'current.relevance': { $meta: 'textScore' }
+				}
 			},
-			(err, contentList) => {
-				if (err) { return res.status(404).send(status(CMS_STATUS.SEARCH_RESULT_NONE_FOUND)); }
-
-				return res.status(200).send(contentList);
-			}
-		).sort({ relevance: { $meta: 'textScore' } }).limit(1000).lean();
+			{ $replaceRoot: { newRoot: '$current' } },
+		]);
+		if (!contentList || contentList.length === 0) { return res.status(404).send(status(CMS_STATUS.SEARCH_RESULT_NONE_FOUND)); }
+		return res.status(200).send(contentList);
 	}
 }

@@ -19,22 +19,15 @@ import { takeUntil, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UsersComponent implements OnInit {
-	private _ngUnsub = new Subject();
+	private readonly _ngUnsub = new Subject();
 
-	// #region Public fields
-
+	public readonly displayedResults = new BehaviorSubject<User[]>(null);
+	public readonly filterForm: FormGroup;
 	public users: User[];
-	public displayedResults = new BehaviorSubject<User[]>(null);
 	public pageSize = 10;
 	public pageSizes = [10, 25, 50, 100];
 	public pageIndex = 0;
 	public numFilteredUsers = 0;
-
-	public filterForm: FormGroup;
-
-	// #endregion
-
-	// #region Constructor
 
 	constructor(
 		private dialog: MatDialog,
@@ -47,10 +40,6 @@ export class UsersComponent implements OnInit {
 		this.updateList();
 	}
 
-	// #endregion
-
-	// #region Interface implementations
-
 	ngOnInit() {
 		this.filterForm.get('filterControl').valueChanges.pipe(
 			distinctUntilChanged(), debounceTime(300), takeUntil(this._ngUnsub)).subscribe(value => {
@@ -58,10 +47,6 @@ export class UsersComponent implements OnInit {
 			}
 		);
 	}
-
-	// #endregion
-
-	// #region Private methods
 
 	/**
 	 * Updates the two lists of users; the entire user set, and the filtered and paginated view list
@@ -88,10 +73,6 @@ export class UsersComponent implements OnInit {
 		this.displayedResults.next(filteredList.slice(start, start + this.pageSize));
 	}
 
-	// #endregion
-
-	// #region Public methods
-
 	/**
 	 * Opens a user configuration modal
 	 * @param user
@@ -104,10 +85,6 @@ export class UsersComponent implements OnInit {
 			if (closedResult) { this.updateList(); }
 		});
 	}
-
-	// #endregion
-
-	// #region Event Handlers
 
 	/**
 	 * Paginator helper function
@@ -127,6 +104,4 @@ export class UsersComponent implements OnInit {
 	public trackBy(index: number, item: User): string {
 		return item._id;
 	}
-
-	// #endregion
 }

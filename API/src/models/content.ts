@@ -1,7 +1,7 @@
 import { Document, model, Model, Schema } from 'mongoose';
 import { NextFunction } from 'express';
-import { accessRoles } from './user';
-
+import { ajv, JSchema } from '../libs/validate';
+import { accessRoles } from '../models/user';
 
 /*
  |--------------------------------------------------------------------------
@@ -57,7 +57,7 @@ export interface Content {
 	title: string;
 	access?: accessRoles;
 	route: string;
-	version: number;
+	version?: number;
 
 	content?: string;
 	content_searchable?: string;
@@ -75,6 +75,66 @@ export interface Content {
 	createdAt?: Date;
 }
 
+
+
+/*
+ |--------------------------------------------------------------------------
+ | JSON schema
+ |--------------------------------------------------------------------------
+*/
+
+const maxShortInputLength = 25;
+const maxLongInputLength = 50;
+
+const createPatchContentSchema = {
+	'$id': JSchema.ContentSchema,
+	'type': 'object',
+	'additionalProperties': false,
+	'properties': {
+		'title': {
+			'type': 'string',
+			'maxLength': maxShortInputLength
+		},
+		'access': {
+			'type': 'string',
+			'enum': [accessRoles.admin, accessRoles.user, accessRoles.everyone]
+		},
+		'route': {
+			'type': 'string',
+			'maxLength': maxShortInputLength
+		},
+		'content': {
+			'type': 'string'
+		},
+		'description': {
+			'type': 'string',
+			'maxLength': maxLongInputLength
+		},
+		'folder': {
+			'type': 'string',
+			'maxLength': maxShortInputLength
+		},
+		'nav': {
+			'type': 'boolean'
+		}
+	},
+	'required': ['title', 'access', 'route', 'content', 'description', 'folder', 'nav' ]
+};
+
+
+
+if (ajv.validateSchema(createPatchContentSchema)) {
+	ajv.addSchema(createPatchContentSchema, JSchema.ContentSchema);
+} else {
+	console.error(`${JSchema.ContentSchema} did not validate`);
+}
+
+
+/*
+ |--------------------------------------------------------------------------
+ | Hooks
+ |--------------------------------------------------------------------------
+*/
 
 
 // Before fetching one contentObject, do the following

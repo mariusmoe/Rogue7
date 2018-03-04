@@ -18,15 +18,8 @@ import { of } from 'rxjs/observable/of';  // will be from 'rxjs' in v6
 
 @Injectable()
 export class AuthService {
-
-	// #region Private fields
-
 	private _userSubject = new BehaviorSubject(null);
 	private _renewalSub: Subscription;
-
-	// #endregion
-
-	// #region Constructor
 
 	constructor(
 		private tokenService: TokenService,
@@ -42,10 +35,6 @@ export class AuthService {
 		this.updateCurrentUserData(token);
 		this.engageRenewTokenTimer(token);
 	}
-
-	// #endregion
-
-	// #region Private methods
 
 	/**
 	 * Updates the user data field by decoding the JWT token
@@ -116,10 +105,6 @@ export class AuthService {
 		});
 	}
 
-	// #endregion
-
-	// #region Public methods
-
 	/**
 	 * Gets the user as an observable
 	 * @return {BehaviorSubject<User>}    the user Subject
@@ -173,13 +158,9 @@ export class AuthService {
 		return a.username === b.username;
 	}
 
-	// #endregion
-
 	// ---------------------------------------
 	// ------------- HTTP METHODS ------------
 	// ---------------------------------------
-
-	// #region HTTP methods
 
 	/**
 	 * Requests to log the user in
@@ -227,7 +208,4 @@ export class AuthService {
 			catchError(err => of(false))
 		); // returns message objects
 	}
-
-	// #endregion
-
 }

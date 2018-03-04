@@ -7,10 +7,6 @@ import { use as passportUse, authenticate, Strategy } from 'passport';
 import { Handler } from 'express';
 import { Request, Response, NextFunction } from 'express';
 
-// JwtStrategy = require('passport-jwt').Strategy,
-// ExtractJwt = require('passport-jwt').ExtractJwt,
-// LocalStrategy = require('passport-local');
-
 const localOptions: localOptions = {
 	usernameField: 'username'
 };
@@ -40,43 +36,28 @@ export class PassportConfig {
 
 
 // Setting up local login strategy
-const requireLogin = new LocalStrategy(localOptions, (username, password, done) => {
-	UserModel.findOne({ username_lower: username.toLowerCase() }, (err, user) => {
-		if (err) { return done(err); }
-
-		if (!user) { return done(null, false); }
-
-		user.comparePassword(password, (err2, isMatch) => {
-			if (err2) { return done(err2); }
-			if (!isMatch) { return done(null, false); }
-			return done(null, user);
-		});
-	});
+const requireLogin = new LocalStrategy(localOptions, async (username, password, done) => {
+	const user = await UserModel.findOne({ username_lower: username.toLowerCase() });
+	if (!user) { return done(null, null); }
+	const isMatch = await user.comparePassword(password);
+	done(null, isMatch ? user : null);
 });
 
 
 
 // Setting up JWT login strategies
-const requireAuth = new JwtStrategy(jwtOptions, function (payload: any, done: VerifiedCallback): void {
-	UserModel.findById(payload._id, function (err: Error, user: User) {
-		if (err) { return done(err, false); }
-
-		if (user) {
-			done(null, user);
-		} else {
-			done(null, false);
-		}
-	});
+const requireAuth = new JwtStrategy(jwtOptions, async (payload: any, done: VerifiedCallback) => {
+	const user = await UserModel.findById(payload._id);
+	done(null, user ? user : null);
 });
 
 
 const configureForUser = (req: Request, res: Response, next: NextFunction) => {
 	const token = jwtOptions.jwtFromRequest(req);
-	verify(token, jwtOptions.secretOrKey, jwtOptions, (err, tokenPayload: any) => {
+	verify(token, jwtOptions.secretOrKey, jwtOptions, async (err, tokenPayload: any) => {
 		if (err) { return next(); }
-		UserModel.findById(tokenPayload._id, (err2, user) => {
-			req.user = user;
-			next();
-		});
+		const user = await UserModel.findById(tokenPayload._id);
+		req.user = user;
+		next();
 	});
 };

@@ -22,8 +22,6 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 	@ViewChild('content') editorBox: ElementRef;
 	@Output() onChange = new EventEmitter<string>();
 
-	// #region Properties
-
 	public get isReadOnly() { return (this._editor && this._editor.isReadOnly); }
 	public set isReadOnly(value: boolean) { this._editor.isReadOnly = value; }
 
@@ -38,15 +36,9 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 
 	public get loadStatus(): BehaviorSubject<boolean> { return this._hasLoaded; }
 
-	// #endregion
-
-	// #region Private fields
-
 	private _value: string;
-
 	private _editor: CKEditor;
 	private _hasLoaded = new BehaviorSubject<boolean>(false);
-
 	private _settings = {
 		image: {
 			toolbar: ['imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight'],
@@ -54,17 +46,10 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 		}
 	};
 
-	// #endregion
-
-	// #region Constructor
-
 	constructor(
 		public mobileService: MobileService,
 		@Inject(DOCUMENT) private document: Document) { }
 
-	// #endregion
-
-	// #region Interface implementations
 
 	ngOnInit() {
 		// Load CKEditor if it already exists
@@ -74,7 +59,6 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 		}
 	}
 
-
 	ngOnDestroy() {
 		// User might navigate away before the editor gets to load.
 		if (this._editor) {
@@ -82,9 +66,6 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 		}
 	}
 
-	// #endregion
-
-	// #region Private methods
 
 	/**
 	 * Loads CKEditor and sets the editor var
@@ -103,7 +84,4 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 			}).catch(err => {
 			});
 	}
-
-	// #endregion
-
 }

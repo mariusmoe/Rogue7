@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { status, ROUTE_STATUS } from '../libs/responseMessage';
+import { status, ROUTE_STATUS } from '../libs/validate';
 
 
 export class ErrorController {

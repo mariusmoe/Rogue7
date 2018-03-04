@@ -27,23 +27,14 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	@Input() public set contentInput(value: CmsContent) { this.contentSubject.next(value); }
 	@Input() public previewMode = false;
 
-	// #region Public fields
-
 	public AccessRoles = AccessRoles;
 	public contentSubject = new BehaviorSubject<CmsContent>(null);
-
-	// #endregion
-
-	// #region Private fields
 
 	private _ngUnsub = new Subject();
 	@ViewChild('contentHost') private _contentHost: ElementRef;
 	private _ngLinkFactory: ComponentFactory<DynamicLinkComponent>;
 	private _embeddedComponents: ComponentRef<DynamicLinkComponent>[] = [];
 
-	// #endregion
-
-	// #region Constructor
 
 	constructor(
 		private resolver: ComponentFactoryResolver,
@@ -57,10 +48,6 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 		this._ngLinkFactory = resolver.resolveComponentFactory(DynamicLinkComponent);
 
 	}
-
-	// #endregion
-
-	// #region Interface implementations
 
 	ngOnInit() {
 		// If the contentSubject already has a value, then that's great!
@@ -93,10 +80,6 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	ngDoCheck() {
 		this._embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
 	}
-
-	// #endregion
-
-	// #region Private methods
 
 	/**
 	 * Inserts the content into DOM
@@ -139,10 +122,6 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 		this._embeddedComponents.length = 0;
 	}
 
-	// #endregion
-
-	// #region Public methods
-
 	/**
 	 * Navigate the user to the editor page.
 	 */
@@ -173,6 +152,4 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 		};
 		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
 	}
-
-	// #endregion
 }

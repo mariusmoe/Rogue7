@@ -1,8 +1,9 @@
 import { Document, model, Model, Schema } from 'mongoose';
 import { hash, compare } from 'bcrypt';
 import { NextFunction } from 'express';
+import { ajv, JSchema } from '../libs/validate';
 
-const SALT_FACTOR = 11;
+const SALT_FACTOR = 12;
 
 /*
  |--------------------------------------------------------------------------
@@ -42,15 +43,135 @@ const schema = new Schema({
 
 export interface User extends Document {
 	username: string;
-	username_lower: string;
+	username_lower?: string;
 	password?: string;
 	role: accessRoles.admin | accessRoles.user;
-	comparePassword?: (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void) => null;
+	comparePassword?: (candidatePassword: string) => Promise<boolean>;
+	isOfRank?: (rank: accessRoles) => boolean;
 }
 
 
+/*
+ |--------------------------------------------------------------------------
+ | JSON schema
+ |--------------------------------------------------------------------------
+*/
+
+
+// Registration
+const userRegistrationSchema = {
+	'$id': JSchema.UserRegistrationSchema,
+	'type': 'object',
+	'additionalProperties': false,
+	'properties': {
+		'username': {
+			'type': 'string'
+		},
+		'role': {
+			'type': 'string',
+			'enum': [accessRoles.admin, accessRoles.user]
+		},
+		'password': {
+			'type': 'string'
+		}
+	},
+	'required': ['username', 'role', 'password']
+};
+
+if (ajv.validateSchema(userRegistrationSchema)) {
+	ajv.addSchema(userRegistrationSchema, JSchema.UserRegistrationSchema);
+} else {
+	console.error(`${JSchema.UserRegistrationSchema} did not validate`);
+}
+
+
+// Login
+const loginSchema = {
+	'$id': JSchema.UserLoginSchema,
+	'type': 'object',
+	'additionalProperties': false,
+	'properties': {
+		'username': {
+			'type': 'string'
+		},
+		'password': {
+			'type': 'string',
+		},
+	},
+	'required': ['username', 'password']
+};
+
+if (ajv.validateSchema(loginSchema)) {
+	ajv.addSchema(loginSchema, JSchema.UserLoginSchema);
+} else {
+	console.error(`${JSchema.UserLoginSchema} did not validate`);
+}
+
+
+
+// UpdatePassword
+const userUpdatePasswordSchema = {
+	'$id': JSchema.UserUpdatePasswordSchema,
+	'type': 'object',
+	'additionalProperties': false,
+	'properties': {
+		'currentPassword': {
+			'type': 'string'
+		},
+		'password': {
+			'type': 'string',
+		},
+		'confirm': {
+			'constant': {'$data': '1/password'} // equal to password
+		}
+	},
+	'required': ['currentPassword', 'password', 'confirm']
+};
+
+if (ajv.validateSchema(userUpdatePasswordSchema)) {
+	ajv.addSchema(userUpdatePasswordSchema, JSchema.UserUpdatePasswordSchema);
+} else {
+	console.error(`${JSchema.UserUpdatePasswordSchema} did not validate`);
+}
+
+
+const userAdminUpdateUser = {
+	'$id': JSchema.UserAdminUpdateUser,
+	'type': 'object',
+	'additionalProperties': false,
+	'properties': {
+		'_id': {
+			'type': 'string',
+			'maxLength': 24,
+			'minLength': 24
+		},
+		'username': {
+			'type': 'string',
+		},
+		'role': {
+			'type': 'string',
+			'enum': [accessRoles.admin, accessRoles.user]
+		}
+	},
+	'required': ['_id', 'username', 'role']
+};
+
+if (ajv.validateSchema(userAdminUpdateUser)) {
+	ajv.addSchema(userAdminUpdateUser, JSchema.UserAdminUpdateUser);
+} else {
+	console.error(`${JSchema.UserAdminUpdateUser} did not validate`);
+}
+
+
+/*
+ |--------------------------------------------------------------------------
+ | Hooks
+ |--------------------------------------------------------------------------
+*/
+
+
 // Before saving do the following
-schema.pre('save', function(next: NextFunction) {
+schema.pre('save', function (next: NextFunction) {
 	const u: User = this;
 	if (!u.isModified('password')) { return next(); }
 	hash(u.password, SALT_FACTOR, (err, hashed) => {
@@ -60,14 +181,23 @@ schema.pre('save', function(next: NextFunction) {
 	});
 });
 
-// Compare password
-schema.methods.comparePassword = function (candidatePassword: string, cb: (err: Error, isMatch?: boolean) => void) {
-	const u: User = this;
-	compare(candidatePassword, u.password, (err, isMatch) => {
-		if (err) { return cb(err); }
+/*
+ |--------------------------------------------------------------------------
+ | Methods
+ |--------------------------------------------------------------------------
+*/
 
-		cb(null, isMatch);
-	});
+// Compare password
+schema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+	const u: User = this;
+	return compare(candidatePassword, u.password);
+};
+
+
+// IsOfRank
+schema.methods.isOfRank = function (rank: accessRoles): boolean {
+	const u: User = this;
+	return u.role === rank;
 };
 
 

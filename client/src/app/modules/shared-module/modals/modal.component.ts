@@ -12,9 +12,6 @@ import { ModalData } from '@app/models';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModalComponent {
-
-	// #region Constructor
-
 	constructor(
 		public dialogRef: MatDialogRef<ModalComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: ModalData) {
@@ -27,10 +24,6 @@ export class ModalComponent {
 			if (!!this.data.cancel) { this.data.cancel(); }
 		});
 	}
-
-	// #endregion
-
-	// #region Methods
 
 	/**
 	 * Proceeds with the task and closes the modal.
@@ -45,6 +38,4 @@ export class ModalComponent {
 	public cancel(): void {
 		this.dialogRef.close(false);
 	}
-
-	// #endregion
 }

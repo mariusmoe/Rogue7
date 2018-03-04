@@ -12,19 +12,12 @@ import { timeout } from 'rxjs/operators';
 
 @Injectable()
 export class CMSService {
-
 	private _listSubject: BehaviorSubject<CmsContent[]> = new BehaviorSubject(null);
-
-	// #region constructor
 
 	constructor(
 		private http: HttpClient,
 		private router: Router) {
 	}
-
-	// #endregion
-
-	// #region Public methods
 
 	/**
 	 * Gets the cmsRoutes as a BehaviorSubject
@@ -43,13 +36,9 @@ export class CMSService {
 		return this._listSubject;
 	}
 
-	// #endregion
-
 	// ---------------------------------------
 	// ------------- HTTP METHODS ------------
 	// ---------------------------------------
-
-	// #region Private HTTP methods
 
 	/**
 	 * Requests the content list
@@ -58,10 +47,6 @@ export class CMSService {
 	private requestContentList(): Observable<CmsContent[]> {
 		return this.http.get<CmsContent[]>(environment.URL.cms.content).pipe(timeout(environment.TIMEOUT));
 	}
-
-	// #endregion
-
-	// #region Public HTTP methods
 
 	/**
 	 * Requests the content from the given url
@@ -87,7 +72,6 @@ export class CMSService {
 		return this.http.get<CmsContent[]>(environment.URL.cms.history + '/' + contentUrl).pipe(timeout(environment.TIMEOUT));
 	}
 
-
 	/**
 	 * Requests to update the content for a given url
 	 * @return {Observable<CmsContent>}         Server's response, as an Observable
@@ -104,7 +88,6 @@ export class CMSService {
 		return this.http.delete<boolean>(environment.URL.cms.content + '/' + contentUrl).pipe(timeout(environment.TIMEOUT));
 	}
 
-
 	/**
 	 * Requests to create the content for a given url
 	 * @return {Observable<CmsContent>}         Server's response, as an Observable
@@ -112,6 +95,4 @@ export class CMSService {
 	public createContent(newContent: CmsContent): Observable<CmsContent> {
 		return this.http.post<CmsContent>(environment.URL.cms.content, newContent).pipe(timeout(environment.TIMEOUT));
 	}
-
-	// #endregion
 }

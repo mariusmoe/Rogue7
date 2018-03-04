@@ -15,13 +15,10 @@ export class SteamService {
 	// Remembers one server at a time
 	private _serverData = new BehaviorSubject<GameDig>(null);
 
-
 	constructor(
 		private http: HttpClient,
 		private router: Router) {
 	}
-
-	// #region HTTP methods
 
 	/**
 	 * Get the stored server data
@@ -65,6 +62,4 @@ export class SteamService {
 				// err => { this._serverData.next(err); }
 			);
 	}
-
-	// #endregion
 }

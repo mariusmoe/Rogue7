@@ -5,6 +5,9 @@ import { util as configUtil } from 'config';
 import { authenticate } from 'passport';
 import { PassportConfig } from './libs/passportConfig';
 
+// Validation
+import { JSchema, validateSchema, VALIDATION_FAILED } from './libs/validate';
+
 // Controllers
 import { AuthController } from './controllers/auth';
 import { CMSController } from './controllers/cms';
@@ -51,15 +54,22 @@ export class AppRouter {
 
 		// Register a user
 		if (configUtil.getEnv('NODE_ENV') !== 'production') {
-			authRoutes.post('/register', AuthController.register);
+			authRoutes.post('/register',
+				validateSchema(JSchema.UserRegistrationSchema, VALIDATION_FAILED.USER_MODEL),
+				AuthController.register);
 		}
 
 		// Login a user
-		authRoutes.post('/login', PassportConfig.requireLogin, AuthController.token); // requireLogin here. Intended.
+		authRoutes.post('/login',
+			validateSchema(JSchema.UserLoginSchema, VALIDATION_FAILED.USER_MODEL),
+			PassportConfig.requireLogin, AuthController.token); // requireLogin here. Intended.
 		// Request a new token
 		authRoutes.get('/token', PassportConfig.requireAuth, AuthController.token); // requireAuth here. Intended.
 		// Request to update password
-		authRoutes.post('/updatepassword', PassportConfig.requireAuth, AuthController.updatePassword);
+		authRoutes.post('/updatepassword',
+			PassportConfig.requireAuth,
+			validateSchema(JSchema.UserUpdatePasswordSchema, VALIDATION_FAILED.USER_MODEL),
+			AuthController.updatePassword);
 
 		// assign to parent router
 		router.use('/auth', authRoutes);
@@ -76,16 +86,26 @@ export class AppRouter {
 
 		// Get content list
 		cmsRoutes.get('/', PassportConfig.configureForUser, CMSController.getContentList);
+
 		// Create content
-		cmsRoutes.post('/', PassportConfig.requireAuth, CMSController.createContent);
+		cmsRoutes.post('/', PassportConfig.requireAuth,
+			validateSchema(JSchema.ContentSchema, VALIDATION_FAILED.CONTENT_MODEL),
+			CMSController.createContent);
+
 		// Search content
 		cmsRoutes.get('/search/:searchTerm', PassportConfig.configureForUser, CMSController.searchContent);
+
 		// Get content
 		cmsRoutes.get('/:route', PassportConfig.configureForUser, CMSController.getContent);
+
 		// Patch content
-		cmsRoutes.patch('/:route', PassportConfig.requireAuth, CMSController.patchContent);
+		cmsRoutes.patch('/:route', PassportConfig.requireAuth,
+			validateSchema(JSchema.ContentSchema, VALIDATION_FAILED.CONTENT_MODEL),
+			CMSController.patchContent);
+
 		// Delete content
 		cmsRoutes.delete('/:route', PassportConfig.requireAuth, CMSController.deleteContent);
+
 		// Content History
 		cmsRoutes.get('/history/:route', PassportConfig.requireAuth, CMSController.getContentHistory);
 
@@ -129,7 +149,9 @@ export class AppRouter {
 		// Get user list
 		usersRoutes.get('/', PassportConfig.requireAuth, UsersController.getAllUsers);
 		// Patch User
-		usersRoutes.post('/:id', PassportConfig.requireAuth, UsersController.patchUser);
+		usersRoutes.patch('/:id', PassportConfig.requireAuth,
+			validateSchema(JSchema.UserAdminUpdateUser, VALIDATION_FAILED.USER_MODEL),
+			UsersController.patchUser);
 
 		const adminRoutes = Router();
 		adminRoutes.use('/users', usersRoutes);

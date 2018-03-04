@@ -7,9 +7,6 @@ enum TwitchType {
 	Collection = 'collection'
 }
 
-
-// #region Component decorator
-
 @Component({
 	selector: 'dynamic-link',
 	template: `
@@ -23,19 +20,9 @@ enum TwitchType {
 	`,
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-
-// #endregion
-
 export class DynamicLinkComponent implements OnInit, AfterViewInit {
-
-	// #region Input fields
-
 	@Input() link: string;
 	@Input() text: string;
-
-	// #endregion
-
-	// #region Properties
 
 	public get isRemoteUrl(): boolean { return this._isRemoteUrl; }
 	public get isVideo(): boolean { return this.link.includes('youtube') || this.link.includes('twitch'); }
@@ -47,17 +34,9 @@ export class DynamicLinkComponent implements OnInit, AfterViewInit {
 		return this.link;
 	}
 
-	// #endregion
-
-	// #region Private fields
-
 	private _isRemoteUrl = true;
 	private _iframe: HTMLElement;
 	private _img: HTMLElement;
-
-	// #endregion
-
-	// #region Constructor
 
 	constructor(
 		@Inject(DOCUMENT) private document: Document,
@@ -66,10 +45,6 @@ export class DynamicLinkComponent implements OnInit, AfterViewInit {
 		private san: DomSanitizer) {
 
 	}
-
-	// #endregion
-
-	// #region Interface implementations
 
 	ngOnInit() {
 		if (!this.document) { return; }
@@ -111,10 +86,6 @@ export class DynamicLinkComponent implements OnInit, AfterViewInit {
 		this.renderer.destroy();
 	}
 
-	// #endregion
-
-	// #region Youtube implementation
-
 	/**
 	 * Creates a youtube embed
 	 */
@@ -133,10 +104,6 @@ export class DynamicLinkComponent implements OnInit, AfterViewInit {
 		this._img = this.renderer.createElement('img');
 		this.renderer.setAttribute(this._img, 'src', 'https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg');
 	}
-
-	// #endregion
-
-	// #region Twitch
 
 	/**
 	 * Creates a Twitch embed
@@ -163,6 +130,4 @@ export class DynamicLinkComponent implements OnInit, AfterViewInit {
 		this.renderer.setAttribute(this._img, 'src',
 			'data:image/bmp;base64,Qk1YAQAAAAAAADYAAAAoAAAAEAAAAAkAAAABABAAAAAAACIBAAASCwAAEgs' + 'A'.repeat(400) + '=');
 	}
-
-	// #endregion
 }

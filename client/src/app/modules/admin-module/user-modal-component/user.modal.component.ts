@@ -15,9 +15,6 @@ import { Subject } from 'rxjs/Subject';
 	changeDetection: ChangeDetectionStrategy.Default
 })
 export class UserModalComponent {
-
-	// #region Public fields
-
 	public patchUserForm: FormGroup;
 	public otherUsernames: string[];
 	public issue = new Subject<string>();
@@ -26,10 +23,6 @@ export class UserModalComponent {
 		{ value: AccessRoles.user, verbose: 'User', icon: 'verified_user' },
 		{ value: AccessRoles.admin, verbose: 'Admin', icon: 'security' }
 	];
-
-	// #endregion
-
-	// #region Constructor
 
 	constructor(
 		public dialogRef: MatDialogRef<UserModalComponent>,
@@ -46,11 +39,6 @@ export class UserModalComponent {
 			'role': [data.user.role, Validators.required]
 		});
 	}
-
-	// #endregion
-
-	// #region Methods
-
 
 	/**
 	 * Proceeds with the task and closes the modal.
@@ -90,8 +78,6 @@ export class UserModalComponent {
 	private usernameTaken(control: FormControl) {
 		return this.otherUsernames.includes(control.value.toLowerCase()) ? { usernameTaken: true } : null;
 	}
-
-	// #endregion
 }
 
 

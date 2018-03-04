@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { SteamModel, Steam } from '../models/steam';
-import { status, ROUTE_STATUS, STEAM_STATUS } from '../libs/responseMessage';
+import { status, ROUTE_STATUS, STEAM_STATUS } from '../libs/validate';
 import * as Gamedig from 'gamedig';
 import { escape } from 'validator';
 import { sanitize } from '../libs/sanitizer';

@@ -16,30 +16,15 @@ import { takeUntil } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchResultsComponent implements OnInit {
-
-	// #region Public fields
-
 	public pageSize = 10;
 	public pageSizes = [10, 25, 50, 100];
-
-	// #endregion
-
-	// #region Public Properties
 
 	public get searchResults() { return this._searchResults; }
 	public get displayedResults() { return this._displayedResults; }
 
-	// #endregion
-
-	// #region Private fields
-
 	private _ngUnsub = new Subject();
 	private _searchResults: CmsContent[];
 	private _displayedResults = new BehaviorSubject<CmsContent[]>(null);
-
-	// #endregion
-
-	// #region Constructor
 
 	constructor(
 		private router: Router,
@@ -47,10 +32,6 @@ export class SearchResultsComponent implements OnInit {
 		public cmsService: CMSService,
 		public mobileService: MobileService) {
 	}
-
-	// #endregion
-
-	// #region Interface implementations
 
 	ngOnInit() {
 		this.setResults();
@@ -60,10 +41,6 @@ export class SearchResultsComponent implements OnInit {
 		});
 	}
 
-	// #endregion
-
-	// #region Private methods
-
 	/**
 	 * Set searchResults helper
 	 */
@@ -71,10 +48,6 @@ export class SearchResultsComponent implements OnInit {
 		this._searchResults = this.route.snapshot.data['SearchResults'] || [];
 		this._displayedResults.next(this._searchResults.slice(0, this.pageSize));
 	}
-
-	// #endregion
-
-	// #region Event Handlers
 
 	/**
 	 * Paginator helper function
@@ -95,6 +68,4 @@ export class SearchResultsComponent implements OnInit {
 	trackBy(index: number, item: CmsContent): string {
 		return item.title;
 	}
-
-	// #endregion
 }

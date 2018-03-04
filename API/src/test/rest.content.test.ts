@@ -1,26 +1,20 @@
 import { expect } from 'chai';
-import { TestBed } from './TestBed';
 
 import { ContentModel, Content } from '../models/content';
-import { status, ROUTE_STATUS, AUTH_STATUS } from '../libs/responseMessage';
+import { status, ROUTE_STATUS, CMS_STATUS, VALIDATION_FAILED } from '../libs/validate';
+
+import { TestBed, AdminUser } from './testbed';
 
 
 // ---------------------------------
 // ------- Content TestSuite -------
 // ---------------------------------
 
+
 describe('REST: Content', () => {
-
-	before(() => {
-		TestBed.stubFindOne(ContentModel);
-		TestBed.stubFind(ContentModel);
-		TestBed.stubSave(ContentModel);
+	before(async () => {
+		await ContentModel.remove({}).exec();
 	});
-
-	after(() => {
-		// (<any>TestBed.http).close();
-	});
-
 
 
 	// ---------------------------------
@@ -29,57 +23,29 @@ describe('REST: Content', () => {
 
 
 	describe('/api/cms/', () => {
-		it('GET /api/cms/ 200', async () => {
-			const res = await TestBed.http.get('/api/cms/').set('Authorization', TestBed.token);
-
-			expect(res).to.have.status(200);
-			expect(res).to.have.property('body');
-			expect(res.body).to.be.an('array');
-		});
-
-		it('GET /api/cms/ 200, member', async () => {
-			const res = await TestBed.http.get('/api/cms/').set('Authorization', TestBed.token);
-
-			// TODO: Implement member filtering
-
-			expect(true).to.equal(false);
-		});
-
-		it('GET /api/cms/ 200, admin', async () => {
-			const res = await TestBed.http.get('/api/cms/').set('Authorization', TestBed.token);
-
-			// TODO: Implement admin filtering
-
-			expect(true).to.equal(false);
-		});
-
-
 		it('POST /api/cms/ 200', async () => {
 
 			const content = {
-				_id: '1234567890',
 				title: 'test',
 				route: 'test',
 				content: 'test',
 				access: 'everyone',
-				folder: 'test'
+				description: 'test',
+				folder: 'test',
+				nav: true
 			};
 
 			const res = await TestBed.http.post('/api/cms/')
-				.set('Authorization', TestBed.token)
+				.set('Authorization', TestBed.AdminToken)
 				.send(content);
-
-			// const res = await TestBed.http.post('/api/cms/')
-			//   .set('Authorization', TestBed.token)
-			//   .send(content);
 
 			expect(res).to.have.status(200);
 			expect(res).to.have.property('body');
 			expect(res.body).to.be.an('object');
 			expect(res.body).have.property('content');
-			expect(res.body).property('content').to.equal(content.content);
+			expect(res.body).property('content').to.equal(content.content); // valid; no sanitation needed
 
-			const res2 = await TestBed.http.get('/api/cms/').set('Authorization', TestBed.token);
+			const res2 = await TestBed.http.get('/api/cms/').set('Authorization', TestBed.AdminToken);
 			expect(res2).to.have.status(200);
 			expect(res2).to.have.property('body');
 			expect(res2.body).to.be.an('array');
@@ -90,8 +56,7 @@ describe('REST: Content', () => {
 		it('POST /api/cms/ 200, sanitation', async () => {
 
 			const content = {
-				_id: '1234567890',
-				title: 'test',
+				title: 'test2',
 				route: 'test/test//test\\test',
 				content: `
           <h2>Hello World</h2>
@@ -104,11 +69,13 @@ describe('REST: Content', () => {
           <a href="/acceptable">good</a>
           <img src="/acceptable.jpg" />`,
 				access: 'everyone',
-				folder: 'test'
+				description: 'test',
+				folder: 'test',
+				nav: true
 			};
 
 			const res = await TestBed.http.post('/api/cms/')
-				.set('Authorization', TestBed.token)
+				.set('Authorization', TestBed.AdminToken)
 				.send(content);
 
 			expect(res).to.have.status(200);
@@ -131,50 +98,94 @@ describe('REST: Content', () => {
 		});
 
 		it('POST /api/cms/ 401', async () => {
-			// unauthorized when no token is provided
+			// unauthorized when no AdminToken is provided
 			const res = await TestBed.http.post('/api/cms/').send({});
-			// .set('Authorization', TestBed.token)
+			// .set('Authorization', TestBed.AdminToken)
 			expect(res).to.have.status(401);
 		});
 
 		it('POST /api/cms/ 422', async () => {
 
 			const properContent = {
-				_id: '1234567890',
-				title: 'test',
-				route: 'test',
+				title: 'test3',
+				route: 'test3',
 				content: 'test',
 				access: 'everyone',
-				folder: 'test'
+				description: 'test',
+				folder: 'test',
+				nav: true,
 			};
 
-			const badRoute = properContent;
+			const badRoute = Object.assign({}, properContent);
 			delete badRoute.route;
 
-			const badTitle = properContent;
+			const badTitle = Object.assign({}, properContent);
 			delete badTitle.title;
 
-			const badContent = properContent;
+			const badContent = Object.assign({}, properContent);
 			delete badContent.content;
 
-			const res = await TestBed.http.get('/api/cms/')
-				.set('Authorization', TestBed.token);
+			const badDesc = Object.assign({}, properContent);
+			delete badDesc.description;
 
-			// TODO: Implement this test
-			expect(true).to.equal(false);
+
+			const [badRouteRes, badTitleRes, badContentRes, badDescRes] = await Promise.all([
+				TestBed.http.post('/api/cms').send(badRoute).set('Authorization', TestBed.AdminToken),
+				TestBed.http.post('/api/cms').send(badTitle).set('Authorization', TestBed.AdminToken),
+				TestBed.http.post('/api/cms').send(badContent).set('Authorization', TestBed.AdminToken),
+				TestBed.http.post('/api/cms').send(badDesc).set('Authorization', TestBed.AdminToken)
+			]);
+
+			// badRouteRes
+			expect(badRouteRes).to.have.status(422);
+			expect(badRouteRes).to.have.property('body');
+			expect(badRouteRes.body).to.have.property('message');
+			expect(badRouteRes.body.message).to.equal(VALIDATION_FAILED.CONTENT_MODEL);
+			expect(badRouteRes.body).to.have.property('errors');
+			expect(badRouteRes.body.errors).to.be.an('array');
+			expect(badRouteRes.body.errors[0]).to.have.property('error');
+			expect(badRouteRes.body.errors[0]).to.have.property('params');
+			expect(badRouteRes.body.errors[0].params).to.have.property('missingProperty');
+			expect(badRouteRes.body.errors[0].params.missingProperty).to.equal('route');
+
+			// badTitleRes
+			expect(badTitleRes).to.have.status(422);
+			// badContentRes
+			expect(badContentRes).to.have.status(422);
+			// badDescRes
+			expect(badDescRes).to.have.status(422);
 		});
+
+		it('GET /api/cms/ 200', async () => {
+			const res = await TestBed.http.get('/api/cms/');
+
+			expect(res).to.have.status(200);
+			expect(res).to.have.property('body');
+			expect(res.body).to.be.an('array');
+			expect(res.body[0]).to.have.property('title');
+			expect(res.body[0]).to.have.property('route');
+		});
+
+		it('GET /api/cms/ 200, member');
+
+		// TODO: Implement member filtering
+
+		it('GET /api/cms/ 200, admin');
+
+		// TODO: Implement admin filtering
+
 	});
 
 	// ---------------------------------
 	// -------- /api/cms/:route --------
 	// ---------------------------------
 
-	describe('/api/cms/:route <- route = test', () => {
+	describe('/api/cms/:route', () => {
 		it('GET /api/cms/:route 200', async () => {
 
 			const testRoute = 'test';
 
-			const res = await TestBed.http.get('/api/cms/' + testRoute).set('Authorization', TestBed.token);
+			const res = await TestBed.http.get('/api/cms/' + testRoute).set('Authorization', TestBed.AdminToken);
 
 			expect(res).to.have.status(200);
 			expect(res).to.have.property('body');
@@ -183,6 +194,36 @@ describe('REST: Content', () => {
 			expect(res.body).to.have.property('content');
 			expect(res.body).property('content').to.equal('test');
 		});
+
+		it('PATCH /api/cms/:route 200');
+
+		it('PATCH /api/cms/:route 422');
+
+		it('PATCH /api/cms/:route 401');
+
+
+		it('DELETE /api/cms/:route 200');
+
+		it('DELETE /api/cms/:route 401');
+	});
+
+
+	// ---------------------------------
+	// ---- /api/cms/history/:route ----
+	// ---------------------------------
+
+	describe('/api/cms/history/:route', () => {
+		it('GET /api/cms/history/:route 200');
+	});
+
+
+	// ---------------------------------
+	// -- /api/cms/search/:searchTerm --
+	// ---------------------------------
+
+
+	describe('/api/cms/search/:searchTerm', () => {
+		it('GET /api/cms/search/:searchTerm 200');
 	});
 
 });
