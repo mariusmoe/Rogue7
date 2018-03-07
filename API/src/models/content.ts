@@ -32,7 +32,8 @@ const schema = new Schema({
 		updatedAt: { type: Date, default: Date.now },
 		createdAt: { type: Date, default: Date.now },
 	},
-	// draft: ..,
+
+	views: { type: Number, required: true, default: 0 },
 	prev: []
 },
 	{
@@ -49,6 +50,8 @@ export interface ContentDoc extends Document {
 	current: Content;
 	prev: Content[];
 
+	views: number;
+
 	updatedAt?: Date;
 	createdAt?: Date;
 }
@@ -58,6 +61,8 @@ export interface Content {
 	access?: accessRoles;
 	route: string;
 	version?: number;
+
+	views?: number;
 
 	content?: string;
 	content_searchable?: string;

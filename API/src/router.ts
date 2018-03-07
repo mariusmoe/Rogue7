@@ -63,8 +63,10 @@ export class AppRouter {
 		authRoutes.post('/login',
 			validateSchema(JSchema.UserLoginSchema, VALIDATION_FAILED.USER_MODEL),
 			PassportConfig.requireLogin, AuthController.token); // requireLogin here. Intended.
+
 		// Request a new token
 		authRoutes.get('/token', PassportConfig.requireAuth, AuthController.token); // requireAuth here. Intended.
+
 		// Request to update password
 		authRoutes.post('/updatepassword',
 			PassportConfig.requireAuth,

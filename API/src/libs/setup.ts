@@ -14,9 +14,9 @@ export class Setup {
 	 */
 	public static initiate(app: Express) {
 		// Compress / gzip outgoing
-		app.use(compression(<compression.CompressionOptions>{
-			filter: (req: Request) => !req.headers['x-no-compression']
-		}));
+		// app.use(compression(<compression.CompressionOptions>{
+		// 	filter: (req: Request) => !req.headers['x-no-compression']
+		// }));
 
 		// Pretty print
 		app.set('json spaces', 4);

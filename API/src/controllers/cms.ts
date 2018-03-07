@@ -39,8 +39,12 @@ export class CMSController {
 
 		const contentList: Content[] = await ContentModel.aggregate([
 			{ $match: { 'current.access': { $in: accessRights } } },
+			{
+				$project: {
+					current: { title: 1, route: 1, access: 1, folder: 1, description: 1, nav: 1, views: '$views' }
+				}
+			},
 			{ $replaceRoot: { newRoot: '$current' } },
-			{ $project: { title: 1, route: 1, access: 1, folder: 1, description: 1, nav: 1 } }
 		]);
 		if (!contentList) {
 			return res.status(404).send(status(CMS_STATUS.NO_ROUTES));
@@ -62,7 +66,7 @@ export class CMSController {
 
 		const contentDoc = <ContentDoc>await ContentModel.findOne({ 'current.route': route }, {
 			'current.content_searchable': false, prev: false
-		}).lean();
+		});
 
 		if (!contentDoc) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
 
@@ -73,8 +77,12 @@ export class CMSController {
 		if (!access) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
-		return res.status(200).send(contentDoc.current);
+		const returnValue: Content = Object.assign({}, contentDoc.current);
+		contentDoc.views += 1;
+		returnValue.views = contentDoc.views;
 
+		res.status(200).send(returnValue);
+		contentDoc.save();
 	}
 
 

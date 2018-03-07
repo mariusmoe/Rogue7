@@ -27,6 +27,6 @@ export class AdminService {
 
 
 	public patchUser(user: User): Observable<boolean> {
-		return this.http.post<boolean>(environment.URL.admin.users + '/' + user._id, user).pipe(timeout(environment.TIMEOUT));
+		return this.http.patch<boolean>(environment.URL.admin.users + '/' + user._id, user).pipe(timeout(environment.TIMEOUT));
 	}
 }
