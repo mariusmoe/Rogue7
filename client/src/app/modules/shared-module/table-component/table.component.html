@@ -1,0 +1,77 @@
+
+
+<div [ngClass]="{ filterBox: true, mobile: (mobileService.isMobile() | async) }" [formGroup]="filterForm">
+	<mat-form-field floatLabel="never" ngClass="filter">
+		<input matInput placeholder="Filter" type="text" autocomplete="off" formControlName="filterControl">
+		<button *ngIf="filterForm.get('filterControl').value.length > 0" matSuffix mat-icon-button
+				(click)="filterForm.get('filterControl').reset('')">
+			<mat-icon>clear</mat-icon>
+		</button>
+	</mat-form-field>
+</div>
+
+<mat-table #table [dataSource]="Source" matSort [matSortActive]="settings.active" matSortDisableClear matSortDirection="asc">
+
+	<ng-container *ngFor="let col of settings.columns">
+		<ng-container [matColumnDef]="col.property">
+			<mat-header-cell *matHeaderCellDef [mat-sort-header]="col.sort ? col.property : null"
+							 [ngClass]="{ narrow: col.narrow, rightAlignHeader: col.rightAlign }">
+				{{col.header}}
+			</mat-header-cell>
+
+			<mat-cell *matCellDef="let obj" [ngClass]="{ narrow: col.narrow, rightAlign: col.rightAlign }" [ngSwitch]="col.type">
+
+				<!-- Button -->
+				<button *ngSwitchCase="ColumnType.Button" mat-mini-fab (click)="col.func(obj[col.property], obj, Source.data)"
+						[disabled]="!!col.disabled && col.disabled(obj[col.property], obj, Source.data)">
+					<mat-icon *ngIf="col.icon" [color]="!!col.disabled && col.disabled(obj[col.property], obj, Source.data) ? '' : 'primary'">
+						{{col.icon(obj[col.property])}}
+					</mat-icon>
+					<span *ngIf="!col.noText" [ngClass]="{ 'hasIcon': col.icon }">
+						{{col.displayFormat ? col.displayFormat(obj[col.property], obj, Source.data) : obj[col.property]}}
+					</span>
+				</button>
+
+				<!-- InternalLink -->
+				<a *ngSwitchCase="ColumnType.InternalLink" [routerLink]="col.func(obj[col.property])">
+					<mat-icon *ngIf="col.icon">{{col.icon(obj[col.property])}}</mat-icon>
+					<span *ngIf="!col.noText" [ngClass]="{ 'hasIcon': col.icon }">
+						{{col.displayFormat ? col.displayFormat(obj[col.property], obj, Source.data) : obj[col.property]}}
+					</span>
+				</a>
+
+				<!-- ExternalLink -->
+				<a *ngSwitchCase="ColumnType.ExternalLink" [href]="col.func(obj[col.property])">
+					<mat-icon *ngIf="col.icon">{{col.icon(obj[col.property])}}</mat-icon>
+					<span *ngIf="!col.noText" [ngClass]="{ 'hasIcon': col.icon }">
+						{{col.displayFormat ? col.displayFormat(obj[col.property], obj, Source.data) : obj[col.property]}}
+					</span>
+				</a>
+
+				<!-- Image -->
+				<img *ngSwitchCase="ColumnType.Image" [src]="col.property"
+					 [alt]="col.displayFormat ? col.displayFormat(obj[col.property], obj, Source.data) : ''">
+
+				<!-- Default -->
+				<ng-container *ngSwitchDefault>
+					<mat-icon *ngIf="col.icon">{{col.icon(obj[col.property])}}</mat-icon>
+					<span *ngIf="!col.noText" [ngClass]="{ 'hasIcon': col.icon }">
+						{{col.displayFormat ? col.displayFormat(obj[col.property], obj, Source.data) : obj[col.property]}}
+					</span>
+				</ng-container>
+			</mat-cell>
+		</ng-container>
+	</ng-container>
+
+
+	<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+	<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+<mat-paginator [length]="Source.data.length" [pageSize]="25" [hidePageSize]="mobileService.isMobile() | async"
+			   [pageSizeOptions]="pageSizes" showFirstLastButtons="true">
+</mat-paginator>
+
+<div class="count">
+	{{this.Source.data.length}}
+</div>

@@ -30,11 +30,14 @@ import { TimeAgo } from '@app/pipes';
 import { ModalComponent } from './modals/modal.component';
 import { SectionWrapperComponent } from './sectionwrapper-component/sectionwrapper.component';
 import { SectionComponent } from './section-component/section.component';
+import { TableComponent } from './table-component/table.component';
 
 @NgModule({
 	imports: [
 		CommonModule,
-		MaterialModule
+		MaterialModule,
+		ReactiveFormsModule,
+		RouterModule
 	],
 	exports: [
 		CommonModule,
@@ -44,13 +47,15 @@ import { SectionComponent } from './section-component/section.component';
 		HttpClientModule,
 		TimeAgo,
 		SectionWrapperComponent,
-		SectionComponent
+		SectionComponent,
+		TableComponent
 	],
 	declarations: [
 		TimeAgo,
 		ModalComponent,
 		SectionWrapperComponent,
-		SectionComponent
+		SectionComponent,
+		TableComponent
 	],
 	entryComponents: [
 		ModalComponent

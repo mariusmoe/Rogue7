@@ -14,6 +14,8 @@ import {
 	MatInputModule,
 	MatButtonModule,
 	MatDialogModule,
+	MatTableModule,
+	MatSortModule
 } from '@angular/material';
 
 
@@ -33,6 +35,8 @@ import {
 		MatInputModule,
 		MatButtonModule,
 		MatDialogModule,
+		MatTableModule,
+		MatSortModule
 	]
 })
 export class MaterialModule { }

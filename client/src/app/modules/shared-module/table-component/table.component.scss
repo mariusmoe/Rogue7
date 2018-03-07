@@ -1,0 +1,88 @@
+/// <reference path="../../../scss/_theme_vars.scss" />
+@import '_theme_vars';
+
+mat-header-row {
+	box-shadow: $boxShadow, $boxShadow inset;
+	min-height: 42px;
+	border: $border;
+}
+
+.mat-row {
+	&:last-child {
+		border: none;
+	}
+
+	transition: background 0.5s ease-in-out;
+	background: rgba(0,0,0,0);
+
+	&:hover {
+		background: rgba($activeRouteBackground, 0.1);
+	}
+}
+
+
+mat-header-cell,
+mat-cell {
+	padding-right: 3em;
+
+	&:last-child {
+		padding: 0;
+	}
+}
+
+.narrow {
+	max-width: 42px;
+}
+.rightAlign {
+	text-align: right;
+}
+.rightAlignHeader {
+	text-align: center;
+}
+
+
+span.hasIcon {
+	margin-left: 0.2em;
+}
+mat-icon {
+	vertical-align: middle;
+}
+
+
+mat-paginator {
+	box-shadow: $boxShadow, $boxShadow inset;
+	border: $border;
+
+	::ng-deep .mat-paginator-container {
+		min-height: 42px;
+		max-height: 42px;
+		overflow: hidden;
+	}
+}
+
+.filterBox {
+	margin: 0 auto;
+	width: 250px;
+
+	&.mobile {
+		width: 80%;
+	}
+
+	.filter {
+		width: 100%;
+	}
+}
+
+.count {
+	font-weight: 500;
+	color: darken($textColor, 0.2);
+	font-size: 12px;
+	position: absolute;
+	bottom: 16px;
+	left: 24px;
+	width: 100px;
+}
+
+:host {
+	position: relative;
+}

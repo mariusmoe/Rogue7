@@ -10,6 +10,7 @@ import { SharedModule, CommonModule } from '@app/modules';
 import { AdminComponent } from './admin-component/admin.component';
 import { SettingsComponent } from './settings-component/settings.component';
 import { UsersComponent } from './users-component/users.component';
+import { PagesComponent } from './pages-component/pages.component';
 import { SteamComponent } from './steam-component/steam.component';
 import { UserModalComponent } from './user-modal-component/user.modal.component';
 
@@ -17,6 +18,7 @@ import { UserModalComponent } from './user-modal-component/user.modal.component'
 	declarations: [
 		AdminComponent,
 		UsersComponent,
+		PagesComponent,
 		SettingsComponent,
 		SteamComponent,
 		UserModalComponent
