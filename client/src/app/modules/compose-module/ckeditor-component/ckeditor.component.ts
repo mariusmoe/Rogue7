@@ -53,13 +53,9 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 
 			// Disabled / ReadOnly flags
 			this._editor.isReadOnly = this._control.disabled;
-
 			this._control.registerOnDisabledChange((disabled) => {
 				this._editor.isReadOnly = disabled;
 			});
-
-			// Set Value
-			this._editor.setData(this._control.value);
 
 			this._control.valueChanges.subscribe((value: string) => {
 				if (this._editor.getData() === value) { return; }

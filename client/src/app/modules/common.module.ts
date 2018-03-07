@@ -8,7 +8,7 @@ import {
 	MatCheckboxModule,
 	MatExpansionModule,
 	MatProgressSpinnerModule,
-	MatTabsModule,
+	MatTabsModule
 } from '@angular/material';
 
 

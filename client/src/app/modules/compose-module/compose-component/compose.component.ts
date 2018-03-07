@@ -46,6 +46,7 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 	// History fields
 	public versionIndex: number = VersionHistory.Draft;
 	public history: CmsContent[] = null;
+	public readonly VersionHistory = VersionHistory;
 
 	public readonly maxShortInputLength = 25;
 	public readonly maxLongInputLength = 50;
@@ -114,13 +115,6 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 			oldTitleValue = newVal;
 		});
 
-		// Hook form change
-		this.contentForm.valueChanges.pipe(takeUntil(this._ngUnsub), debounceTime(10)).subscribe((newVal: CmsContent) => {
-			if (this.versionIndex === VersionHistory.Draft) {
-				this._currentDraft = newVal;
-			}
-		});
-
 		// Create Folder autocomplete list
 		this.cmsService.getContentList().pipe(takeUntil(this._ngUnsub)).subscribe(contentList => {
 			if (!contentList) { return; }
@@ -142,6 +136,7 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		const c = this.history ? this.history[event.value] : null;
 
 		if (c) {
+			this._currentDraft = this.contentForm.value;
 			this.contentForm.patchValue(c, { emitEvent: false });
 			this.setFormDisabledState();
 			return;

@@ -53,6 +53,7 @@
 	::ng-deep .ck-editor__editable {
 		border: $border;
 		min-height: 200px;
+		padding-top: 0.8em;
 	}
 
 	::ng-deep .ck-list__item_active {
