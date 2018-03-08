@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 import { CmsContent, AccessRoles, TableSettings, ColumnType, ColumnDir } from '@app/models';
 import { CMSService, MobileService } from '@app/services';
@@ -22,27 +23,24 @@ export class PagesComponent {
 			{
 				header: 'Title',
 				property: 'title',
-				sort: true,
 			},
 			{
 				header: 'Views',
 				property: 'views',
-				sort: true,
 				rightAlign: true,
 			},
 			{
 				header: 'Access',
 				property: 'access',
-				sort: true,
-				icon: (access: string): string => {
-					switch (access) {
+				icon: (c: CmsContent): string => {
+					switch (c.access) {
 						case AccessRoles.admin: { return 'security'; }
 						case AccessRoles.user: { return 'verified_user'; }
 						case AccessRoles.everyone: { return 'group'; }
 					}
 				},
-				displayFormat: (access: AccessRoles): string => {
-					switch (access) {
+				displayFormat: (c: CmsContent): string => {
+					switch (c.access) {
 						case AccessRoles.admin: { return 'Admins'; }
 						case AccessRoles.user: { return 'Users'; }
 						case AccessRoles.everyone: { return 'Everyone'; }
@@ -52,20 +50,30 @@ export class PagesComponent {
 			{
 				header: 'Navigation',
 				property: 'nav',
-				sort: true,
-				displayFormat: (nav: boolean): string => {
-					return nav ? 'Shown' : 'Hidden';
+				displayFormat: (c: CmsContent): string => {
+					return c.nav ? 'Shown' : 'Hidden';
+				}
+			},
+			{
+				header: 'Folder',
+				property: 'folder',
+			},
+			{
+				header: 'Last updated',
+				property: 'updatedAt',
+				displayFormat: (c: CmsContent): string => {
+					return this.datePipe.transform(c.updatedAt);
 				}
 			},
 			{
 				header: 'Edit',
 				property: 'route',
-				sort: true,
+				noSort: true,
 				type: ColumnType.InternalLink,
 				icon: () => 'mode_edit',
 				noText: true,
-				func: (route: string) => {
-					return `/compose/${route}`;
+				func: (c: CmsContent) => {
+					return `/compose/${c.route}`;
 				},
 				narrow: true
 			}
@@ -82,7 +90,7 @@ export class PagesComponent {
 
 
 
-	constructor(private cmsService: CMSService) {
+	constructor(private cmsService: CMSService, private datePipe: DatePipe) {
 
 		cmsService.getContentList(true).subscribe((contentList) => {
 			this.data.next(contentList);

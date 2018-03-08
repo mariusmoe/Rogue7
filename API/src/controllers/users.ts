@@ -16,7 +16,9 @@ export class UsersController {
 	 * @param  {Next}		next next
 	 */
 	public static async getAllUsers(req: Req, res: Res, next: Next) {
-		const users = <User[]>await UserModel.find({}, { username: 1, role: 1, }).lean().sort('username_lower');
+		const users = <User[]>await UserModel.find({}, {
+			username: 1, role: 1, createdAt: 1
+		}).lean().sort('username_lower');
 		if (!users) { return res.status(404); } // TODO: Fix me
 		return res.status(200).send(users);
 	}

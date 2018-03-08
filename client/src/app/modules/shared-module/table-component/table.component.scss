@@ -1,6 +1,7 @@
 /// <reference path="../../../scss/_theme_vars.scss" />
 @import '_theme_vars';
 
+// Row definitions
 mat-header-row {
 	box-shadow: $boxShadow, $boxShadow inset;
 	min-height: 42px;
@@ -10,6 +11,9 @@ mat-header-row {
 .mat-row {
 	&:last-child {
 		border: none;
+	}
+	&.click {
+		cursor: pointer;
 	}
 
 	transition: background 0.5s ease-in-out;
@@ -30,6 +34,7 @@ mat-cell {
 	}
 }
 
+// Column sizing
 .narrow {
 	max-width: 42px;
 }
@@ -40,7 +45,7 @@ mat-cell {
 	text-align: center;
 }
 
-
+// Icons
 span.hasIcon {
 	margin-left: 0.2em;
 }
@@ -48,7 +53,41 @@ mat-icon {
 	vertical-align: middle;
 }
 
+// Image column
+.colImage {
+	position: relative;
+	left: 0;
+	top: 0;
+	height: 48px;
+	width: 48px;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	box-sizing: border-box;
+	border: $border;
+	background: $sideBG;
 
+	img {
+		margin: auto;
+		width: auto;
+		height: 100%;
+	}
+
+	&:after {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		z-index: 1000;
+		box-shadow: $boxShadow inset;
+		pointer-events: none;
+	}
+}
+
+
+// Paginator
 mat-paginator {
 	box-shadow: $boxShadow, $boxShadow inset;
 	border: $border;

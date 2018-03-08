@@ -25,6 +25,7 @@ import { AuthGuard, AdminGuard, LoginGuard, DeactivateGuard } from '@app/guards'
 
 // Pipes
 import { TimeAgo } from '@app/pipes';
+import { DatePipe } from '@angular/common';
 
 // Components
 import { ModalComponent } from './modals/modal.component';
@@ -82,7 +83,9 @@ export class SharedModule {
 				AuthGuard,
 				AdminGuard,
 				LoginGuard,
-				DeactivateGuard
+				DeactivateGuard,
+				// Pipes (for use in-code)
+				DatePipe
 			]
 		};
 	}

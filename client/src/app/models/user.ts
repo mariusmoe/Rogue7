@@ -3,6 +3,7 @@ export interface User {
 	username: string;
 	role?: AccessRoles.user | AccessRoles.admin;
 	password?: string;
+	createdAt?: Date;
 	exp?: number;
 }
 

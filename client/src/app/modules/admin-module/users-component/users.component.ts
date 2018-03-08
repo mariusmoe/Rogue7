@@ -1,6 +1,8 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
+import { DatePipe } from '@angular/common';
+
 import { AdminService, AuthService } from '@app/services';
 import { User, AccessRoles, TableSettings, ColumnType, ColumnDir } from '@app/models';
 
@@ -24,33 +26,38 @@ export class UsersComponent {
 			{
 				header: 'Username',
 				property: 'username',
-				sort: true,
 			},
 			{
 				header: 'Role',
 				property: 'role',
-				sort: true,
-				icon: (role: string): string => {
-					switch (role) {
+				icon: (user: User): string => {
+					switch (user.role) {
 						case AccessRoles.admin: { return 'security'; }
 						case AccessRoles.user: { return 'verified_user'; }
 					}
 				},
-				displayFormat: (access: AccessRoles): string => {
-					switch (access) {
+				displayFormat: (user: User): string => {
+					switch (user.role) {
 						case AccessRoles.admin: { return 'Admin'; }
 						case AccessRoles.user: { return 'User'; }
 					}
 				},
 			},
 			{
+				header: 'Joined date',
+				property: 'createdAt',
+				displayFormat: (user: User): string => {
+					return this.datePipe.transform(user.createdAt);
+				}
+			},
+			{
 				header: 'Edit',
 				property: '_id',
-				sort: false,
+				noSort: true,
 				type: ColumnType.Button,
 				icon: () => 'settings',
 				noText: true,
-				func: (property: string, user: User, users: User[]) => {
+				func: (user: User, users: User[]) => {
 					this.dialog.open(
 						UserModalComponent,
 						<MatDialogConfig>{ data: <UserModalData>{ user: user, userList: users } }
@@ -58,7 +65,7 @@ export class UsersComponent {
 						if (closedResult) { this.updateList(); }
 					});
 				},
-				disabled: (input: any, user: User) => this.authService.isSameUser(user, this.authService.getUser().getValue()),
+				disabled: (user: User) => this.authService.isSameUser(user, this.authService.getUser().getValue()),
 				narrow: true
 			}
 		],
@@ -75,6 +82,7 @@ export class UsersComponent {
 
 	constructor(
 		private dialog: MatDialog,
+		private datePipe: DatePipe,
 		public authService: AuthService,
 		public adminService: AdminService) {
 		this.updateList();

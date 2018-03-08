@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { PageEvent } from '@angular/material';
+import { DatePipe } from '@angular/common';
 
-import { CMSService, MobileService } from '@app/services';
-import { CmsContent } from '@app/models';
+import { MobileService } from '@app/services';
+import { CmsContent, TableSettings, ColumnType, ColumnDir, TableFilterSettings } from '@app/models';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -16,56 +16,83 @@ import { takeUntil } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchResultsComponent implements OnInit {
-	public pageSize = 10;
-	public pageSizes = [10, 25, 50, 100];
-
-	public get searchResults() { return this._searchResults; }
-	public get displayedResults() { return this._displayedResults; }
-
 	private _ngUnsub = new Subject();
-	private _searchResults: CmsContent[];
-	private _displayedResults = new BehaviorSubject<CmsContent[]>(null);
+
+	public data = new BehaviorSubject<CmsContent[]>([]);
+
+	public readonly settings: TableSettings = {
+		columns: [
+			{
+				header: 'Title',
+				property: 'title',
+			},
+			{
+				header: 'Relevance',
+				property: 'relevance',
+				rightAlign: true,
+				displayFormat: (c: CmsContent) => `${(100 * c.relevance).toFixed(2)}%`,
+			},
+			{
+				header: 'Description',
+				property: 'description',
+			},
+			{
+				header: 'Last updated',
+				property: 'updatedAt',
+				displayFormat: (c: CmsContent): string => {
+					return this.datePipe.transform(c.updatedAt);
+				}
+			},
+			{
+				header: ' ',
+				property: 'image',
+				narrow: true,
+				noSort: true,
+				type: ColumnType.Image
+			},
+
+		],
+		mobile: ['title', 'relevance'],
+
+		active: 'relevance',
+		dir: ColumnDir.DESC,
+
+		trackBy: (index: number, c: CmsContent) => c.title,
+
+		rowClick: (c: CmsContent) => this.router.navigateByUrl('/' + c.route)
+	};
+
+	public readonly filterSettings: TableFilterSettings = {
+		placeholder: 'Search',
+		hidden: this.mobileService.isMobile(),
+		func: (term: string) => { this.setResults(term); }
+	};
+
 
 	constructor(
 		private router: Router,
+		private datePipe: DatePipe,
 		public route: ActivatedRoute,
-		public cmsService: CMSService,
 		public mobileService: MobileService) {
-	}
-
-	ngOnInit() {
-		this.setResults();
 
 		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
 			if (e instanceof NavigationEnd) { this.setResults(); }
 		});
 	}
 
+	ngOnInit() {
+
+	}
+
 	/**
 	 * Set searchResults helper
 	 */
-	private setResults() {
-		this._searchResults = this.route.snapshot.data['SearchResults'] || [];
-		this._displayedResults.next(this._searchResults.slice(0, this.pageSize));
+	private setResults(term?: string) {
+		if (term) {
+			this.router.navigateByUrl('/search/' + term);
+			return;
+		}
+		this.data.next(this.route.snapshot.data['SearchResults']);
 	}
 
-	/**
-	 * Paginator helper function
-	 * @param  {any}    event paginator event
-	 */
-	paginator(event: PageEvent) {
-		this.pageSize = event.pageSize;
-		const start = event.pageIndex * event.pageSize;
-		this._displayedResults.next(this._searchResults.slice(start, start + event.pageSize));
-	}
-
-	/**
-	 * Helper function for angular's *ngFor
-	 * @param  {number}                   index the index of the item to track
-	 * @param  {CmsContent}               item the item tracked
-	 * @return {string}                   the item's title; used for tracking
-	 */
-	trackBy(index: number, item: CmsContent): string {
-		return item.title;
-	}
 }

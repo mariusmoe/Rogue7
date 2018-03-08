@@ -1,4 +1,8 @@
-﻿export interface TableSettings {
+﻿import { MatTableDataSource } from '@angular/material';
+
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
+export interface TableSettings {
 	columns: ColumnSettings[];
 	mobile: string[];
 
@@ -8,7 +12,15 @@
 
 	trackBy: (index: number, item: any) => string;
 
+	rowClick?: (rowOjb: object) => void;
 }
+
+export interface TableFilterSettings {
+	placeholder?: string;
+	func?: (term: string) => void;
+	hidden?: BehaviorSubject<boolean>;
+}
+
 
 export interface ColumnSettings {
 	header: string;
@@ -16,16 +28,16 @@ export interface ColumnSettings {
 	property: string;
 
 	type?: ColumnType; // Defaults to Normal
-	displayFormat?: (property: any, obj?: object, all?: object[]) => string;
+	displayFormat?: (obj?: object, all?: object[]) => string;
 
-	func?: (input: any, obj?: object, all?: object[]) => void;
-	disabled?: (input: any, obj?: object, all?: object[]) => boolean;
-	icon?: (property: string) => string;
+	func?: (obj?: object, all?: object[]) => void;
+	disabled?: (obj?: object, all?: object[]) => boolean;
+	icon?: (obj?: object) => string;
 	noText?: boolean;
 	narrow?: boolean;
 
 	// classes
-	sort?: boolean;
+	noSort?: boolean;
 	rightAlign?: boolean;
 }
 

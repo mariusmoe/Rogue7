@@ -36,9 +36,9 @@ const schema = new Schema({
 	views: { type: Number, required: true, default: 0 },
 	prev: []
 },
-	{
-		timestamps: true
-	});
+{
+	timestamps: true
+});
 // Searchable compound index
 schema.index(
 	{ 'current.title': 'text', 'current.content_searchable': 'text', 'current.description': 'text' },

@@ -39,6 +39,9 @@ const schema = new Schema({
 		enum: [accessRoles.admin, accessRoles.user],
 		default: accessRoles.user
 	},
+},
+{
+	timestamps: { createdAt: true, updatedAt: false }
 });
 
 export interface User extends Document {
@@ -46,6 +49,7 @@ export interface User extends Document {
 	username_lower?: string;
 	password?: string;
 	role: accessRoles.admin | accessRoles.user;
+	createdAt?: Date;
 	comparePassword?: (candidatePassword: string) => Promise<boolean>;
 	isOfRank?: (rank: accessRoles) => boolean;
 }
@@ -122,7 +126,7 @@ const userUpdatePasswordSchema = {
 			'type': 'string',
 		},
 		'confirm': {
-			'constant': {'$data': '1/password'} // equal to password
+			'constant': { '$data': '1/password' } // equal to password
 		}
 	},
 	'required': ['currentPassword', 'password', 'confirm']

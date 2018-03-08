@@ -41,7 +41,10 @@ export class CMSController {
 			{ $match: { 'current.access': { $in: accessRights } } },
 			{
 				$project: {
-					current: { title: 1, route: 1, access: 1, folder: 1, description: 1, nav: 1, views: '$views' }
+					current: {
+						title: 1, route: 1, access: 1, updatedAt: 1,
+						folder: 1, description: 1, nav: 1, views: '$views'
+					}
 				}
 			},
 			{ $replaceRoot: { newRoot: '$current' } },
@@ -254,7 +257,7 @@ export class CMSController {
 			{ $limit: 1000 },
 			{
 				$project: {
-					'current.title': 1, 'current.route': 1, 'current.folder': 1,
+					'current.title': 1, 'current.route': 1, 'current.folder': 1, 'current.updatedAt': 1,
 					'current.description': 1, 'current.image': 1, 'current.relevance': { $meta: 'textScore' }
 				}
 			},

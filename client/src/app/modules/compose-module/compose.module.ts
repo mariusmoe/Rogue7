@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { DatePipe } from '@angular/common';
+
 
 // Router
 import { ComposeRoutingModule } from './compose.routing-module';
@@ -23,9 +23,6 @@ import { CKEditorComponent } from './ckeditor-component/ckeditor.component';
 		ContentModule,
 		CommonModule,
 		ComposeRoutingModule
-	],
-	providers: [
-		DatePipe
 	]
 })
 export class ComposeModule { }

@@ -3,7 +3,7 @@ import { MatPaginator, MatSort, MatTable, MatTableDataSource } from '@angular/ma
 
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 
-import { ColumnSettings, ColumnType, TableSettings } from '@app/models';
+import { ColumnSettings, ColumnType, TableSettings, TableFilterSettings } from '@app/models';
 import { MobileService } from '@app/services';
 
 import { Subject } from 'rxjs/Subject';
@@ -18,10 +18,11 @@ import { takeUntil, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TableComponent implements OnInit, AfterViewInit {
-	@ViewChild(MatTable) table: MatTable<Object>;
+	@ViewChild(MatTable) table: MatTable<object>;
 	@ViewChild(MatPaginator) paginator: MatPaginator;
 	@ViewChild(MatSort) sort: MatSort;
 	@Input() settings: TableSettings;
+	@Input() filterSettings: TableFilterSettings = {}; // default empty object
 	@Input() set data(value: object[]) { this.Source.data = value || []; }
 
 	public readonly ColumnType = ColumnType;
@@ -38,9 +39,17 @@ export class TableComponent implements OnInit, AfterViewInit {
 		this.filterForm = fb.group({ filterControl: [''] });
 
 		this.filterForm.get('filterControl').valueChanges.pipe(
-			distinctUntilChanged(), takeUntil(this._ngUnsub)
+			distinctUntilChanged(), takeUntil(this._ngUnsub), debounceTime(300)
 			// debounceTime(20), -- cannot debounce as the filter implementation is bad.
-		).subscribe(value => { this.Source.filter = value.trim().toLowerCase(); });
+		).subscribe(value => {
+			if (this.filterSettings.func) {
+				this.Source.filter = '';
+				this.filterSettings.func(value);
+				return;
+			}
+			this.Source.filter = '';
+			this.Source.filter = value.trim().toLowerCase();
+		});
 
 		// Set initial data to avoid html errors
 		this.Source.data = [];
@@ -50,7 +59,6 @@ export class TableComponent implements OnInit, AfterViewInit {
 		if (!this.settings) { throw Error('No settings'); }
 
 		this.table.trackBy = this.settings.trackBy;
-
 
 		this.mobileService.isMobile().subscribe(isMobile => {
 			if (isMobile) {
@@ -66,6 +74,17 @@ export class TableComponent implements OnInit, AfterViewInit {
 		this.Source.paginator = this.paginator;
 		this.Source.sort = this.sort;
 	}
+
+	/**
+	 * method to perform the click function on a row
+	 * @param row
+	 */
+	public rowClick(row: object) {
+		if (this.settings.rowClick) {
+			this.settings.rowClick(row);
+		}
+	}
+
 }
 
 
