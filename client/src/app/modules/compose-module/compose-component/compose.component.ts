@@ -84,24 +84,6 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		});
 		this._currentDraft = this.contentForm.getRawValue();
 
-		// Router: Check if we are editing or creating content. Load from API
-		const editingContentRoute = route.snapshot.params['route'];
-		if (editingContentRoute) {
-			this.cmsService.requestContent(editingContentRoute).subscribe(data => {
-				this.originalContent = data;
-				this._currentDraft = data;
-
-				this.contentForm.patchValue(data);
-				this.setFormDisabledState();
-			}, err => {
-				router.navigateByUrl('/compose');
-			});
-
-			this.cmsService.requestContentHistory(editingContentRoute).subscribe(historyList => {
-				this.history = historyList;
-			});
-		}
-
 		// Hook (non-dirty) route to title.
 		const routeEdit = this.contentForm.get('route'), titleEdit = this.contentForm.get('title');
 		let oldTitleValue = titleEdit.value;
@@ -124,6 +106,24 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 			}
 			this.folders = folders.sort();
 		});
+
+		// Router: Check if we are editing or creating content. Load from API
+		const editingContentRoute = route.snapshot.params['route'];
+		if (editingContentRoute) {
+			this.cmsService.requestContent(editingContentRoute).subscribe(data => {
+				this.originalContent = data;
+				this._currentDraft = data;
+
+				this.contentForm.patchValue(data);
+				this.setFormDisabledState();
+			}, err => {
+				router.navigateByUrl('/compose');
+			});
+
+			this.cmsService.requestContentHistory(editingContentRoute).subscribe(historyList => {
+				this.history = historyList;
+			});
+		}
 	}
 
 	/**
@@ -265,7 +265,7 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 			return;
 		}
 		// Enable form for draft
-		this.contentForm.enable();
+		if (this.contentForm.disabled) { this.contentForm.enable(); }
 
 		if (this.contentForm.get('nav').value) {
 			this.contentForm.get('folder').enable();

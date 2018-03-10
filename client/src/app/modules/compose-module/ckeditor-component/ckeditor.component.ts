@@ -20,6 +20,9 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 	private _editor: CKEditor;
 	private _control: FormControl;
 
+	private _updateFromForm = false;
+	private _updateFromEditor = false;
+
 	@Input() public set control(value: FormControl) {
 		if (this._control) { return; }
 		this._control = value;
@@ -51,16 +54,23 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 			});
 
 			this._control.valueChanges.subscribe((value: string) => {
-				if (this._editor.getData() === value) { return; }
+				if (this._updateFromEditor) { return; }
+
 				// Set editor value
+				this._updateFromForm = true;
 				this._editor.setData(value);
+				this._updateFromForm = false;
 			});
 
 			// Create editor event listener
-			this._editor.listenTo(this._editor.document, 'changesDone', () => {
-				if (this._editor.getData() === this._control.value) { return; }
+			this._editor.listenTo(this._editor.document, 'changesDone', (a, b) => {
+				if (this._updateFromForm) { return; }
+
 				// Set control value
+				this._updateFromEditor = true;
 				this._control.setValue(this._editor.getData());
+				this._updateFromEditor = false;
+
 				// Mark as dirty
 				if (!this._control.dirty) { this._control.markAsDirty(); }
 			});
@@ -73,5 +83,4 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 		// User might navigate away before the editor gets to load.
 		if (this._editor) { this._editor.destroy(); }
 	}
-
 }
