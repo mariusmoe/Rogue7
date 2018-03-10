@@ -94,7 +94,7 @@ export class PagesComponent {
 				narrow: true
 			}
 		],
-		mobile: ['title', 'views', 'route'], // route = edit
+		mobile: ['title', 'views', 'edit'],
 
 		active: 'title',
 		dir: ColumnDir.ASC,
