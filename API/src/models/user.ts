@@ -51,7 +51,8 @@ export interface User extends Document {
 	role: accessRoles.admin | accessRoles.user;
 	createdAt?: Date;
 	comparePassword?: (candidatePassword: string) => Promise<boolean>;
-	isOfRank?: (rank: accessRoles) => boolean;
+	isOfRole?: (role: accessRoles) => boolean;
+	canAccess?: (level: accessRoles) => boolean;
 }
 
 
@@ -198,10 +199,15 @@ schema.methods.comparePassword = async function (candidatePassword: string): Pro
 };
 
 
-// IsOfRank
-schema.methods.isOfRank = function (rank: accessRoles): boolean {
+// IsOfRole
+schema.methods.isOfRole = function (role: accessRoles): boolean {
 	const u: User = this;
-	return u.role === rank;
+	return u.role === role;
+};
+
+schema.methods.canAccess = function (level: accessRoles): boolean {
+	const u: User = this;
+	return level === accessRoles.everyone || u.role === accessRoles.admin || u.isOfRole(level);
 };
 
 

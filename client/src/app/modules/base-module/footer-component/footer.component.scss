@@ -1,13 +1,11 @@
 /// <reference path="../../../scss/_theme_vars.scss" />
 @import '_theme_vars';
 
-.footer {
-	padding: 20px;
-	margin: 0 auto;
+:host {
+	padding: 40px 20px;
 	text-align: center;
 	font-size: 0.75em;
 	color: rgba($textColor, .6);
-	height: $footerHeight;
 	box-sizing: border-box;
 
 	span {

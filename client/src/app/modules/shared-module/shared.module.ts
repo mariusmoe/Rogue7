@@ -11,7 +11,8 @@ import {
 	SteamService,
 	MobileService,
 	TokenService,
-	AdminService
+	AdminService,
+	ModalService
 } from '@app/services';
 
 // Modules
@@ -79,6 +80,7 @@ export class SharedModule {
 				MobileService,
 				TokenService,
 				AdminService,
+				ModalService,
 				// Guards
 				AuthGuard,
 				AdminGuard,

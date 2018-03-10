@@ -33,8 +33,11 @@ export interface ColumnSettings {
 	func?: (obj?: object, all?: object[]) => void;
 	disabled?: (obj?: object, all?: object[]) => boolean;
 	icon?: (obj?: object) => string;
+	tooltip?: (obj?: object) => string;
 	noText?: boolean;
 	narrow?: boolean;
+
+	color?: 'primary' | 'accent' | 'warn';
 
 	// classes
 	noSort?: boolean;

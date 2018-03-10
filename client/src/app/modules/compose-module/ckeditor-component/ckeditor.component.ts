@@ -1,13 +1,8 @@
-import {
-	Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Inject, ChangeDetectionStrategy
-} from '@angular/core';
-
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, Input, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl } from '@angular/forms';
-
 import { DOCUMENT } from '@angular/platform-browser';
 
 import { CmsContent } from '@app/models';
-import { MobileService } from '@app/services';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
@@ -37,9 +32,7 @@ export class CKEditorComponent implements OnInit, OnDestroy {
 		}
 	};
 
-	constructor(
-		public mobileService: MobileService,
-		@Inject(DOCUMENT) private document: Document) { }
+	constructor(@Inject(DOCUMENT) private document: Document) { }
 
 
 	ngOnInit() {

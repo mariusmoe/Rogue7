@@ -8,7 +8,4 @@ export interface ModalData {
 
 	cancelColor?: string;
 	cancelText?: string;
-
-	proceed(): void;
-	cancel?(): void;
 }

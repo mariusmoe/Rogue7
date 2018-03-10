@@ -28,7 +28,6 @@ mat-header-row {
 mat-header-cell,
 mat-cell {
 	padding-right: 3em;
-
 	&:last-child {
 		padding: 0;
 	}
@@ -36,6 +35,7 @@ mat-cell {
 
 // Column sizing
 .narrow {
+	text-align: center;
 	max-width: 42px;
 }
 .rightAlign {

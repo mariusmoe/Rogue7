@@ -1,12 +1,10 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { AuthService } from '@app/services';
+import { ModalService, AuthService } from '@app/services';
 import { User, UpdatePasswordUser, ModalData } from '@app/models';
 
-import { ModalComponent } from '@app/modules/shared-module/modals/modal.component';
 
 @Component({
 	selector: 'change-password-component',
@@ -18,9 +16,9 @@ export class ChangePasswordComponent {
 	public changePasswordForm: FormGroup;
 
 	constructor(
-		private dialog: MatDialog,
 		private router: Router,
 		private fb: FormBuilder,
+		private modalService: ModalService,
 		public authService: AuthService) {
 		this.changePasswordForm = fb.group({
 			'currentPassword': ['', Validators.required],
@@ -36,31 +34,17 @@ export class ChangePasswordComponent {
 		const user: UpdatePasswordUser = this.changePasswordForm.value;
 		const sub = this.authService.updatePassword(user).subscribe(
 			result => {
-				sub.unsubscribe();
-
-				const data: ModalData = {
-					headerText: 'Password updated!',
-					bodyText: 'Your password was successfully updated.',
-
-					proceedColor: 'primary',
-					proceedText: 'Okay',
-
-					proceed: () => { }
-				};
 				if (result) {
 					this.changePasswordForm.reset();
 					this.changePasswordForm.markAsUntouched();
 					this.router.navigateByUrl('/');
-					this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
-					return;
 				}
-				data.headerText = 'Failure';
-				data.bodyText = 'Could not update your password.';
-				this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
+				this.modalService.openPasswordChangeModal(result);
+				sub.unsubscribe();
 			},
 			error => {
 				sub.unsubscribe();
-			},
+			}
 		);
 	}
 

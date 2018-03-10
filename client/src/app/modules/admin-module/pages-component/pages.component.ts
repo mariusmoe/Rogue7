@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 import { CmsContent, AccessRoles, TableSettings, ColumnType, ColumnDir } from '@app/models';
-import { CMSService, MobileService } from '@app/services';
+import { ModalService, CMSService, AdminService, MobileService } from '@app/services';
 
 import { Subject } from 'rxjs/Subject';
 
@@ -28,6 +28,10 @@ export class PagesComponent {
 				header: 'Views',
 				property: 'views',
 				rightAlign: true,
+				tooltip: (c: CmsContent) => {
+					const time = (Date.now() - new Date(c.createdAt).getTime()) / (1000 * 60 * 60 * 24);
+					return `Views per day: ${(c.views / time).toFixed(2)}`;
+				}
 			},
 			{
 				header: 'Access',
@@ -67,7 +71,7 @@ export class PagesComponent {
 			},
 			{
 				header: 'Edit',
-				property: 'route',
+				property: 'edit',
 				noSort: true,
 				type: ColumnType.InternalLink,
 				icon: () => 'mode_edit',
@@ -76,24 +80,44 @@ export class PagesComponent {
 					return `/compose/${c.route}`;
 				},
 				narrow: true
+			},
+			{
+				header: 'Delete',
+				property: 'delete',
+				noSort: true,
+				type: ColumnType.Button,
+				icon: () => 'delete',
+				color: 'warn',
+				noText: true,
+				func: (c: CmsContent) => this.modalService.openDeleteContentModal(c),
+				disabled: (c: CmsContent) => c.route === 'home',
+				narrow: true
 			}
 		],
+		mobile: ['title', 'views', 'route'], // route = edit
 
 		active: 'title',
 		dir: ColumnDir.ASC,
 
 		trackBy: (index: number, item: CmsContent) => item.route,
-
-		mobile: ['title', 'views', 'route'], // route = edit
+		rowClick: (c: CmsContent) => this.router.navigateByUrl('/' + c.route)
 	};
 
 
 
 
-	constructor(private cmsService: CMSService, private datePipe: DatePipe) {
+	constructor(
+		private router: Router,
+		private modalService: ModalService,
+		private cmsService: CMSService,
+		private adminService: AdminService,
+		private datePipe: DatePipe) {
 
-		cmsService.getContentList(true).subscribe((contentList) => {
+		adminService.getAllContent().subscribe((contentList) => {
 			this.data.next(contentList);
 		});
 	}
+
+
+
 }

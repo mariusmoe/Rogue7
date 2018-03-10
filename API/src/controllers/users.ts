@@ -35,7 +35,7 @@ export class UsersController {
 			routeId: string = req.params.id,
 			username_low = user.username.toLowerCase();
 
-		if (!adminUser.isOfRank(accessRoles.admin)) {
+		if (!adminUser.isOfRole(accessRoles.admin)) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 

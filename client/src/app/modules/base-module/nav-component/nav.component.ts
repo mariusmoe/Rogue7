@@ -67,7 +67,7 @@ export class NavComponent {
 
 		const rootContent: CmsContent[] = [];
 		const folders: CmsFolder[] = [];
-		for (const content of contentList.filter(c => c.nav)) {
+		for (const content of contentList) { // (nav is filtered server-side)
 			if (!content.folder) {
 				rootContent.push(content);
 				continue;

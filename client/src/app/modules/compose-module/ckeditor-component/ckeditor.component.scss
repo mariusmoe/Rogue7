@@ -6,12 +6,6 @@
 	margin: 0;
 	overflow: hidden;
 
-	&.mobile {
-		::ng-deep .ck-editor .ck-sticky-panel .ck-sticky-panel__content_sticky {
-			top: $headerHeight;
-		}
-	}
-
 	::ng-deep .ck-dropdown__panel,
 	::ng-deep .ck-editor__top .ck-toolbar {
 		background: $headerBG;
@@ -20,6 +14,10 @@
 
 	::ng-deep .ck-dropdown__panel .ck-list__item {
 		background: $headerBG;
+	}
+
+	::ng-deep .ck-editor .ck-sticky-panel .ck-sticky-panel__content_sticky {
+		top: $headerHeight !important;
 	}
 
 	::ng-deep .ck-editor-toolbar {

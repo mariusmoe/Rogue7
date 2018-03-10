@@ -6,3 +6,4 @@ export * from './mobile.service';
 export * from './steam.service';
 export * from './token.service';
 export * from './worker.service';
+export * from './modal.service';

@@ -5,6 +5,8 @@ import { util as configUtil } from 'config';
 import { authenticate } from 'passport';
 import { PassportConfig } from './libs/passportConfig';
 
+import { accessRoles } from './models/user';
+
 // Validation
 import { JSchema, validateSchema, VALIDATION_FAILED } from './libs/validate';
 
@@ -91,6 +93,7 @@ export class AppRouter {
 
 		// Create content
 		cmsRoutes.post('/', PassportConfig.requireAuth,
+			AuthController.requireRole(accessRoles.admin),
 			validateSchema(JSchema.ContentSchema, VALIDATION_FAILED.CONTENT_MODEL),
 			CMSController.createContent);
 
@@ -102,14 +105,21 @@ export class AppRouter {
 
 		// Patch content
 		cmsRoutes.patch('/:route', PassportConfig.requireAuth,
+			AuthController.requireRole(accessRoles.admin),
 			validateSchema(JSchema.ContentSchema, VALIDATION_FAILED.CONTENT_MODEL),
 			CMSController.patchContent);
 
 		// Delete content
-		cmsRoutes.delete('/:route', PassportConfig.requireAuth, CMSController.deleteContent);
+		cmsRoutes.delete('/:route',
+			PassportConfig.requireAuth,
+			AuthController.requireRole(accessRoles.admin),
+			CMSController.deleteContent);
 
 		// Content History
-		cmsRoutes.get('/history/:route', PassportConfig.requireAuth, CMSController.getContentHistory);
+		cmsRoutes.get('/history/:route',
+			PassportConfig.requireAuth,
+			AuthController.requireRole(accessRoles.admin),
+			CMSController.getContentHistory);
 
 		// assign to parent router
 		router.use('/cms', cmsRoutes);
@@ -146,18 +156,42 @@ export class AppRouter {
 	 * @param router
 	 */
 	private static adminRoutes(router: Router) {
+		const adminRoutes = Router();
+
 		// Users Routes
 		const usersRoutes = Router();
+
 		// Get user list
-		usersRoutes.get('/', PassportConfig.requireAuth, UsersController.getAllUsers);
+		usersRoutes.get('/',
+			PassportConfig.requireAuth,
+			AuthController.requireRole(accessRoles.admin),
+			UsersController.getAllUsers);
+
 		// Patch User
-		usersRoutes.patch('/:id', PassportConfig.requireAuth,
+		usersRoutes.patch('/:id',
+			PassportConfig.requireAuth,
+			AuthController.requireRole(accessRoles.admin),
 			validateSchema(JSchema.UserAdminUpdateUser, VALIDATION_FAILED.USER_MODEL),
 			UsersController.patchUser);
 
-		const adminRoutes = Router();
-		adminRoutes.use('/users', usersRoutes);
+
+
+
+
+		// Content routes
+		const contentRoutes = Router();
+
+		// Get full content list
+		contentRoutes.get('/',
+			PassportConfig.requireAuth,
+			AuthController.requireRole(accessRoles.admin),
+			CMSController.getAdminContentList);
+
+
+
 		// admin route
+		adminRoutes.use('/users', usersRoutes);
+		adminRoutes.use('/cms', contentRoutes);
 		router.use('/admin', adminRoutes);
 	}
 

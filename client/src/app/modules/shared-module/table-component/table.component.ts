@@ -35,12 +35,13 @@ export class TableComponent implements OnInit, AfterViewInit {
 	public readonly filterForm: FormGroup;
 
 	constructor(private fb: FormBuilder, public mobileService: MobileService) {
+		// Set initial data to avoid html errors
+		this.Source.data = [];
+
 		// Filter form
 		this.filterForm = fb.group({ filterControl: [''] });
-
 		this.filterForm.get('filterControl').valueChanges.pipe(
 			distinctUntilChanged(), takeUntil(this._ngUnsub), debounceTime(300)
-			// debounceTime(20), -- cannot debounce as the filter implementation is bad.
 		).subscribe(value => {
 			if (this.filterSettings.func) {
 				this.Source.filter = '';
@@ -51,8 +52,23 @@ export class TableComponent implements OnInit, AfterViewInit {
 			this.Source.filter = value.trim().toLowerCase();
 		});
 
-		// Set initial data to avoid html errors
-		this.Source.data = [];
+		// Filter based on what the user sees rather than the data property values
+		this.Source.filterPredicate = (data: object, filter: string) => {
+			for (const col of this.settings.columns) {
+				// only match against columns that are properties
+				if (!data.hasOwnProperty(col.property)) { continue; }
+
+				const val = col.displayFormat
+					? col.displayFormat(data, this.Source.data)
+					: data[col.property];
+
+				// toString() for non-strings (e.g. views = number)
+				if (val.toString().trim().toLowerCase().includes(filter)) {
+					return true; // only return if there is a positive match
+				}
+			}
+			return false;
+		};
 	}
 
 	ngOnInit() {
@@ -83,6 +99,25 @@ export class TableComponent implements OnInit, AfterViewInit {
 		if (this.settings.rowClick) {
 			this.settings.rowClick(row);
 		}
+	}
+
+	/**
+	 * Handler for column func button clicks
+	 * @param col
+	 * @param obj
+	 * @param e
+	 */
+	public buttonClick(col: ColumnSettings, obj: object, e: MouseEvent) {
+		col.func(obj, this.Source.data);
+		this.overrideClick(e);
+	}
+
+	/**
+	 * Click override for hyperlinks and buttons - disable propagation so that row clicks do not trigger
+	 * @param e
+	 */
+	public overrideClick(e: MouseEvent) {
+		e.stopPropagation();
 	}
 
 }

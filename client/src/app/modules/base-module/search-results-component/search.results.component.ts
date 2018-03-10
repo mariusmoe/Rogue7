@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
@@ -15,7 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 	styleUrls: ['./search.results.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SearchResultsComponent implements OnInit {
+export class SearchResultsComponent implements OnDestroy {
 	private _ngUnsub = new Subject();
 
 	public data = new BehaviorSubject<CmsContent[]>([]);
@@ -35,6 +35,11 @@ export class SearchResultsComponent implements OnInit {
 			{
 				header: 'Description',
 				property: 'description',
+			},
+			{
+				header: 'Views',
+				property: 'views',
+				rightAlign: true,
 			},
 			{
 				header: 'Last updated',
@@ -58,7 +63,6 @@ export class SearchResultsComponent implements OnInit {
 		dir: ColumnDir.DESC,
 
 		trackBy: (index: number, c: CmsContent) => c.title,
-
 		rowClick: (c: CmsContent) => this.router.navigateByUrl('/' + c.route)
 	};
 
@@ -80,8 +84,9 @@ export class SearchResultsComponent implements OnInit {
 		});
 	}
 
-	ngOnInit() {
-
+	ngOnDestroy() {
+		this._ngUnsub.next();
+		this._ngUnsub.complete();
 	}
 
 	/**

@@ -22,7 +22,7 @@ export class CMSController {
 
 
 	/**
-	 * Gets all content routes that the user has access to
+	 * Gets all content routes that the user has access to, and that are visible in the navigation
 	 * @param  {Req}		req  request
 	 * @param  {Res}		res  response
 	 * @param  {Next}		next next
@@ -38,11 +38,31 @@ export class CMSController {
 		}
 
 		const contentList: Content[] = await ContentModel.aggregate([
-			{ $match: { 'current.access': { $in: accessRights } } },
+			{ $match: { 'current.access': { $in: accessRights }, 'current.nav': true } },
+			{
+				$project: { current: { title: 1, route: 1, folder: 1 } }
+			},
+			{ $replaceRoot: { newRoot: '$current' } },
+		]);
+		if (!contentList) {
+			return res.status(404).send(status(CMS_STATUS.NO_ROUTES));
+		}
+		res.status(200).send(contentList);
+	}
+
+	/**
+	 * Gets all content
+	 * @param  {Req}		req  request
+	 * @param  {Res}		res  response
+	 * @param  {Next}		next next
+	 * @return {Res}		server response: a list of partial content information
+	 */
+	public static async getAdminContentList(req: Req, res: Res, next: Next) {
+		const contentList: Content[] = await ContentModel.aggregate([
 			{
 				$project: {
 					current: {
-						title: 1, route: 1, access: 1, updatedAt: 1,
+						title: 1, route: 1, access: 1, updatedAt: 1, createdAt: 1,
 						folder: 1, description: 1, nav: 1, views: '$views'
 					}
 				}
@@ -67,25 +87,17 @@ export class CMSController {
 		const route: string = req.params.route,
 			user: User = <User>req.user;
 
-		const contentDoc = <ContentDoc>await ContentModel.findOne({ 'current.route': route }, {
-			'current.content_searchable': false, prev: false
-		});
-
+		const contentDoc = <ContentDoc>await ContentModel.findOneAndUpdate(
+			{ 'current.route': route },
+			{ $inc: { 'views': 1 } },
+			{ fields: { prev: 0, 'current.content_searchable': 0, 'current.image': 0 } }
+		);
 		if (!contentDoc) { return res.status(404).send(status(CMS_STATUS.CONTENT_NOT_FOUND)); }
 
-		const access = contentDoc.current.access === accessRoles.everyone ||
-			(user && user.role === accessRoles.admin) ||
-			(user && user.role === contentDoc.current.access);
+		const access = contentDoc.current.access === accessRoles.everyone || (user && user.canAccess(contentDoc.current.access));
 
-		if (!access) {
-			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
-		}
-		const returnValue: Content = Object.assign({}, contentDoc.current);
-		contentDoc.views += 1;
-		returnValue.views = contentDoc.views;
-
-		res.status(200).send(returnValue);
-		contentDoc.save();
+		if (!access) { return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED)); }
+		res.status(200).send(contentDoc.current);
 	}
 
 
@@ -101,7 +113,7 @@ export class CMSController {
 		const route: string = req.params.route,
 			user: User = <User>req.user;
 
-		if (!user.isOfRank(accessRoles.admin)) {
+		if (!user.isOfRole(accessRoles.admin)) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
@@ -128,7 +140,7 @@ export class CMSController {
 		const data: Content = req.body,
 			user: User = <User>req.user;
 
-		if (!user.isOfRank(accessRoles.admin)) {
+		if (!user.isOfRole(accessRoles.admin)) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
@@ -173,7 +185,7 @@ export class CMSController {
 			data: Content = req.body,
 			user: User = <User>req.user;
 
-		if (!user.isOfRank(accessRoles.admin)) {
+		if (!user.isOfRole(accessRoles.admin)) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
@@ -223,7 +235,7 @@ export class CMSController {
 		const route: string = req.params.route,
 			user: User = <User>req.user;
 
-		if (!user.isOfRank(accessRoles.admin)) {
+		if (!user.isOfRole(accessRoles.admin)) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 
@@ -257,8 +269,10 @@ export class CMSController {
 			{ $limit: 1000 },
 			{
 				$project: {
-					'current.title': 1, 'current.route': 1, 'current.folder': 1, 'current.updatedAt': 1,
-					'current.description': 1, 'current.image': 1, 'current.relevance': { $meta: 'textScore' }
+					current: {
+						title: 1, route: 1, access: 1, folder: 1, updatedAt: 1, views: '$views',
+						description: 1, image: 1, relevance: { $meta: 'textScore' }
+					}
 				}
 			},
 			{ $replaceRoot: { newRoot: '$current' } },

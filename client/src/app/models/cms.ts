@@ -12,12 +12,11 @@ export interface CmsContent {
 	nav?: boolean;
 	description?: string;
 	image?: string;
-	// Only present when requesting single content
 	createdBy?: string;
 	updatedBy?: string;
 	createdAt?: Date;
 	updatedAt?: Date;
-	// Only present for search results
+	views?: number;
 	relevance?: number;
 }
 

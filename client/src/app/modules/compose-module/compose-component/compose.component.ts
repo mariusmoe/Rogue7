@@ -3,11 +3,9 @@ import { NgForm, FormGroupDirective, FormGroup, FormControl, FormBuilder, Valida
 import { Router, ActivatedRoute, CanDeactivate } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
-import { ModalData } from '@app/models';
-import { MatDialog, MatDialogConfig, MatSelectChange, ErrorStateMatcher } from '@angular/material';
-import { ModalComponent } from '@app/modules/shared-module/modals/modal.component';
+import { MatSelectChange, ErrorStateMatcher } from '@angular/material';
 
-import { CMSService, MobileService } from '@app/services';
+import { ModalService, CMSService, MobileService } from '@app/services';
 import { CmsContent, CmsAccess, AccessRoles } from '@app/models';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -61,7 +59,7 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		private router: Router,
 		private route: ActivatedRoute,
 		private fb: FormBuilder,
-		private dialog: MatDialog,
+		private modalService: ModalService,
 		private cmsService: CMSService,
 		public mobileService: MobileService) {
 
@@ -160,20 +158,7 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		// if we're not dirty, we can also deactivate
 		if (!this.contentForm.dirty) { return true; }
 
-		const answer = new Subject<boolean>();
-
-		const data: ModalData = {
-			headerText: 'Unsaved work!',
-			bodyText: 'Do you wish to proceed without saving?',
-			proceedColor: 'accent', proceedText: 'Proceed',
-			cancelColor: 'primary', cancelText: 'Cancel',
-
-			proceed: () => answer.next(true),
-			cancel: () => answer.next(false),
-		};
-		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
-
-		return answer;
+		return this.modalService.openDeactivateComposeModal().afterClosed();
 	}
 
 	/**
@@ -206,20 +191,15 @@ export class ComposeComponent implements OnDestroy, CanDeactivate<ComposeCompone
 		const c = this.history ? this.history[this.versionIndex] : null;
 		if (!c) { return; }
 
-		const data: ModalData = {
-			headerText: `Restore version ${this.getHistoryItemFormatted(c.version + 1, this.datePipe.transform(c.updatedAt))}`,
-			bodyText: 'Do you wish to replace your current draft with this version?',
-			proceedText: 'Proceed', proceedColor: 'warn',
-			cancelText: 'Cancel',
+		this.modalService.openRestoreOldVersionModal(
+			this.getHistoryItemFormatted(c.version + 1, this.datePipe.transform(c.updatedAt)),
+		).afterClosed().subscribe(result => {
+			if (!result) { return; }
 
-			proceed: () => {
-				this.versionIndex = VersionHistory.Draft;
-				this._currentDraft = c;
-				this.setFormDisabledState(); // Enable controls (and allow validation)
-			}
-		};
-
-		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
+			this.versionIndex = VersionHistory.Draft;
+			this._currentDraft = c;
+			this.setFormDisabledState(); // Enable controls (and allow validation)
+		});
 	}
 
 	/**

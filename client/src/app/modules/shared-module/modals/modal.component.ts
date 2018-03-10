@@ -16,13 +16,6 @@ export class ModalComponent {
 		public dialogRef: MatDialogRef<ModalComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: ModalData) {
 
-		dialogRef.afterClosed().subscribe(proceeding => {
-			if (proceeding) {
-				this.data.proceed();
-				return;
-			}
-			if (!!this.data.cancel) { this.data.cancel(); }
-		});
 	}
 
 	/**

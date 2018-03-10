@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { environment } from '@env';
-import { User, AccessRoles } from '@app/models';
+import { User, AccessRoles, CmsContent } from '@app/models';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
@@ -14,7 +14,7 @@ import { of } from 'rxjs/observable/of';  // will be from 'rxjs' in v6
 @Injectable()
 export class AdminService {
 
-	constructor(private http: HttpClient, private router: Router) {}
+	constructor(private http: HttpClient, private router: Router) { }
 
 
 	// ---------------------------------------
@@ -28,5 +28,10 @@ export class AdminService {
 
 	public patchUser(user: User): Observable<boolean> {
 		return this.http.patch<boolean>(environment.URL.admin.users + '/' + user._id, user).pipe(timeout(environment.TIMEOUT));
+	}
+
+
+	public getAllContent(): Observable<CmsContent[]> {
+		return this.http.get<CmsContent[]>(environment.URL.admin.cms).pipe(timeout(environment.TIMEOUT));
 	}
 }

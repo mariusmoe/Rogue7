@@ -3,38 +3,9 @@
 
 $wrapperPadding: 20px;
 
-// SITE SETUP
-.wrapper {
-	padding-top: calc(#{$headerHeight} + #{$wrapperPadding});
-	box-sizing: border-box;
-	max-width: $wrapperWidth;
-	padding-left: calc(#{$sideWidth} + #{$wrapperPadding});
-	padding-right: $wrapperPadding;
-	margin: 0 auto;
-
-	main {
-		min-height: calc(100vh - calc(#{$headerHeight} + #{$wrapperPadding}) - #{$footerHeight});
-	}
-
-
-	&.mobile {
-		padding: 5px;
-		padding-bottom: 0;
-		box-sizing: border-box;
-		margin-top: $headerHeight;
-		// Required to make overflow-wrap: break-word; work on mobile
-		max-width: 100%;
-		min-width: 100%;
-
-		main {
-			min-height: calc(100vh - calc(#{$headerHeight} + 5px) - #{$footerHeight});
-		}
-	}
-}
-
 
 // SIDE CONTENT
-.sidenavContainer {
+mat-sidenav-container {
 	background: none;
 
 	.sidenav {
@@ -50,6 +21,64 @@ $wrapperPadding: 20px;
 		box-shadow: $boxShadow inset;
 	}
 }
+
+.nav {
+	padding-top: 5px;
+	font-size: 0.8em;
+	overflow-y: auto;
+
+	&.full {
+		background: $sideBG;
+		border-right: $border;
+		box-shadow: $boxShadow, $boxShadow inset;
+		position: fixed;
+		z-index: 100;
+		height: calc(100vh - #{$headerHeight});
+		width: $sideWidth;
+		top: $headerHeight;
+		left: 0;
+	}
+}
+
+// SITE SETUP
+.site {
+	margin-top: $headerHeight;
+	display: flex;
+	flex-flow: column;
+	min-height: calc(100vh - #{$headerHeight});
+	box-sizing: border-box;
+	justify-content: space-between;
+	align-items: center;
+	padding-left: calc(#{$sideWidth} + #{$wrapperPadding});
+	padding-right: $wrapperPadding;
+
+	.wrapper {
+		flex: 1 1 auto;
+		width: 100%;
+		padding-top: $wrapperPadding;
+		box-sizing: border-box;
+		max-width: $wrapperWidth;
+	}
+
+	.footer {
+		flex-shrink: 0;
+	}
+
+
+	&.mobile {
+		padding: 0;
+
+		.wrapper {
+			padding: 5px;
+			padding-bottom: 0;
+			box-sizing: border-box;
+			// Required to make overflow-wrap: break-word; work on mobile
+			max-width: 100%;
+			min-width: 100%;
+		}
+	}
+}
+
 
 .mobileLoginInfo {
 	mat-icon {
@@ -75,7 +104,7 @@ $wrapperPadding: 20px;
 	top: $headerHeight;
 	bottom: 0;
 	width: 6vw;
-	z-index: 20;
+	z-index: 10;
 
 	&.left {
 		left: 0;

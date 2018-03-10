@@ -13,6 +13,20 @@ export interface TokenResponse {
 
 export class AuthController {
 
+	/**
+	 * Require the user to be at least of the provided role
+	 * @param role
+	 */
+	public static requireRole(role: accessRoles) {
+		return (req: Req, res: Res, next: Next) => {
+			const user = <User>req.user;
+			if (user && (user.isOfRole(role) || user.isOfRole(accessRoles.admin))) {
+				return next();
+			}
+			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
+		};
+	}
+
 
 	/**
 	 * Returns a new token for a user in a session which is about to expire, if authorized to do so
@@ -92,7 +106,7 @@ export class AuthController {
 		const id: string = req.body.id,
 			user: User = <User>req.user;
 
-		if (!user.isOfRank(accessRoles.admin)) {
+		if (!user.isOfRole(accessRoles.admin)) {
 			return res.status(401).send(status(ROUTE_STATUS.UNAUTHORISED));
 		}
 		await UserModel.findByIdAndRemove(id).lean();

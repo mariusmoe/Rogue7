@@ -28,14 +28,13 @@ export const environment = {
 		},
 		admin: {
 			users:			baseURL + '/api/admin/users',
+			cms:			baseURL + '/api/admin/cms',
 		}
 	},
 
 	FOOTER: {
 		desc: 'Sotingane',
-		copyright: 'Copyright © 2018 Trygve Sørensen. All rights reserved.'
+		copyright: 'Copyright © 2018 <name | business>. All rights reserved.'
 	}
 };
 
-// reflect only required in jit mode.
-import 'core-js/es7/reflect';

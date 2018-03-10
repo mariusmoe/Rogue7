@@ -5,10 +5,8 @@ import {
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 
-import { CMSService, AuthService } from '@app/services';
-import { ModalData, CmsContent, AccessRoles } from '@app/models';
-
-import { ModalComponent } from '@app/modules/shared-module/modals/modal.component';
+import { CMSService, AuthService, ModalService } from '@app/services';
+import { CmsContent, AccessRoles } from '@app/models';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -37,6 +35,7 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 
 
 	constructor(
+		private modalService: ModalService,
 		private resolver: ComponentFactoryResolver,
 		private injector: Injector,
 		private dialog: MatDialog,
@@ -134,22 +133,16 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	 */
 	public deletePage() {
 		const content = this.contentSubject.getValue();
-		const data: ModalData = {
-			headerText: `Delete ${content.title}`,
-			bodyText: 'Do you wish to proceed?',
-			proceedText: 'Delete', proceedColor: 'warn',
-			cancelText: 'Cancel', cancelColor: 'accent',
-			cancel: () => { },
-			proceed: () => {
-				const sub = this.cmsService.deleteContent(content.route).subscribe(
-					() => {
-						sub.unsubscribe();
-						this.cmsService.getContentList(true);
-						this.router.navigateByUrl('/');
-					}
-				);
-			},
-		};
-		this.dialog.open(ModalComponent, <MatDialogConfig>{ data: data });
+		this.modalService.openDeleteContentModal(content).afterClosed().subscribe(result => {
+			if (!result) { return; }
+
+			const sub = this.cmsService.deleteContent(content.route).subscribe(
+				() => {
+					this.cmsService.getContentList(true);
+					this.router.navigateByUrl('/');
+					sub.unsubscribe();
+				}
+			);
+		});
 	}
 }
