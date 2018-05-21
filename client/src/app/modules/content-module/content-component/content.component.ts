@@ -1,18 +1,18 @@
 import {
-	Component, Input, OnInit, AfterViewInit, OnDestroy, DoCheck, ChangeDetectionStrategy, ChangeDetectorRef,
-	ComponentFactoryResolver, InjectionToken, Injector, ComponentFactory, ViewChild, ElementRef, ComponentRef
+	Component, Input, AfterViewInit, OnDestroy, DoCheck, ChangeDetectionStrategy,
+	ViewChild, ElementRef, Optional, Inject, PLATFORM_ID
 } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
-import { MatDialog, MatDialogConfig } from '@angular/material';
 
-import { CMSService, AuthService, ModalService } from '@app/services';
+import { HttpErrorResponse } from '@angular/common/http';
+
+import { isPlatformServer } from '@angular/common';
+
+import { CMSService, AuthService, ModalService, ContentService } from '@app/services';
 import { CmsContent, AccessRoles } from '@app/models';
 
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject, BehaviorSubject, Subscription } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-import { DynamicLinkComponent } from '../content-controllers/dynamic.link.component';
 
 
 @Component({
@@ -21,104 +21,103 @@ import { DynamicLinkComponent } from '../content-controllers/dynamic.link.compon
 	styleUrls: ['./content.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoCheck {
-	@Input() public set contentInput(value: CmsContent) { this.contentSubject.next(value); }
+export class ContentComponent implements AfterViewInit, OnDestroy, DoCheck {
+	// Content
+	public readonly contentSubject = new BehaviorSubject<CmsContent>(null);
+	@ViewChild('contentHost') private _contentHost: ElementRef<HTMLDivElement>;
+
+	// Input content. Used in relation to Editing previews
+	private _inputSet = false;
+	@Input() public set contentInput(value: CmsContent) {
+		if (this._inputSet) { return; }
+		this.contentSubject.next(value);
+		this._inputSet = true;
+	}
+	// previewMode controls the visiblity state of details in the template
 	@Input() public previewMode = false;
 
-	public AccessRoles = AccessRoles;
-	public contentSubject = new BehaviorSubject<CmsContent>(null);
+	// Template Helpers
+	public readonly AccessRoles = AccessRoles;
+	public readonly isPlatformServer: boolean;
 
-	private _ngUnsub = new Subject();
-	@ViewChild('contentHost') private _contentHost: ElementRef;
-	private _ngLinkFactory: ComponentFactory<DynamicLinkComponent>;
-	private _embeddedComponents: ComponentRef<DynamicLinkComponent>[] = [];
+	// Code helpers
+	private readonly _ngUnsub = new Subject();
+	private readonly _failedToLoad: CmsContent = {
+		access: AccessRoles.everyone,
+		title: 'Page not available',
+		content: 'Uhm. There appears to be nothing here. Sorry.',
+		description: '404 - Not found',
+		version: 0,
+		route: '',
+	};
 
+	private readonly _serverLoading: CmsContent = {
+		access: AccessRoles.everyone,
+		title: ' ',
+		content: ' ',
+		description: ' ',
+		version: 0,
+		route: '',
+	};
 
+	// Constructor
 	constructor(
-		private modalService: ModalService,
-		private resolver: ComponentFactoryResolver,
-		private injector: Injector,
-		private dialog: MatDialog,
-		private router: Router,
+		@Inject(PLATFORM_ID) private platformId: Object,
+		@Optional() private modalService: ModalService,
+		private contentService: ContentService,
 		private route: ActivatedRoute,
+		private router: Router,
 		public authService: AuthService,
 		public cmsService: CMSService) {
 
-		this._ngLinkFactory = resolver.resolveComponentFactory(DynamicLinkComponent);
+		this.isPlatformServer = isPlatformServer(platformId);
 
-	}
-
-	ngOnInit() {
-		// If the contentSubject already has a value, then that's great!
-		if (!this.contentSubject.getValue()) {
-			this.contentSubject.next(this.route.snapshot.data['CmsContent']);
-		}
-
+		// Only after the above we ought to check our content
 		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
-			if (e instanceof NavigationEnd) {
-				this.contentSubject.next(this.route.snapshot.data['CmsContent']);
-			}
+			if (e instanceof NavigationEnd) { this.queryForData(); }
 		});
 	}
 
 	ngAfterViewInit() {
 		this.contentSubject.pipe(takeUntil(this._ngUnsub)).subscribe(content => {
-			this.build(content);
-			// Detect changes manually for each component.
-			this._embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
+			if (!content) { return; }
+
+			// Set metadata
+			this.contentService.setContentMeta(content);
+			// Build content
+			this.contentService.buildContentForElement(this._contentHost, content);
 		});
 	}
 
 	ngOnDestroy() {
+		// Also unsubscribe from other observables
 		this._ngUnsub.next();
 		this._ngUnsub.complete();
 		// Clean components
-		this.cleanEmbeddedComponents();
+		this.contentService.cleanEmbeddedComponents();
+		// Set meta back to default
+		this.contentService.setDefaultMeta();
 	}
 
 	ngDoCheck() {
-		this._embeddedComponents.forEach(comp => comp.changeDetectorRef.detectChanges());
+		this.contentService.detectChanges();
 	}
 
 	/**
-	 * Inserts the content into DOM
-	 * @param cmsContent
+	 * Internal helper to query for data
 	 */
-	private build(cmsContent: CmsContent) {
-		// null ref checks
-		if (!this._contentHost || !this._contentHost.nativeElement || !cmsContent || !cmsContent.content) {
-			return;
-		}
-		// Clean components before rebuilding.
-		this.cleanEmbeddedComponents();
-		// Prepare content for injection
-		const e = (<HTMLElement>this._contentHost.nativeElement);
-		const nglinksel = this._ngLinkFactory.selector;
-		e.innerHTML = cmsContent.content.replace(/<a /g, `<${nglinksel} `).replace(/<\/a>/g, `</${nglinksel}>`);
-
-		// query for elements we need to adjust
-		const ngLinks = e.querySelectorAll(this._ngLinkFactory.selector);
-		for (let i = 0; i < ngLinks.length; i++) {
-			const link = ngLinks.item(i);
-			const savedTextContent = link.textContent; // save text content before we modify the element
-			// convert NodeList into an array, since Angular dosen't like having a NodeList passed for projectableNodes
-			const comp = this._ngLinkFactory.create(this.injector, [Array.prototype.slice.call(link.childNodes)], link);
-			// apply inputs into the dynamic component
-			// only static ones work here since this is the only time they're set
-			for (const attr of (link as any).attributes) {
-				comp.instance[attr.nodeName] = attr.nodeValue;
+	private queryForData() {
+		// Request content
+		this.cmsService.requestContent(this.route.snapshot.params['content']).subscribe(
+			content => this.contentSubject.next(content),					// Success
+			(err: HttpErrorResponse) => {
+				this.contentSubject.next(									// Error / Unauthorized
+					err && err.status === 401 && this.isPlatformServer
+						? this._serverLoading
+						: this._failedToLoad
+				);
 			}
-			comp.instance.link = link.getAttribute('href');
-			comp.instance.text = savedTextContent;
-
-			this._embeddedComponents.push(comp);
-		}
-	}
-
-	private cleanEmbeddedComponents() {
-		// destroycomponents to avoid be memory leaks
-		this._embeddedComponents.forEach(comp => comp.destroy());
-		this._embeddedComponents.length = 0;
+		);
 	}
 
 	/**
@@ -133,8 +132,8 @@ export class ContentComponent implements OnInit, AfterViewInit, OnDestroy, DoChe
 	 */
 	public deletePage() {
 		const content = this.contentSubject.getValue();
-		this.modalService.openDeleteContentModal(content).afterClosed().subscribe(result => {
-			if (!result) { return; }
+		this.modalService.openDeleteContentModal(content).afterClosed().subscribe(doDelete => {
+			if (!doDelete) { return; }
 
 			const sub = this.cmsService.deleteContent(content.route).subscribe(
 				() => {

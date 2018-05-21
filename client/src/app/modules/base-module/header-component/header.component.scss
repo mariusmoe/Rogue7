@@ -1,32 +1,39 @@
 /// <reference path="../../../scss/_theme_vars.scss" />
-@import '_theme_vars';
-
 
 // HEADER
 .topHeader {
-	background: $contentBG;
-	border-bottom: $border;
-	height: $headerHeight;
-	max-height: $headerHeight;
+	padding: 0 8px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	box-sizing: border-box;
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100vw;
 	z-index: 1000;
-	box-shadow: $boxShadow;
+	height: var(--height-header);
+	max-height: var(--height-header);
+	background: var(--color-content);
+	border-bottom: var(--border);
+	box-shadow: var(--shadow);
 
-	.wrapper {
-		height: $headerHeight;
-		max-height: $headerHeight;
-		padding: 0 8px;
+	.flex {
+		flex: 1 1;
 		display: flex;
-		justify-content: space-between;
-		align-items: center;
+		flex-flow: nowrap;
+
+		&.center {
+			justify-content: center;
+			flex: 2 2;
+		}
+
+		&.right {
+			justify-content: flex-end;
+		}
 	}
 
 	a.title {
-		text-align: center;
 		font-size: 1.5em;
 
 		.logo {
@@ -35,16 +42,8 @@
 			margin-right: 1px;
 
 			::ng-deep path {
-				fill: $primary;
+				fill: var(--color-primary);
 			}
 		}
-	}
-
-	.search {
-		height: calc(#{$headerHeight} - 12px);
-		max-height: calc(#{$headerHeight} - 12px);
-		box-sizing: border-box;
-		background: $sideBG;
-		box-shadow: $boxShadow inset;
 	}
 }

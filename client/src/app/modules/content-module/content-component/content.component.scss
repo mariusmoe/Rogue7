@@ -1,16 +1,13 @@
 /// <reference path="../../../scss/_theme_vars.scss" />
-@import '_theme_vars';
 
-
-.contentWrapper {
-	display: flex;
+:host {
 	position: relative;
 	flex-flow: column;
+	display: flex;
 	padding-bottom: 44px;
 
-	.content {
-		padding: 0 2px;
-		flex: 1 1;
+	#content {
+		padding: 0 3px;
 	}
 
 	.info {
@@ -28,9 +25,6 @@
 		}
 	}
 }
-
-
-
 
 .pageControls {
 	position: absolute;

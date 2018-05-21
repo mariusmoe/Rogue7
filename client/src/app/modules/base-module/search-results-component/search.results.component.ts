@@ -1,12 +1,11 @@
 import { Component, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd, NavigationStart } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
-import { MobileService } from '@app/services';
+import { CMSService, MobileService } from '@app/services';
 import { CmsContent, TableSettings, ColumnType, ColumnDir, TableFilterSettings } from '@app/models';
 
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -69,35 +68,34 @@ export class SearchResultsComponent implements OnDestroy {
 	public readonly filterSettings: TableFilterSettings = {
 		placeholder: 'Search',
 		hidden: this.mobileService.isMobile(),
-		func: (term: string) => { this.setResults(term); }
+		func: (term: string) => { this.router.navigateByUrl('/search/' + term); }
 	};
 
 
 	constructor(
 		private router: Router,
 		private datePipe: DatePipe,
+		private cmsService: CMSService,
 		public route: ActivatedRoute,
 		public mobileService: MobileService) {
 
-		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
-			if (e instanceof NavigationEnd) { this.setResults(); }
+		this.route.paramMap.pipe(takeUntil(this._ngUnsub)).subscribe(p => {
+			this.setResults(p.get('term'));
 		});
 	}
 
 	ngOnDestroy() {
-		this._ngUnsub.next();
 		this._ngUnsub.complete();
 	}
 
 	/**
 	 * Set searchResults helper
 	 */
-	private setResults(term?: string) {
-		if (term) {
-			this.router.navigateByUrl('/search/' + term);
-			return;
-		}
-		this.data.next(this.route.snapshot.data['SearchResults']);
+	private setResults(term: string) {
+		const sub = this.cmsService.searchContent(term).pipe(takeUntil(this._ngUnsub)).subscribe(
+			list => { this.data.next(list); sub.unsubscribe(); },
+			err => { this.data.next(null); sub.unsubscribe(); }
+		);
 	}
 
 }

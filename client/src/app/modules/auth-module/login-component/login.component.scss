@@ -1,4 +1,4 @@
-@import "_theme_vars";
+/// <reference path="../../../scss/_theme_vars.scss" />
 
 .loginForm {
 	position: relative;
@@ -7,7 +7,7 @@
 
 .field {
 	width: 100%;
-	max-width: $maximumFieldWidth;
+	max-width: var(--width-max-field);
 	display: block;
 }
 

@@ -1,37 +1,30 @@
 import { NgModule } from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { environment } from '@env';
-
-// Service Worker
-import { WorkerService } from '@app/services';
-import { ServiceWorkerModule } from '@angular/service-worker';
-
-
+import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
+
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TransferHttpCacheModule } from '@nguniversal/common';
 
 // Directly load base module
 import { BaseModule } from '@app/modules';
 import { BaseRoutingModule } from '@app/modules/base-module/base.routing-module';
 
+// Interceptors
+import { InterceptorService } from '@app/services/http/interceptor.service';
 
-// const appRoutes: Routes = [
-//   { path: '', loadChildren: 'app/modules/base-module/base.module#BaseModule' },
-//   { path: '**', redirectTo: '', pathMatch: 'full' }
-// ];
 
 @NgModule({
 	declarations: [
 		AppComponent
 	],
 	imports: [
-		BrowserAnimationsModule,
+		BrowserModule.withServerTransition({ appId: 'soting' }), // must be in app.module
 		BaseModule,
 		BaseRoutingModule,
-		// RouterModule.forRoot(appRoutes),
-		ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
+		TransferHttpCacheModule
 	],
 	providers: [
-		WorkerService,
+		{ provide: HTTP_INTERCEPTORS, useClass: InterceptorService, multi: true },
 	],
 	bootstrap: [AppComponent]
 })

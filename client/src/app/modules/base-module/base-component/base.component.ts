@@ -1,12 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Optional, Inject, PLATFORM_ID, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry, MatDrawer } from '@angular/material';
-import { Router, ActivationStart, ActivationEnd } from '@angular/router';
+import { Router } from '@angular/router';
+import { isPlatformServer } from '@angular/common';
 
-import { MobileService, AuthService, WorkerService } from '@app/services';
+import { environment } from '@env';
+
+import { MobileService, AuthService, ContentService, WorkerService, ServerService } from '@app/services';
 // import { RoutingAnim } from '@app/animations';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -21,18 +24,24 @@ export class BaseComponent implements OnInit, OnDestroy {
 	@ViewChild('sidenavLeft') private sidenavLeft: MatDrawer;
 	@ViewChild('sidenavRight') private sidenavRight: MatDrawer;
 
-	public routerSub = new Subject<string>();
-
-
 	constructor(
+		@Inject(PLATFORM_ID) private platformId: Object,
+		@Optional() private workerService: WorkerService,
+		@Optional() private serverService: ServerService,
+		private contentService: ContentService,
 		public mobileService: MobileService,
 		public authService: AuthService,
 		public router: Router,
-		private workerService: WorkerService,
 		private iconRegistry: MatIconRegistry,
 		private san: DomSanitizer) {
-		// Register logo
-		iconRegistry.addSvgIcon('logo', san.bypassSecurityTrustResourceUrl('assets/logo256.svg'));
+
+		// Registers the logo
+		let logoPath = '/assets/logo192themed.svg';
+		if (isPlatformServer(platformId)) { logoPath = serverService.urlBase + logoPath; }
+		iconRegistry.addSvgIcon('logo', san.bypassSecurityTrustResourceUrl(logoPath));
+
+		// Sets default metadata
+		contentService.setDefaultMeta();
 	}
 
 	ngOnInit() {
@@ -41,12 +50,6 @@ export class BaseComponent implements OnInit, OnDestroy {
 		});
 		this.router.events.pipe(takeUntil(this._ngUnsub)).subscribe(e => {
 			this.closeSideNavs();
-
-			if (e instanceof ActivationStart) {
-				this.routerSub.next('start');
-			} else if (e instanceof ActivationEnd) {
-				this.routerSub.next('end');
-			}
 		});
 	}
 
@@ -63,11 +66,17 @@ export class BaseComponent implements OnInit, OnDestroy {
 		this.sidenavRight.close();
 	}
 
+	/**
+	 * Toggles the left navigation sidepanel
+	 */
 	toggleLeftNav() {
 		this.sidenavLeft.toggle();
 		this.sidenavRight.close();
 	}
 
+	/**
+	 * Toggles the right navigation sidepanel
+	 */
 	toggleRightNav() {
 		this.sidenavLeft.close();
 		this.sidenavRight.toggle();

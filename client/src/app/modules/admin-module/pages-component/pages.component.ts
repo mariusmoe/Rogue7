@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Optional } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -6,7 +6,7 @@ import { DatePipe } from '@angular/common';
 import { CmsContent, AccessRoles, TableSettings, ColumnType, ColumnDir } from '@app/models';
 import { ModalService, CMSService, AdminService, MobileService } from '@app/services';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'pages-component',
@@ -107,8 +107,8 @@ export class PagesComponent {
 
 
 	constructor(
+		@Optional() private modalService: ModalService,
 		private router: Router,
-		private modalService: ModalService,
 		private cmsService: CMSService,
 		private adminService: AdminService,
 		private datePipe: DatePipe) {

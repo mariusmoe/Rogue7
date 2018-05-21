@@ -1,7 +1,7 @@
-<div class="search">
-	<search-component *ngIf="mobileService.isMobile() | async"></search-component>
+<div class="search" *ngIf="mobileService.isMobile() | async">
+	<search-component alternativeColor="true"></search-component>
 </div>
-<mat-nav-list dense>
+<mat-nav-list dense [style.touch-action]="'pan-y'">
 	<ng-container *ngIf="contentSubject | async as nav">
 		<a mat-list-item *ngFor="let navEntry of nav.rootContent; trackBy: trackBy"
 		   routerLink="/{{navEntry.route}}"
@@ -13,17 +13,6 @@
 			   routerLink="/{{navEntry.route}}"
 			   routerLinkActive="active"
 			   ngClass="subItem">{{ navEntry.title }}</a>
-		</ng-container>
-	</ng-container>
-
-	<ng-container *ngIf="steamServersSubject | async as steamServers">
-		<ng-container *ngIf="steamServers && steamServers.length > 0">
-			<h2 mat-subheader>Steam Servers</h2>
-
-			<a mat-list-item *ngFor="let server of steamServers; trackBy: trackBy"
-			   routerLink="/steam/{{server.route}}"
-			   routerLinkActive="active"
-			   ngClass="subItem">{{ server.title }}</a>
 		</ng-container>
 	</ng-container>
 </mat-nav-list>

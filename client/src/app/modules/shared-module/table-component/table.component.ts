@@ -6,9 +6,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ColumnSettings, ColumnType, TableSettings, TableFilterSettings } from '@app/models';
 import { MobileService } from '@app/services';
 
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { takeUntil, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 @Component({
@@ -34,7 +32,9 @@ export class TableComponent implements OnInit, AfterViewInit {
 	private readonly _ngUnsub = new Subject();
 	public readonly filterForm: FormGroup;
 
-	constructor(private fb: FormBuilder, public mobileService: MobileService) {
+	constructor(
+		private fb: FormBuilder,
+		public mobileService: MobileService) {
 		// Set initial data to avoid html errors
 		this.Source.data = [];
 

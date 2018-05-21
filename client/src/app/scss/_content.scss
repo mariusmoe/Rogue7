@@ -1,8 +1,6 @@
-@import '_theme_vars';
+/// <reference path="_theme_vars.scss" />
 
-
-.ck-editor__editable,
-.content {
+#content {
 	a, p {
 		word-wrap: break-word; // legacy name of overflow-wrap
 		overflow-wrap: break-word;
@@ -17,7 +15,7 @@
 
 		&:hover, &:active {
 			text-decoration: underline;
-			color: $primary;
+			color: var(--color-primary);
 		}
 	}
 
@@ -37,7 +35,7 @@
 			font-family: Georgia, serif;
 			font-size: 5em;
 			font-weight: bold;
-			color: $primary;
+			color: var(--color-primary);
 			position: absolute;
 			left: 0;
 			top: -0.2em;
@@ -57,15 +55,16 @@
 		}
 	}
 
+	image-container.image,
 	figure.image {
 		text-align: center;
 		margin: 0 0 1em 0; // 1em margin bottom
 		box-sizing: border-box;
 		display: block;
 		clear: both;
-		border: $border;
-		background: $sideBG;
-		box-shadow: $boxShadow;
+		border: var(--border);
+		background: var(--color-sidepanel);
+		box-shadow: var(--shadow);
 		position: relative;
 
 		&:after {
@@ -76,7 +75,7 @@
 			height: 100%;
 			width: 100%;
 			z-index: 1000;
-			box-shadow: $boxShadow inset;
+			box-shadow: var(--shadow) inset;
 			pointer-events: none;
 		}
 
@@ -90,10 +89,10 @@
 		& > figcaption {
 			padding: .8em;
 			font-size: .75em;
-			background: $materialBG !important;
-			box-shadow: $boxShadow inset;
-			border-top: $border;
-			color: $textColor;
+			background: var(--color-material) !important;
+			box-shadow: var(--shadow) inset;
+			border-top: var(--border);
+			color: var(--color-text);
 		}
 
 		&.image-style-align-left,
@@ -117,16 +116,30 @@
 			clear: right;
 		}
 	}
+	// Lazy-load pre-sizing to fill space.
+	image-container.image {
+		&.lazy {
+			height: calc(var(--width-wrapper) / 2 * 9 / 16);
+		}
+		.click {
+			cursor: pointer;
+		}
+	}
 }
 
 .video {
-	display: inline-block;
+	//display: inline-block;
 	position: relative;
-	margin: 0;
-	width: calc(50% - 0.15em); // account for 1 space
+	margin: 0 .8em .8em 0;
+	width: calc(50% - 0.8em);
+	float: left;
+	clear: right;
+	vertical-align: top;
 
 	&.wide {
+		margin: 0 0 .8em 0;
 		width: 100%;
+		clear: both;
 	}
 
 	iframe {
@@ -147,8 +160,8 @@
 
 // Mobile styling
 .site.mobile {
-	.ck-editor__editable,
-	.content {
+	#content {
+		image-container.image,
 		figure.image {
 			&.image-style-align-right,
 			&.image-style-align-left {
@@ -163,6 +176,7 @@
 	}
 
 	.video {
+		float: none;
 		width: 100%;
 	}
 }

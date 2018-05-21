@@ -1,19 +1,25 @@
 /// <reference path="../../../scss/_theme_vars.scss" />
-@import '_theme_vars';
 
 .searchBox {
 	width: 350px;
 	transition: width ease-in-out 0.5s;
+	background: var(--color-sidepanel);
+	box-shadow: var(--shadow) inset;
+	height: calc(var(--height-header) - 12px);
+	max-height: calc(var(--height-header) - 12px);
+	box-sizing: border-box;
 
-	&:not(.mobile) {
-		&.wide {
-			width: 550px;
-		}
+	&.altCol {
+		background: var(--color-background); // darken($sideBG, 99%)
+	}
+
+	&:not(.mobile).wide {
+		width: 550px;
 	}
 
 	&.mobile {
-		width: 80%;
-		max-width: 80%;
+		width: 90%;
+		max-width: 90%;
 		margin: 0 auto;
 	}
 
@@ -26,9 +32,8 @@
 			border-top: none;
 		}
 	}
-}
 
-
-.searchBox ::ng-deep .mat-input-underline {
-	display: none;
+	::ng-deep .mat-form-field-underline {
+		display: none;
+	}
 }

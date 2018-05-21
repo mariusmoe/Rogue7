@@ -22,14 +22,13 @@
 		"directive-selector": [
 			true,
 			"attribute",
-			"app",
+			"",
 			"camelCase"
 		],
 		"eofline": true,
 		"forin": true,
 		"import-blacklist": [
-			true,
-			"rxjs"
+			true
 		],
 		"import-spacing": true,
 		"indent": true,
